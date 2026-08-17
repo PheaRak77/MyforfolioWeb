@@ -67,14 +67,25 @@ router.post("/", async (req, res, next) => {
 
     // 3. Send email asynchronously if SMTP credentials are provided
     if (process.env.SMTP_EMAIL && process.env.SMTP_PASSWORD && recipientEmail) {
+      console.log(`[Contact] Sending notification from ${process.env.SMTP_EMAIL} to ${recipientEmail}...`);
       sendContactEmail({
         senderName: name.trim(),
         senderEmail: email.trim().toLowerCase(),
         subject: subject.trim(),
         message: message.trim(),
         recipientEmail,
-      }).catch((emailErr) => {
-        console.error("[Contact Email Error]:", emailErr.message);
+      })
+        .then(() => {
+          console.log(`[Contact] ✅ Email delivered to ${recipientEmail} successfully!`);
+        })
+        .catch((emailErr) => {
+          console.error("[Contact Email Error]:", emailErr);
+        });
+    } else {
+      console.log("[Contact] ⚠ SMTP not configured or admin email missing:", {
+        hasSmtpEmail: !!process.env.SMTP_EMAIL,
+        hasSmtpPassword: !!process.env.SMTP_PASSWORD,
+        recipientEmail,
       });
     }
 
