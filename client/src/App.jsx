@@ -12,10 +12,13 @@ import Skills from "./pages/Skills";
 import Profile from "./pages/Profile";
 
 import AdminRoute from "./routes/AdminRoute";
+import NetworkStatus from "./components/NetworkStatus";
 
 export default function App() {
   return (
-    <Routes>
+    <>
+      <NetworkStatus />
+      <Routes>
       <Route path="/" element={<Home />} />
       <Route path="/login" element={<Login />} />
       <Route path="/register" element={<Register />} />
@@ -33,5 +36,6 @@ export default function App() {
 
       <Route path="*" element={<Home />} />
     </Routes>
+    </>
   );
 }
