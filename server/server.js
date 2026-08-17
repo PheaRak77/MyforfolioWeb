@@ -24,6 +24,9 @@ const { notFound, errorHandler } = require("./src/middleware/error.middleware");
 
 const app = express();
 
+// Trust reverse proxy on cloud deployments (Render, Vercel, Heroku)
+app.set("trust proxy", 1);
+
 // Security Headers
 app.use(
   helmet({

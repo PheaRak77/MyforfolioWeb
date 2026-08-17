@@ -7,7 +7,10 @@ const uploadImage = asyncHandler(async (req, res) => {
   }
 
   const filePath = req.file.path.replace(/\\/g, "/");
-  const url = `${req.protocol}://${req.get("host")}/${filePath}`;
+  const isProd = process.env.NODE_ENV === "production";
+  const protocol = req.headers["x-forwarded-proto"] || (isProd ? "https" : req.protocol);
+  const host = req.get("host");
+  const url = `${protocol}://${host}/${filePath}`;
 
   res.status(201).json({
     success: true,

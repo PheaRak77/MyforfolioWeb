@@ -38,8 +38,9 @@ const Home = () => {
   const [contactErrors, setContactErrors] = useState({});
   const [sendingMessage, setSendingMessage] = useState(false);
   const [contactSubmitted, setContactSubmitted] = useState(false);
-  const [contactApiError, setContactApiError] = useState("");
   const [copiedField, setCopiedField] = useState("");
+  const [profileImgError, setProfileImgError] = useState(false);
+  const [headerImgError, setHeaderImgError] = useState(false);
 
   const handleCopy = (text, fieldName) => {
     navigator.clipboard.writeText(text);
@@ -227,10 +228,11 @@ const Home = () => {
             href="#hero"
             className="flex items-center gap-3 group transition-transform hover:scale-105 flex-shrink-0"
           >
-            {displayUser?.profile_image ? (
+            {displayUser?.profile_image && !headerImgError ? (
               <img
                 src={displayUser.profile_image}
                 alt={displayUser.name || "Portfolio"}
+                onError={() => setHeaderImgError(true)}
                 className="w-10 h-10 sm:w-11 sm:h-11 rounded-full object-cover ring-2 ring-blue-500/50 shadow-md flex-shrink-0"
               />
             ) : (
@@ -562,10 +564,11 @@ const Home = () => {
             <div className="relative group animate-float">
               <div className="absolute -inset-2 bg-gradient-to-r from-blue-600 via-indigo-500 to-purple-600 rounded-3xl blur-xl opacity-75 group-hover:opacity-100 transition duration-500" />
               <div className="relative w-64 h-64 sm:w-72 sm:h-72 lg:w-80 lg:h-80 rounded-3xl overflow-hidden bg-slate-800 border border-slate-700 flex items-center justify-center shadow-2xl">
-                {displayUser?.profile_image ? (
+                {displayUser?.profile_image && !profileImgError ? (
                   <img
                     src={displayUser.profile_image}
                     alt={displayUser.name || "Profile"}
+                    onError={() => setProfileImgError(true)}
                     className="w-full h-full object-cover transition-transform duration-500 group-hover:scale-105"
                   />
                 ) : (
