@@ -40,43 +40,50 @@ router.post("/", async (req, res, next) => {
       });
     }
 
-    // Get portfolio owner email from the DB (first admin user)
+    // Ensure contact_messages table exists
+    await pool.query(`
+      CREATE TABLE IF NOT EXISTS contact_messages (
+        id SERIAL PRIMARY KEY,
+        name VARCHAR(255) NOT NULL,
+        email VARCHAR(255) NOT NULL,
+        subject VARCHAR(255) NOT NULL,
+        message TEXT NOT NULL,
+        created_at TIMESTAMP WITH TIME ZONE DEFAULT CURRENT_TIMESTAMP
+      )
+    `);
+
+    // 1. Immediately save message into database
+    await pool.query(
+      `INSERT INTO contact_messages (name, email, subject, message)
+       VALUES ($1, $2, $3, $4)`,
+      [name.trim(), email.trim().toLowerCase(), subject.trim(), message.trim()]
+    );
+
+    // 2. Fetch admin recipient email
     const { rows } = await pool.query(
       "SELECT email FROM users WHERE role = 'admin' LIMIT 1"
     );
+    const recipientEmail = rows[0]?.email || process.env.SMTP_EMAIL;
 
-    if (!rows.length || !rows[0].email) {
-      return res.status(503).json({
-        success: false,
-        message: "Contact service is not configured yet",
+    // 3. Send email asynchronously if SMTP credentials are provided
+    if (process.env.SMTP_EMAIL && process.env.SMTP_PASSWORD && recipientEmail) {
+      sendContactEmail({
+        senderName: name.trim(),
+        senderEmail: email.trim().toLowerCase(),
+        subject: subject.trim(),
+        message: message.trim(),
+        recipientEmail,
+      }).catch((emailErr) => {
+        console.error("[Contact Email Error]:", emailErr.message);
       });
     }
-
-    const recipientEmail = rows[0].email;
-
-    // Check SMTP is configured
-    if (!process.env.SMTP_EMAIL || !process.env.SMTP_PASSWORD) {
-      return res.status(503).json({
-        success: false,
-        message: "Email service is not configured on the server. Please contact the owner directly.",
-      });
-    }
-
-    await sendContactEmail({
-      senderName: name.trim(),
-      senderEmail: email.trim().toLowerCase(),
-      subject: subject.trim(),
-      message: message.trim(),
-      recipientEmail,
-    });
 
     return res.json({
       success: true,
-      message: "Message sent successfully! The owner will reply to your email soon.",
+      message: "Message sent successfully! Thank you for reaching out.",
     });
   } catch (err) {
-    // Safe error - don't leak SMTP details
-    console.error("[Contact] Email send error:", err.message);
+    console.error("[Contact Error]:", err.message);
     return res.status(500).json({
       success: false,
       message: "Failed to send message. Please try again later or contact directly via email.",
