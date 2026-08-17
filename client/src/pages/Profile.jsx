@@ -2,6 +2,7 @@ import { useEffect, useState } from "react";
 import api from "../api/axios";
 import DashboardNav from "../components/DashboardNav";
 import { useAuth } from "../context/AuthContext";
+import { compressImageFile } from "../utils/imageCompressor";
 
 const Profile = () => {
   const { user, updateUser } = useAuth();
@@ -23,7 +24,7 @@ const Profile = () => {
       setForm({
         name: user.name || "",
         phone: user.phone || "",
-        dob: user.dob ? String(user.dob).slice(0, 10) : "",
+        dob: user.dob ? user.dob.split("T")[0] : "",
         profile_image: user.profile_image || "",
       });
     }
@@ -41,21 +42,20 @@ const Profile = () => {
     const file = event.target.files?.[0];
     if (!file) return;
 
-    const formData = new FormData();
-    formData.append("image", file);
-
     try {
       setUploading(true);
-      const { data } = await api.post("/uploads/profile-image", formData);
+      setError("");
+      // Compress to lightweight square avatar data URL (max 500x500, quality 0.85)
+      const compressedDataUrl = await compressImageFile(file, 500, 500, 0.85);
 
       setForm((prev) => ({
         ...prev,
-        profile_image: data.url,
+        profile_image: compressedDataUrl,
       }));
 
-      setMessage("Avatar image uploaded successfully");
+      setMessage("Avatar image updated! Click 'Save Profile' to apply changes.");
     } catch (err) {
-      setError(err.response?.data?.message || "Image upload failed");
+      setError(err.message || "Image processing failed");
     } finally {
       setUploading(false);
       event.target.value = "";

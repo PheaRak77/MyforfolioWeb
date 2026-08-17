@@ -3,6 +3,7 @@ import api from "../api/axios";
 import DashboardNav from "../components/DashboardNav";
 import ConfirmModal from "../components/ConfirmModal";
 import Toast from "../components/Toast";
+import { compressImageFile } from "../utils/imageCompressor";
 
 const emptyForm = {
   course: "",
@@ -72,23 +73,20 @@ const Certificates = () => {
     const file = event.target.files?.[0];
     if (!file) return;
 
-    const formData = new FormData();
-    formData.append("image", file);
-
     try {
       setUploading(true);
-      const { data } = await api.post("/uploads/certificate-image", formData);
+      const compressedDataUrl = await compressImageFile(file, 1000, 800, 0.85);
 
       setForm((prev) => ({
         ...prev,
-        image: data.url,
+        image: compressedDataUrl,
       }));
 
-      setToast({ type: "success", message: "Certificate image uploaded successfully!" });
+      setToast({ type: "success", message: "Certificate image processed & added!" });
     } catch (err) {
       setToast({
         type: "error",
-        message: err.response?.data?.message || "Image upload failed",
+        message: err.message || "Image processing failed",
       });
     } finally {
       setUploading(false);
