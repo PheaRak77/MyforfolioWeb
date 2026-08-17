@@ -67,6 +67,7 @@ async function initDatabase() {
       user_id INTEGER REFERENCES users(id) ON DELETE CASCADE,
       token_hash VARCHAR(255) NOT NULL,
       expires_at TIMESTAMP WITH TIME ZONE NOT NULL,
+      used_at TIMESTAMP WITH TIME ZONE,
       created_at TIMESTAMP WITH TIME ZONE DEFAULT CURRENT_TIMESTAMP
     );
 

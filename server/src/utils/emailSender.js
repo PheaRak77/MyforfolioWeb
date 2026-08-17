@@ -4,17 +4,28 @@ const nodemailer = require("nodemailer");
  * Creates and returns a Nodemailer transporter using Gmail SMTP.
  * Supports Gmail App Password or standard SMTP credentials from .env
  */
-const createTransporter = () => {
-  return nodemailer.createTransport({
-    service: "gmail",
-    auth: {
-      user: process.env.SMTP_EMAIL,
-      pass: process.env.SMTP_PASSWORD, // Use a Gmail App Password (not your real password)
-    },
-    pool: true,
-    maxConnections: 5,
-    rateLimit: 10,
-  });
+// Create a single shared transporter instance with connection pooling
+let transporter = null;
+
+const getTransporter = () => {
+  if (!transporter) {
+    transporter = nodemailer.createTransport({
+      host: "smtp.gmail.com",
+      port: 465,
+      secure: true, // Use SSL
+      auth: {
+        user: process.env.SMTP_EMAIL,
+        pass: process.env.SMTP_PASSWORD, // Gmail App Password
+      },
+      pool: true,
+      maxConnections: 3,
+      rateDelta: 1000,
+      rateLimit: 5,
+      connectionTimeout: 8000, // 8s connection timeout
+      socketTimeout: 12000,
+    });
+  }
+  return transporter;
 };
 
 /**
@@ -33,7 +44,7 @@ const sendContactEmail = async ({
   message,
   recipientEmail,
 }) => {
-  const transporter = createTransporter();
+  const mailTransporter = getTransporter();
 
   const html = `
 <!DOCTYPE html>
@@ -108,7 +119,7 @@ const sendContactEmail = async ({
 </html>
   `;
 
-  await transporter.sendMail({
+  await mailTransporter.sendMail({
     from: `"Portfolio Contact" <${process.env.SMTP_EMAIL}>`,
     to: recipientEmail,
     replyTo: `"${senderName}" <${senderEmail}>`,
