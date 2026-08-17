@@ -63,22 +63,23 @@ app.use(
 app.use(express.json({ limit: "5mb" }));
 app.use(express.urlencoded({ extended: true, limit: "5mb" }));
 
-// Rate Limiter for Auth endpoints (protection against brute force attacks)
+// Rate Limiter for Auth endpoints (relaxed with skipSuccessfulRequests)
 const authLimiter = rateLimit({
-  windowMs: 15 * 60 * 1000, // 15 minutes
-  max: 30, // Limit each IP to 30 auth requests per windowMs
+  windowMs: 5 * 60 * 1000, // 5 minutes
+  max: 150, // Allow up to 150 requests per 5 minutes
   standardHeaders: true,
   legacyHeaders: false,
+  skipSuccessfulRequests: true, // Successful logins/registrations don't get penalized
   message: {
     success: false,
-    message: "Too many authentication attempts. Please try again in 15 minutes.",
+    message: "Too many authentication attempts. Please try again in a few moments.",
   },
 });
 
 // General API rate limiter
 const apiLimiter = rateLimit({
-  windowMs: 15 * 60 * 1000,
-  max: 300,
+  windowMs: 5 * 60 * 1000,
+  max: 1000,
   standardHeaders: true,
   legacyHeaders: false,
 });
