@@ -131,6 +131,7 @@ const Profile = () => {
                     <img
                       src={getFullImageUrl(form.profile_image)}
                       alt="Profile preview"
+                      referrerPolicy="no-referrer"
                       className="w-24 h-24 rounded-full object-cover ring-4 ring-blue-500/30 shadow-xl"
                     />
                   ) : (

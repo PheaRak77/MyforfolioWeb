@@ -31,6 +31,7 @@ const DashboardNav = () => {
             <img
               src={getFullImageUrl(user.profile_image)}
               alt={user.name}
+              referrerPolicy="no-referrer"
               className="w-10 h-10 rounded-full object-cover ring-2 ring-blue-500/50 shadow-md shadow-blue-500/20"
             />
           ) : (

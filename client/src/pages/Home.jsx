@@ -233,6 +233,7 @@ const Home = () => {
               <img
                 src={getFullImageUrl(displayUser.profile_image)}
                 alt={displayUser.name || "Portfolio"}
+                referrerPolicy="no-referrer"
                 onError={() => setHeaderImgError(true)}
                 className="w-10 h-10 sm:w-11 sm:h-11 rounded-full object-cover ring-2 ring-blue-500/50 shadow-md flex-shrink-0"
               />
@@ -590,6 +591,7 @@ const Home = () => {
                   <img
                     src={getFullImageUrl(displayUser.profile_image)}
                     alt={displayUser.name || "Profile"}
+                    referrerPolicy="no-referrer"
                     onError={() => setProfileImgError(true)}
                     className="w-full h-full object-cover transition-transform duration-500 group-hover:scale-105"
                   />
@@ -807,6 +809,7 @@ const Home = () => {
                             <img
                               src={getFullImageUrl(skill.icon)}
                               alt={skill.name}
+                              referrerPolicy="no-referrer"
                               className="w-full h-full object-contain"
                               onError={(e) => {
                                 e.target.style.display = "none";
@@ -980,6 +983,7 @@ const Home = () => {
                         <img
                           src={getFullImageUrl(mainImage)}
                           alt={project.title}
+                          referrerPolicy="no-referrer"
                           className="w-full h-full object-cover transition-transform duration-500 group-hover:scale-105"
                           onError={(e) => {
                             e.target.style.display = "none";
@@ -1169,6 +1173,7 @@ const Home = () => {
                       <img
                         src={getFullImageUrl(cert.image)}
                         alt={cert.course}
+                        referrerPolicy="no-referrer"
                         className="w-full h-full object-cover transition-transform duration-500 group-hover:scale-105"
                         onError={(e) => {
                           e.target.style.display = "none";
@@ -1545,6 +1550,7 @@ const Home = () => {
                   <img
                     src={getFullImageUrl(getProjectValidImages(selectedProject)[0])}
                     alt={selectedProject.title}
+                    referrerPolicy="no-referrer"
                     className="w-full max-h-72 object-cover rounded-xl border border-slate-800"
                   />
                   {getProjectValidImages(selectedProject).length > 1 && (
@@ -1556,6 +1562,7 @@ const Home = () => {
                             key={i}
                             src={getFullImageUrl(imgUrl)}
                             alt=""
+                            referrerPolicy="no-referrer"
                             className="w-full h-20 object-cover rounded-lg border border-slate-800"
                           />
                         ))}
@@ -1664,6 +1671,7 @@ const Home = () => {
                 <img
                   src={getFullImageUrl(selectedCertificate.image)}
                   alt={selectedCertificate.course}
+                  referrerPolicy="no-referrer"
                   className="w-full max-h-96 object-contain"
                 />
               </div>
