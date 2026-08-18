@@ -5,6 +5,7 @@ import DashboardNav from "../components/DashboardNav";
 import { useAuth } from "../context/AuthContext";
 import { isLegacyDiskUrl } from "../utils/imageUrl";
 import { hasLegacyProjectImages } from "../utils/projectImages";
+import VerifiedBadge, { isVerifiedUser } from "../components/VerifiedBadge";
 
 const Dashboard = () => {
   const { user } = useAuth();
@@ -135,8 +136,9 @@ const Dashboard = () => {
                 <span className="w-2 h-2 rounded-full bg-blue-400 animate-pulse" />
                 Admin Workspace
               </div>
-              <h1 className="text-3xl sm:text-4xl font-extrabold text-white tracking-tight">
-                Welcome, {user?.name || "Admin"}
+              <h1 className="text-3xl sm:text-4xl font-extrabold text-white tracking-tight flex items-center gap-2.5">
+                <span>Welcome, {user?.name || "Admin"}</span>
+                {isVerifiedUser(user) && <VerifiedBadge size="lg" />}
               </h1>
               <p className="text-slate-400 text-sm sm:text-base mt-2 max-w-xl leading-relaxed">
                 Control and customize your public developer portfolio. Changes you save here are instantly visible to visitors.

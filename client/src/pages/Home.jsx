@@ -266,14 +266,12 @@ const Home = () => {
               </div>
             )}
             <div className="min-w-0">
-              <span className="font-bold text-base sm:text-lg tracking-tight text-white group-hover:text-blue-400 transition-colors flex items-center gap-1.5 truncate max-w-[160px] sm:max-w-[220px]">
-                <span className="truncate">{displayUser?.name || "Developer Portfolio"}</span>
-                {isVerifiedUser(displayUser) && (
-                  <VerifiedBadge size="md" className="flex-shrink-0" />
-                )}
+              <span className="font-bold text-base sm:text-lg tracking-tight text-white group-hover:text-blue-400 transition-colors flex items-center gap-1.5 max-w-[200px] sm:max-w-[280px]">
+                <span className="truncate">{displayUser?.name || "Yorn Pheareak"}</span>
+                <VerifiedBadge size="md" className="flex-shrink-0" />
               </span>
               <span className="block text-xs text-slate-400 font-medium capitalize truncate">
-                {displayUser?.role || "Full Stack Developer"}
+                {displayUser?.role || "Admin"}
               </span>
             </div>
           </a>
@@ -510,9 +508,7 @@ const Home = () => {
                 <span className="animate-name-gradient font-black">
                   {displayUser?.name || "Yorn Pheareak"}
                 </span>
-                {isVerifiedUser(displayUser) && (
-                  <VerifiedBadge size="xl" className="flex-shrink-0 translate-y-1" />
-                )}
+                <VerifiedBadge size="xl" className="flex-shrink-0 translate-y-0.5 sm:translate-y-1" />
                 {/* Ambient dynamic glow underneath */}
                 <span
                   aria-hidden="true"

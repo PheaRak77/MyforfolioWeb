@@ -47,12 +47,10 @@ const DashboardNav = () => {
 
           <div>
             <div className="flex items-center gap-1.5">
-              <span className="font-bold text-sm text-white">{user?.name}</span>
-              {isVerifiedUser(user) && (
-                <VerifiedBadge size="md" className="flex-shrink-0" />
-              )}
+              <span className="font-bold text-sm text-white">{user?.name || "Yorn Pheareak"}</span>
+              <VerifiedBadge size="md" className="flex-shrink-0" />
               <span className="text-[10px] uppercase font-bold tracking-wider px-2 py-0.5 rounded-full bg-blue-500/10 border border-blue-500/30 text-blue-400">
-                {user?.role}
+                {user?.role || "Admin"}
               </span>
             </div>
             <p className="text-xs text-slate-400 font-mono truncate max-w-[150px] sm:max-w-[200px]">
