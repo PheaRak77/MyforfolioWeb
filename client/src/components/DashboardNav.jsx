@@ -2,7 +2,7 @@ import { useState } from "react";
 import { Link, useLocation, useNavigate } from "react-router-dom";
 import { useAuth } from "../context/AuthContext";
 import PortfolioImage from "./PortfolioImage";
-import VerifiedBadge, { isVerifiedUser } from "./VerifiedBadge";
+import VerifiedBadge, { VerifiedName } from "./VerifiedBadge";
 
 const DashboardNav = () => {
   const { user, logout } = useAuth();
@@ -28,27 +28,35 @@ const DashboardNav = () => {
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-3.5 flex items-center justify-between gap-4">
         {/* User Info / Logo */}
         <div className="flex items-center gap-3">
-          {user?.profile_image ? (
-            <PortfolioImage
-              src={user.profile_image}
-              alt={user.name}
-              className="w-10 h-10 rounded-full object-cover ring-2 ring-blue-500/50 shadow-md shadow-blue-500/20"
-              fallback={
-                <div className="w-10 h-10 rounded-full bg-gradient-to-tr from-blue-600 to-indigo-600 flex items-center justify-center font-bold text-white shadow-md text-sm">
-                  {user?.name?.charAt(0)?.toUpperCase() || "A"}
-                </div>
-              }
-            />
-          ) : (
-            <div className="w-10 h-10 rounded-full bg-gradient-to-tr from-blue-600 to-indigo-600 flex items-center justify-center font-bold text-white shadow-md text-sm">
-              {user?.name?.charAt(0)?.toUpperCase() || "A"}
-            </div>
-          )}
+          <div className="relative flex-shrink-0">
+            {user?.profile_image ? (
+              <PortfolioImage
+                src={user.profile_image}
+                alt={user.name}
+                className="w-10 h-10 rounded-full object-cover ring-2 ring-blue-500/50 shadow-md shadow-blue-500/20"
+                fallback={
+                  <div className="w-10 h-10 rounded-full bg-gradient-to-tr from-blue-600 to-indigo-600 flex items-center justify-center font-bold text-white shadow-md text-sm">
+                    {user?.name?.charAt(0)?.toUpperCase() || "A"}
+                  </div>
+                }
+              />
+            ) : (
+              <div className="w-10 h-10 rounded-full bg-gradient-to-tr from-blue-600 to-indigo-600 flex items-center justify-center font-bold text-white shadow-md text-sm">
+                {user?.name?.charAt(0)?.toUpperCase() || "A"}
+              </div>
+            )}
+            <span className="absolute -bottom-0.5 -right-0.5 z-10 ring-2 ring-slate-900 rounded-full">
+              <VerifiedBadge size="xs" />
+            </span>
+          </div>
 
           <div>
-            <div className="flex items-center gap-1.5">
-              <span className="font-bold text-sm text-white">{user?.name || "Yorn Pheareak"}</span>
-              <VerifiedBadge size="md" className="flex-shrink-0" />
+            <div className="flex items-center gap-1.5 flex-wrap">
+              <VerifiedName
+                name={user?.name || "Yorn Pheareak"}
+                badgeSize="md"
+                nameClassName="font-bold text-sm text-white"
+              />
               <span className="text-[10px] uppercase font-bold tracking-wider px-2 py-0.5 rounded-full bg-blue-500/10 border border-blue-500/30 text-blue-400">
                 {user?.role || "Admin"}
               </span>

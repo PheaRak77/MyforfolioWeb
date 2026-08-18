@@ -6,7 +6,7 @@ import { useAuth } from "../context/AuthContext";
 import useScrollReveal from "../hooks/useScrollReveal";
 import PortfolioImage from "../components/PortfolioImage";
 import ProjectCardImage from "../components/ProjectCardImage";
-import VerifiedBadge, { isVerifiedUser } from "../components/VerifiedBadge";
+import VerifiedBadge, { VerifiedName } from "../components/VerifiedBadge";
 import { fetchPublicPortfolioData, hydrateFromCache } from "../utils/publicDataCache";
 import {
   keepPermanentImages,
@@ -243,33 +243,39 @@ const Home = () => {
             href="#hero"
             className="flex items-center gap-3 group transition-transform hover:scale-105 flex-shrink-0"
           >
-            {displayUser?.profile_image && !headerImgError ? (
-              <PortfolioImage
-                src={displayUser.profile_image}
-                alt={displayUser.name || "Portfolio"}
-                variant="profile"
-                onError={() => setHeaderImgError(true)}
-                className="w-10 h-10 sm:w-11 sm:h-11 rounded-full object-cover ring-2 ring-blue-500/50 shadow-md flex-shrink-0"
-                fallback={
-                  <div className="w-10 h-10 sm:w-11 sm:h-11 rounded-full bg-gradient-to-tr from-blue-600 to-indigo-500 flex items-center justify-center font-bold text-white shadow-md text-lg flex-shrink-0">
-                    {displayUser?.name
-                      ? displayUser.name.charAt(0).toUpperCase()
-                      : "P"}
-                  </div>
-                }
-              />
-            ) : (
-              <div className="w-10 h-10 sm:w-11 sm:h-11 rounded-full bg-gradient-to-tr from-blue-600 to-indigo-500 flex items-center justify-center font-bold text-white shadow-md text-lg flex-shrink-0">
-                {displayUser?.name
-                  ? displayUser.name.charAt(0).toUpperCase()
-                  : "P"}
-              </div>
-            )}
-            <div className="min-w-0">
-              <span className="font-bold text-base sm:text-lg tracking-tight text-white group-hover:text-blue-400 transition-colors flex items-center gap-1.5 max-w-[200px] sm:max-w-[280px]">
-                <span className="truncate">{displayUser?.name || "Yorn Pheareak"}</span>
-                <VerifiedBadge size="md" className="flex-shrink-0" />
+            <div className="relative flex-shrink-0">
+              {displayUser?.profile_image && !headerImgError ? (
+                <PortfolioImage
+                  src={displayUser.profile_image}
+                  alt={displayUser.name || "Portfolio"}
+                  variant="profile"
+                  onError={() => setHeaderImgError(true)}
+                  className="w-10 h-10 sm:w-11 sm:h-11 rounded-full object-cover ring-2 ring-blue-500/50 shadow-md"
+                  fallback={
+                    <div className="w-10 h-10 sm:w-11 sm:h-11 rounded-full bg-gradient-to-tr from-blue-600 to-indigo-500 flex items-center justify-center font-bold text-white shadow-md text-lg">
+                      {displayUser?.name
+                        ? displayUser.name.charAt(0).toUpperCase()
+                        : "P"}
+                    </div>
+                  }
+                />
+              ) : (
+                <div className="w-10 h-10 sm:w-11 sm:h-11 rounded-full bg-gradient-to-tr from-blue-600 to-indigo-500 flex items-center justify-center font-bold text-white shadow-md text-lg">
+                  {displayUser?.name
+                    ? displayUser.name.charAt(0).toUpperCase()
+                    : "P"}
+                </div>
+              )}
+              <span className="absolute -bottom-0.5 -right-0.5 z-10 ring-2 ring-slate-900 rounded-full">
+                <VerifiedBadge size="xs" />
               </span>
+            </div>
+            <div className="min-w-0">
+              <VerifiedName
+                name={displayUser?.name || "Yorn Pheareak"}
+                badgeSize="lg"
+                nameClassName="font-bold text-base sm:text-lg tracking-tight text-white group-hover:text-blue-400 transition-colors max-w-[130px] sm:max-w-[170px]"
+              />
               <span className="block text-xs text-slate-400 font-medium capitalize truncate">
                 {displayUser?.role || "Admin"}
               </span>
@@ -504,11 +510,12 @@ const Home = () => {
                 Hi, I'm <span className="animate-hand-wave text-3xl sm:text-4xl lg:text-5xl">👋</span>
               </span>{" "}
               <br className="hidden sm:inline" />
-              <span className="relative inline-flex items-center gap-2 mt-1 sm:mt-2">
-                <span className="animate-name-gradient font-black">
-                  {displayUser?.name || "Yorn Pheareak"}
-                </span>
-                <VerifiedBadge size="xl" className="flex-shrink-0 translate-y-0.5 sm:translate-y-1" />
+              <span className="relative inline-flex items-center gap-2.5 mt-1 sm:mt-2">
+                <VerifiedName
+                  name={displayUser?.name || "Yorn Pheareak"}
+                  badgeSize="2xl"
+                  nameClassName="animate-name-gradient font-black text-4xl sm:text-5xl lg:text-6xl xl:text-7xl"
+                />
                 {/* Ambient dynamic glow underneath */}
                 <span
                   aria-hidden="true"
@@ -611,29 +618,30 @@ const Home = () => {
               <div className="absolute -inset-2 bg-gradient-to-r from-blue-600 via-indigo-500 to-purple-600 rounded-3xl blur-xl opacity-75 group-hover:opacity-100 transition duration-500" />
               <div className="relative w-64 h-64 sm:w-72 sm:h-72 lg:w-80 lg:h-80 rounded-3xl overflow-hidden bg-slate-800 border border-slate-700 flex items-center justify-center shadow-2xl">
                 {displayUser?.profile_image && !profileImgError ? (
-                  <PortfolioImage
-                    src={displayUser.profile_image}
-                    alt={displayUser.name || "Profile"}
-                    variant="profile"
-                    onError={() => setProfileImgError(true)}
-                    className="w-full h-full object-cover transition-transform duration-500 group-hover:scale-105"
-                    fallback={
-                      <div className="text-center p-6">
-                        <div className="w-28 h-28 mx-auto mb-4 rounded-full bg-gradient-to-tr from-blue-600 to-indigo-600 flex items-center justify-center text-5xl font-bold text-white shadow-inner">
-                          {displayUser?.name
-                            ? displayUser.name.charAt(0).toUpperCase()
-                            : "P"}
-                        </div>
-                        <p className="font-semibold text-lg text-white flex items-center justify-center gap-1.5">
-                          <span>{displayUser?.name || "Yorn Pheareak"}</span>
-                          <VerifiedBadge size="sm" />
-                        </p>
-                        <p className="text-sm text-slate-400 capitalize">
-                          {displayUser?.role || "Developer"}
-                        </p>
-                      </div>
-                    }
-                  />
+                  <>
+                    <PortfolioImage
+                      src={displayUser.profile_image}
+                      alt={displayUser.name || "Profile"}
+                      variant="profile"
+                      onError={() => setProfileImgError(true)}
+                      className="w-full h-full object-cover transition-transform duration-500 group-hover:scale-105"
+                    />
+                    {/* Profile photo overlay — name + verified badge */}
+                    <div className="absolute inset-x-0 bottom-0 z-10 bg-gradient-to-t from-slate-950 via-slate-950/90 to-transparent px-4 pb-4 pt-12">
+                      <VerifiedName
+                        name={displayUser?.name || "Yorn Pheareak"}
+                        badgeSize="md"
+                        nameClassName="font-semibold text-base sm:text-lg text-white"
+                      />
+                      <p className="text-xs text-slate-400 capitalize mt-0.5">
+                        {displayUser?.role || "Admin"}
+                      </p>
+                    </div>
+                    {/* Corner verified badge on photo */}
+                    <span className="absolute top-3 right-3 z-10 ring-2 ring-slate-900/80 rounded-full bg-slate-900/40 p-0.5 backdrop-blur-sm">
+                      <VerifiedBadge size="lg" />
+                    </span>
+                  </>
                 ) : (
                   <div className="text-center p-6">
                     <div className="w-28 h-28 mx-auto mb-4 rounded-full bg-gradient-to-tr from-blue-600 to-indigo-600 flex items-center justify-center text-5xl font-bold text-white shadow-inner">
@@ -642,8 +650,10 @@ const Home = () => {
                         : "P"}
                     </div>
                     <p className="font-semibold text-lg text-white flex items-center justify-center gap-1.5">
-                      <span>{displayUser?.name || "Yorn Pheareak"}</span>
-                      <VerifiedBadge size="sm" />
+                      <VerifiedName
+                        name={displayUser?.name || "Yorn Pheareak"}
+                        badgeSize="md"
+                      />
                     </p>
                     <p className="text-sm text-slate-400 capitalize">
                       {displayUser?.role || "Developer"}
