@@ -1,48 +1,55 @@
 import { useId } from "react";
 
 const SIZE_MAP = {
-  xs: "w-3.5 h-3.5",
-  sm: "w-4 h-4",
-  md: "w-5 h-5",
-  lg: "w-6 h-6",
-  xl: "w-7 h-7",
+  sm: "w-[18px] h-[18px]",
+  md: "w-[22px] h-[22px]",
+  lg: "w-[28px] h-[28px]",
+  xl: "w-[34px] h-[34px]",
 };
 
 /**
- * Blue verified checkmark badge (portfolio owner / admin).
+ * Classic blue verified badge — Telegram / Facebook / Twitter style.
+ * Scalloped circle with white checkmark.
  */
-export default function VerifiedBadge({ size = "sm", className = "" }) {
-  const gradientId = useId();
+export default function VerifiedBadge({ size = "md", className = "" }) {
+  const clipId = useId();
 
   return (
     <span
-      className={`inline-flex flex-shrink-0 items-center justify-center ${SIZE_MAP[size] || SIZE_MAP.sm} ${className}`}
-      title="Verified"
+      className={`inline-flex flex-shrink-0 items-center justify-center align-middle ${SIZE_MAP[size] || SIZE_MAP.md} ${className}`}
+      title="Verified account"
       aria-label="Verified account"
       role="img"
     >
       <svg
-        viewBox="0 0 24 24"
-        fill="none"
+        viewBox="0 0 22 22"
         xmlns="http://www.w3.org/2000/svg"
-        className="w-full h-full drop-shadow-sm"
+        className="w-full h-full"
+        aria-hidden="true"
       >
-        <circle cx="12" cy="12" r="11" fill="#3B82F6" />
-        <circle cx="12" cy="12" r="11" fill={`url(#${gradientId})`} opacity="0.35" />
-        <path
-          d="M7.5 12.2l2.8 2.8 6.2-6.4"
-          stroke="white"
-          strokeWidth="2.2"
-          strokeLinecap="round"
-          strokeLinejoin="round"
-        />
         <defs>
-          <linearGradient id={gradientId} x1="4" y1="4" x2="20" y2="20">
-            <stop stopColor="white" stopOpacity="0.5" />
-            <stop offset="1" stopColor="white" stopOpacity="0" />
-          </linearGradient>
+          <clipPath id={clipId}>
+            <path
+              fill="#fff"
+              d="M20.396 11c-.018-.446-.045-.765-.061-1.089-.066-1.462-.254-2.317-.554-3.075-.303-.757-.717-1.342-1.386-2.008-.668-.666-1.251-1.078-2.008-1.309-.763-.296-1.617-.483-3.079-.551C13.765 3.067 13.446 3 13 3H9c-.446 0-.765.018-1.089.061C6.449 3.127 5.593 3.315 4.836 3.617 4.078 3.92 3.495 4.334 2.829 5.002 2.162 5.67 1.75 6.253 1.519 7.01 1.223 7.773 1.036 8.627.968 10.089.932 10.413.905 10.732.887 11 .887s.045.587.061 1.089c.066 1.462.254 2.317.554 3.075.303.757.717 1.342 1.386 2.008.668.666 1.251 1.078 2.008 1.309.763.296 1.617.483 3.079.551C8.235 20.933 8.554 21 9 21h4c.446 0 .765-.018 1.089-.061 1.509-.068 2.365-.256 3.122-.558.757-.303 1.34-.717 2.008-1.386.666-.668 1.078-1.251 1.309-2.008.296-.763.483-1.617.551-3.079.035-.324.062-.643.08-.911z"
+            />
+          </clipPath>
         </defs>
+        <g clipPath={`url(#${clipId})`}>
+          <path
+            fill="#1D9BF0"
+            d="M20.396 11c-.018-.446-.045-.765-.061-1.089-.066-1.462-.254-2.317-.554-3.075-.303-.757-.717-1.342-1.386-2.008-.668-.666-1.251-1.078-2.008-1.309-.763-.296-1.617-.483-3.079-.551C13.765 3.067 13.446 3 13 3H9c-.446 0-.765.018-1.089.061C6.449 3.127 5.593 3.315 4.836 3.617 4.078 3.92 3.495 4.334 2.829 5.002 2.162 5.67 1.75 6.253 1.519 7.01 1.223 7.773 1.036 8.627.968 10.089.932 10.413.905 10.732.887 11 .887s.045.587.061 1.089c.066 1.462.254 2.317.554 3.075.303.757.717 1.342 1.386 2.008.668.666 1.251 1.078 2.008 1.309.763.296 1.617.483 3.079.551C8.235 20.933 8.554 21 9 21h4c.446 0 .765-.018 1.089-.061 1.509-.068 2.365-.256 3.122-.558.757-.303 1.34-.717 2.008-1.386.666-.668 1.078-1.251 1.309-2.008.296-.763.483-1.617.551-3.079.035-.324.062-.643.08-.911z"
+          />
+          <path
+            fill="#fff"
+            d="M9.999 14.315l-3.682-3.682 1.267-1.267 2.415 2.415 5.541-5.541 1.266 1.266z"
+          />
+        </g>
       </svg>
     </span>
   );
 }
+
+/** Show verified badge for portfolio owner / admin accounts */
+export const isVerifiedUser = (user) =>
+  Boolean(user && String(user.role || "").toLowerCase() === "admin");
