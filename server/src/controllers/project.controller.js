@@ -96,6 +96,7 @@ const createProject = asyncHandler(async (req, res) => {
     ],
   );
 
+  req.app?.locals?.clearPublicCache?.();
   res.status(201).json({
     success: true,
     message: "Project created successfully",
@@ -166,6 +167,7 @@ const updateProject = asyncHandler(async (req, res) => {
     ],
   );
 
+  req.app?.locals?.clearPublicCache?.();
   res.json({
     success: true,
     message: "Project updated successfully",
@@ -191,6 +193,7 @@ const deleteProject = asyncHandler(async (req, res) => {
 
   await pool.query("DELETE FROM projects WHERE id = $1", [req.params.id]);
 
+  req.app?.locals?.clearPublicCache?.();
   res.json({
     success: true,
     message: "Project deleted successfully",

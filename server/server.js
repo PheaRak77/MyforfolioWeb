@@ -21,6 +21,9 @@ const uploadRoutes = require("./src/routes/upload.routes");
 const contactRoutes = require("./src/routes/contact.routes");
 
 const { notFound, errorHandler } = require("./src/middleware/error.middleware");
+const { ensureDatabaseSchema } = require("./src/config/migrate");
+const { cacheMiddleware, clearPublicCache } = require("./src/middleware/cache.middleware");
+
 
 const app = express();
 
@@ -100,6 +103,14 @@ app.use(
 configurePassport();
 app.use(passport.initialize());
 
+// Auto-migrate DB schema on every startup (safe: uses IF NOT EXISTS / ADD COLUMN IF NOT EXISTS)
+ensureDatabaseSchema().catch((err) =>
+  console.warn("Migration warning:", err.message)
+);
+
+// Expose clearPublicCache so controllers can call it on write operations
+app.locals.clearPublicCache = clearPublicCache;
+
 // Health check route
 app.get("/api/health", async (req, res) => {
   try {
@@ -121,12 +132,12 @@ app.get("/api/health", async (req, res) => {
   }
 });
 
-// Mount Routes
+// Mount Routes — public GET routes get 60-second in-memory cache for speed
 app.use("/api/auth", authLimiter, authRoutes);
-app.use("/api/users", apiLimiter, userRoutes);
-app.use("/api/projects", apiLimiter, projectRoutes);
-app.use("/api/certificates", apiLimiter, certificateRoutes);
-app.use("/api/skills", apiLimiter, skillRoutes);
+app.use("/api/users", apiLimiter, cacheMiddleware(90), userRoutes);
+app.use("/api/projects", apiLimiter, cacheMiddleware(60), projectRoutes);
+app.use("/api/certificates", apiLimiter, cacheMiddleware(60), certificateRoutes);
+app.use("/api/skills", apiLimiter, cacheMiddleware(60), skillRoutes);
 app.use("/api/uploads", apiLimiter, uploadRoutes);
 app.use("/api/contact", apiLimiter, contactRoutes);
 

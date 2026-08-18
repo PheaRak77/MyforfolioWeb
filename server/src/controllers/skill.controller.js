@@ -106,6 +106,7 @@ const createSkill = asyncHandler(async (req, res) => {
     ],
   );
 
+  req.app?.locals?.clearPublicCache?.();
   res.status(201).json({
     success: true,
     message: "Skill created successfully",
@@ -178,6 +179,7 @@ const updateSkill = asyncHandler(async (req, res) => {
     ],
   );
 
+  req.app?.locals?.clearPublicCache?.();
   res.json({
     success: true,
     message: "Skill updated successfully",
@@ -204,6 +206,7 @@ const deleteSkill = asyncHandler(async (req, res) => {
 
   await pool.query("DELETE FROM skills WHERE id = $1", [req.params.id]);
 
+  req.app?.locals?.clearPublicCache?.();
   res.json({
     success: true,
     message: "Skill deleted successfully",
