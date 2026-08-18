@@ -464,10 +464,31 @@ const Home = () => {
 
           {/* Left Text Column */}
           <div className="flex-1 space-y-6 text-center lg:text-left z-10 w-full">
-            <h1 className="text-4xl sm:text-5xl lg:text-6xl font-extrabold tracking-tight text-white leading-tight animate-hero-1">
-              Hi, I'm{" "}
-              <span className="bg-gradient-to-r from-blue-400 via-indigo-300 to-purple-400 bg-clip-text text-transparent">
-                {displayUser?.name || "Developer"}
+            {/* Modern Availability Badge */}
+            <div className="inline-flex items-center gap-2.5 px-4 py-1.5 rounded-full bg-slate-800/90 border border-slate-700/80 shadow-lg shadow-blue-500/5 backdrop-blur-md animate-role-pill">
+              <span className="relative flex h-2.5 w-2.5">
+                <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-emerald-400 opacity-75"></span>
+                <span className="relative inline-flex rounded-full h-2.5 w-2.5 bg-emerald-500"></span>
+              </span>
+              <span className="text-xs font-semibold tracking-wide text-slate-200">
+                Full-Stack Developer • Available for Projects
+              </span>
+            </div>
+
+            <h1 className="text-4xl sm:text-5xl lg:text-6xl xl:text-7xl font-black tracking-tight text-white leading-[1.15] animate-hero-1">
+              <span className="inline-flex items-center gap-2.5">
+                Hi, I'm <span className="animate-hand-wave text-3xl sm:text-4xl lg:text-5xl">👋</span>
+              </span>{" "}
+              <br className="hidden sm:inline" />
+              <span className="relative inline-block mt-1 sm:mt-2">
+                <span className="animate-name-gradient font-black">
+                  {displayUser?.name || "Yorn Pheareak"}
+                </span>
+                {/* Ambient dynamic glow underneath */}
+                <span
+                  aria-hidden="true"
+                  className="absolute -inset-2 rounded-3xl bg-gradient-to-r from-blue-500/25 via-indigo-500/25 to-purple-500/25 blur-2xl -z-10"
+                />
               </span>
             </h1>
 
