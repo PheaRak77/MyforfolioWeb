@@ -5,16 +5,16 @@ import api from "../api/axios";
 import { useAuth } from "../context/AuthContext";
 import useScrollReveal from "../hooks/useScrollReveal";
 import PortfolioImage from "../components/PortfolioImage";
-import { fetchPublicPortfolioData } from "../utils/publicDataCache";
+import { fetchPublicPortfolioData, hydrateFromCache } from "../utils/publicDataCache";
 
 const Home = () => {
   const { user: authUser, isAuthenticated, logout } = useAuth();
 
-  const [profile, setProfile] = useState(null);
-  const [projects, setProjects] = useState([]);
-  const [certificates, setCertificates] = useState([]);
-  const [skills, setSkills] = useState([]);
-  const [loading, setLoading] = useState(true);
+  const [profile, setProfile] = useState(() => hydrateFromCache().profile?.user ?? null);
+  const [projects, setProjects] = useState(() => hydrateFromCache().projects?.projects ?? []);
+  const [certificates, setCertificates] = useState(() => hydrateFromCache().certificates?.certificates ?? []);
+  const [skills, setSkills] = useState(() => hydrateFromCache().skills?.skills ?? []);
+  const [loading, setLoading] = useState(() => !hydrateFromCache().profile);
   const [error, setError] = useState("");
 
   // Scroll Reveal Hooks for each section
@@ -240,6 +240,7 @@ const Home = () => {
               <PortfolioImage
                 src={displayUser.profile_image}
                 alt={displayUser.name || "Portfolio"}
+                variant="profile"
                 onError={() => setHeaderImgError(true)}
                 className="w-10 h-10 sm:w-11 sm:h-11 rounded-full object-cover ring-2 ring-blue-500/50 shadow-md flex-shrink-0"
                 fallback={
@@ -604,6 +605,7 @@ const Home = () => {
                   <PortfolioImage
                     src={displayUser.profile_image}
                     alt={displayUser.name || "Profile"}
+                    variant="profile"
                     onError={() => setProfileImgError(true)}
                     className="w-full h-full object-cover transition-transform duration-500 group-hover:scale-105"
                     fallback={
@@ -1011,6 +1013,7 @@ const Home = () => {
                         <PortfolioImage
                           src={mainImage}
                           alt={project.title}
+                          variant="project"
                           className="w-full h-full object-cover transition-transform duration-500 group-hover:scale-105"
                           fallback={
                             <div className="w-full h-full flex flex-col items-center justify-center bg-gradient-to-br from-slate-800 to-slate-900 text-slate-500 p-4">
@@ -1217,6 +1220,7 @@ const Home = () => {
                       <PortfolioImage
                         src={cert.image}
                         alt={cert.course}
+                        variant="certificate"
                         className="w-full h-full object-cover transition-transform duration-500 group-hover:scale-105"
                         fallback={
                           <div className="w-full h-full flex flex-col items-center justify-center bg-gradient-to-br from-slate-800 to-indigo-950 text-indigo-400 p-4 text-center">
@@ -1610,6 +1614,7 @@ const Home = () => {
                   <PortfolioImage
                     src={getProjectValidImages(selectedProject)[0]}
                     alt={selectedProject.title}
+                    variant="project"
                     className="w-full max-h-72 object-cover rounded-xl border border-slate-800"
                   />
                   {getProjectValidImages(selectedProject).length > 1 && (
@@ -1621,6 +1626,7 @@ const Home = () => {
                             key={i}
                             src={imgUrl}
                             alt=""
+                            variant="project"
                             className="w-full h-20 object-cover rounded-lg border border-slate-800"
                           />
                         ))}
@@ -1729,6 +1735,7 @@ const Home = () => {
                 <PortfolioImage
                   src={selectedCertificate.image}
                   alt={selectedCertificate.course}
+                  variant="certificate"
                   className="w-full max-h-96 object-contain"
                 />
               </div>

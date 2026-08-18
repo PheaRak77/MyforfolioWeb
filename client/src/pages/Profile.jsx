@@ -141,6 +141,7 @@ const Profile = () => {
                     <PortfolioImage
                       src={form.profile_image}
                       alt="Profile preview"
+                      variant="profile"
                       className="w-24 h-24 rounded-full object-cover ring-4 ring-blue-500/30 shadow-xl"
                       fallback={
                         <div className="w-24 h-24 rounded-full bg-gradient-to-tr from-blue-600 to-indigo-600 flex items-center justify-center text-3xl font-extrabold text-white shadow-xl">

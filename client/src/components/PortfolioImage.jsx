@@ -1,15 +1,19 @@
-import { useState } from "react";
-import { getFullImageUrl } from "../utils/imageUrl";
+import { useEffect, useState } from "react";
+import {
+  getFullImageUrl,
+  isBrokenImageUrl,
+} from "../utils/imageUrl";
+import { getImagePlaceholder } from "../utils/imagePlaceholder";
 
 /**
- * Resilient image component with lazy loading, HTTPS normalization,
- * and graceful fallback when legacy Render disk files are missing (404).
+ * Resilient image — skips dead Render /uploads/ URLs and shows fallback or SVG placeholder.
  */
 export default function PortfolioImage({
   src,
   alt = "",
   className = "",
   fallback = null,
+  variant = "default",
   loading = "lazy",
   decoding = "async",
   onError: externalOnError,
@@ -17,7 +21,30 @@ export default function PortfolioImage({
 }) {
   const [failed, setFailed] = useState(false);
 
-  const resolvedSrc = getFullImageUrl(src);
+  useEffect(() => {
+    setFailed(false);
+  }, [src]);
+
+  if (!src || typeof src !== "string" || !src.trim()) {
+    return fallback;
+  }
+
+  // Legacy Render disk files are gone — never fetch them (avoids black broken img box)
+  if (isBrokenImageUrl(src)) {
+    if (fallback) return fallback;
+    return (
+      <img
+        src={getImagePlaceholder(alt, variant)}
+        alt={alt}
+        className={className}
+        loading={loading}
+        decoding={decoding}
+        {...props}
+      />
+    );
+  }
+
+  const resolvedSrc = getFullImageUrl(src, { label: alt, variant });
 
   if (!resolvedSrc || failed) {
     return fallback;

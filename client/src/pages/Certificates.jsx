@@ -377,6 +377,7 @@ const Certificates = () => {
                         <PortfolioImage
                           src={cert.image}
                           alt={cert.course}
+                          variant="certificate"
                           className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-300"
                           fallback={
                             <div className="w-full h-full flex items-center justify-center text-xs text-amber-400 p-2 text-center">

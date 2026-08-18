@@ -3,6 +3,8 @@ import { Link } from "react-router-dom";
 import api from "../api/axios";
 import DashboardNav from "../components/DashboardNav";
 import { useAuth } from "../context/AuthContext";
+import { isLegacyDiskUrl } from "../utils/imageUrl";
+import { hasLegacyProjectImages } from "../utils/projectImages";
 
 const Dashboard = () => {
   const { user } = useAuth();
@@ -10,6 +12,7 @@ const Dashboard = () => {
     projects: 0,
     certificates: 0,
     skills: 0,
+    brokenImages: 0,
   });
   const [loading, setLoading] = useState(true);
 
@@ -17,16 +20,28 @@ const Dashboard = () => {
     const fetchCounts = async () => {
       try {
         setLoading(true);
-        const [pRes, cRes, sRes] = await Promise.allSettled([
+        const [pRes, cRes, sRes, profileRes] = await Promise.allSettled([
           api.get("/projects/my"),
           api.get("/certificates/my"),
           api.get("/skills/my"),
+          api.get("/users/profile"),
         ]);
 
+        const projects = pRes.status === "fulfilled" ? pRes.value.data?.projects || [] : [];
+        const certificates = cRes.status === "fulfilled" ? cRes.value.data?.certificates || [] : [];
+        const profileUser = profileRes.status === "fulfilled" ? profileRes.value.data?.user : null;
+
+        const brokenProjects = projects.filter((p) =>
+          hasLegacyProjectImages(p.images),
+        ).length;
+        const brokenCerts = certificates.filter((c) => isLegacyDiskUrl(c.image)).length;
+        const brokenProfile = isLegacyDiskUrl(profileUser?.profile_image) ? 1 : 0;
+
         setStats({
-          projects: pRes.status === "fulfilled" ? pRes.value.data?.projects?.length || 0 : 0,
-          certificates: cRes.status === "fulfilled" ? cRes.value.data?.certificates?.length || 0 : 0,
+          projects: projects.length,
+          certificates: certificates.length,
           skills: sRes.status === "fulfilled" ? sRes.value.data?.skills?.length || 0 : 0,
+          brokenImages: brokenProjects + brokenCerts + brokenProfile,
         });
       } catch (err) {
         console.error("Failed to load dashboard stats:", err);
@@ -144,6 +159,28 @@ const Dashboard = () => {
             </div>
           </div>
         </div>
+
+        {!loading && stats.brokenImages > 0 && (
+          <div className="p-5 rounded-2xl bg-amber-500/10 border border-amber-500/30 text-amber-200">
+            <p className="font-semibold text-amber-300 mb-2">
+              {stats.brokenImages} image{stats.brokenImages > 1 ? "s" : ""} need re-upload
+            </p>
+            <p className="text-sm text-amber-200/80 mb-4">
+              Old images were stored on Render&apos;s temporary disk and no longer load. Re-upload each image in Admin — new uploads are saved permanently in the database and work on all browsers.
+            </p>
+            <div className="flex flex-wrap gap-2">
+              <Link to="/certificates" className="px-3 py-1.5 rounded-lg bg-amber-500/20 text-amber-200 text-xs font-semibold hover:bg-amber-500/30">
+                Fix Certificates
+              </Link>
+              <Link to="/projects" className="px-3 py-1.5 rounded-lg bg-amber-500/20 text-amber-200 text-xs font-semibold hover:bg-amber-500/30">
+                Fix Projects
+              </Link>
+              <Link to="/profile" className="px-3 py-1.5 rounded-lg bg-amber-500/20 text-amber-200 text-xs font-semibold hover:bg-amber-500/30">
+                Fix Profile Photo
+              </Link>
+            </div>
+          </div>
+        )}
 
         {/* Overview Stats & Management Grid */}
         <div className="grid sm:grid-cols-2 lg:grid-cols-4 gap-6">

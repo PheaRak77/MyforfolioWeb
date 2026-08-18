@@ -1,5 +1,5 @@
-const CACHE_PREFIX = "portfolio_public_v1_";
-const DEFAULT_TTL_MS = 5 * 60 * 1000;
+const CACHE_PREFIX = "portfolio_public_v2_";
+const DEFAULT_TTL_MS = 10 * 60 * 1000;
 
 const readCache = (key) => {
   try {
@@ -22,13 +22,10 @@ const writeCache = (key, data, ttlMs = DEFAULT_TTL_MS) => {
   try {
     sessionStorage.setItem(
       `${CACHE_PREFIX}${key}`,
-      JSON.stringify({
-        data,
-        expiry: Date.now() + ttlMs,
-      }),
+      JSON.stringify({ data, expiry: Date.now() + ttlMs }),
     );
   } catch {
-    // sessionStorage full or unavailable — ignore
+    // ignore quota errors
   }
 };
 
@@ -48,40 +45,33 @@ export const clearPublicDataCache = () => {
   }
 };
 
-/**
- * Fetch public portfolio endpoints with sessionStorage cache for faster repeat visits.
- */
+/** Load all cached portfolio sections at once for instant first paint */
+export const hydrateFromCache = () => ({
+  profile: readCache("profile"),
+  projects: readCache("projects"),
+  certificates: readCache("certificates"),
+  skills: readCache("skills"),
+});
+
+/** Fetch with stale-while-revalidate: show cache instantly, refresh in background */
 export const fetchPublicPortfolioData = async (api, endpoints) => {
   const results = {};
-  const pending = [];
 
-  for (const [key, path] of Object.entries(endpoints)) {
-    const cached = readCache(key);
-    if (cached !== null) {
-      results[key] = { status: "fulfilled", value: { data: cached } };
-    } else {
-      pending.push(
-        api
-          .get(path)
-          .then((response) => {
-            writeCache(key, response.data);
-            return { key, response };
-          })
-          .catch((error) => ({ key, error })),
-      );
-    }
-  }
-
-  if (pending.length > 0) {
-    const settled = await Promise.all(pending);
-    for (const item of settled) {
-      if (item.response) {
-        results[item.key] = { status: "fulfilled", value: item.response };
+  const fetches = Object.entries(endpoints).map(async ([key, path]) => {
+    try {
+      const response = await api.get(path);
+      writeCache(key, response.data);
+      results[key] = { status: "fulfilled", value: response };
+    } catch (error) {
+      const cached = readCache(key);
+      if (cached !== null) {
+        results[key] = { status: "fulfilled", value: { data: cached } };
       } else {
-        results[item.key] = { status: "rejected", reason: item.error };
+        results[key] = { status: "rejected", reason: error };
       }
     }
-  }
+  });
 
+  await Promise.all(fetches);
   return results;
 };

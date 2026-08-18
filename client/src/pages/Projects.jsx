@@ -5,6 +5,11 @@ import ConfirmModal from "../components/ConfirmModal";
 import Toast from "../components/Toast";
 import { compressImageFile } from "../utils/imageCompressor";
 import { isLegacyDiskUrl } from "../utils/imageUrl";
+import {
+  hasLegacyProjectImages,
+  keepPermanentImages,
+  normalizeProjectImages,
+} from "../utils/projectImages";
 import PortfolioImage from "../components/PortfolioImage";
 import { clearPublicDataCache } from "../utils/publicDataCache";
 
@@ -12,7 +17,7 @@ const emptyForm = {
   title: "",
   description: "",
   tech_stack: "",
-  images: "",
+  images: [],
   is_featured: false,
 };
 
@@ -105,12 +110,18 @@ const Projects = () => {
       setUploading(true);
       const compressedDataUrl = await compressImageFile(file, 1000, 800, 0.85);
 
-      setForm((prev) => ({
-        ...prev,
-        images: prev.images ? `${prev.images}, ${compressedDataUrl}` : compressedDataUrl,
-      }));
+      setForm((prev) => {
+        const kept = keepPermanentImages(prev.images);
+        return {
+          ...prev,
+          images: [...kept, compressedDataUrl],
+        };
+      });
 
-      setToast({ type: "success", message: "Image processed & added successfully!" });
+      setToast({
+        type: "success",
+        message: "Image saved to database — click Update Project to publish!",
+      });
     } catch (err) {
       setToast({
         type: "error",
@@ -143,10 +154,7 @@ const Projects = () => {
           .split(",")
           .map((item) => item.trim())
           .filter(Boolean),
-        images: form.images
-          .split(",")
-          .map((item) => item.trim())
-          .filter(Boolean),
+        images: form.images,
         links: links.filter((link) => link.label && link.url),
         is_featured: form.is_featured,
       };
@@ -175,13 +183,20 @@ const Projects = () => {
   const startEdit = (project) => {
     setEditingId(project.id);
     setValidationErrors({});
+    const images = keepPermanentImages(project.images);
     setForm({
       title: project.title || "",
       description: project.description || "",
       tech_stack: (project.tech_stack || []).join(", "),
-      images: (project.images || []).join(", "),
+      images,
       is_featured: project.is_featured || false,
     });
+    if (hasLegacyProjectImages(project.images)) {
+      setToast({
+        type: "error",
+        message: `"${project.title}" had broken images — please re-upload screenshots below.`,
+      });
+    }
     setLinks(project.links?.length ? project.links : [{ ...emptyLink }]);
     window.scrollTo({ top: 0, behavior: "smooth" });
   };
@@ -249,8 +264,8 @@ const Projects = () => {
           </span>
         </div>
 
-        {(form.images && isLegacyDiskUrl(form.images)) ||
-        projects.some((p) => p.images_missing || (p.images || []).some(isLegacyDiskUrl)) ? (
+        {(form.images.length === 0 && editingId) ||
+        hasLegacyProjectImages(projects.flatMap((p) => p.images)) ? (
           <div className="p-4 rounded-2xl bg-amber-500/10 border border-amber-500/30 text-amber-300 text-sm">
             <strong>Action required:</strong> Some project images were stored on Render&apos;s temporary disk and were lost after a server restart.
             Edit each project and re-upload images — new uploads are saved permanently in the database.
@@ -342,14 +357,42 @@ const Projects = () => {
                       className="hidden"
                     />
                   </label>
-                  <input
-                    type="text"
-                    name="images"
-                    value={form.images}
-                    onChange={handleChange}
-                    placeholder="Image URLs (comma separated)"
-                    className="w-full px-4 py-2 bg-slate-950/60 border border-slate-800 rounded-xl text-white placeholder-slate-500 text-xs focus:outline-none focus:ring-2 focus:ring-blue-500"
-                  />
+                  {form.images.length > 0 && (
+                    <div className="grid grid-cols-2 gap-2">
+                      {form.images.map((img, idx) => (
+                        <div
+                          key={idx}
+                          className="relative rounded-xl overflow-hidden border border-slate-800 bg-slate-950 h-24"
+                        >
+                          <PortfolioImage
+                            src={img}
+                            alt={`Preview ${idx + 1}`}
+                            variant="project"
+                            className="w-full h-full object-cover"
+                          />
+                          <button
+                            type="button"
+                            onClick={() =>
+                              setForm((prev) => ({
+                                ...prev,
+                                images: prev.images.filter((_, i) => i !== idx),
+                              }))
+                            }
+                            className="absolute top-1 right-1 w-6 h-6 rounded-full bg-red-500/90 text-white text-xs font-bold"
+                            title="Remove image"
+                          >
+                            ×
+                          </button>
+                        </div>
+                      ))}
+                    </div>
+                  )}
+                  <p className="text-xs text-slate-500">
+                    {form.images.length} image{form.images.length !== 1 ? "s" : ""} ready
+                    {form.images.some((img) => img.startsWith("data:"))
+                      ? " (stored permanently in database)"
+                      : ""}
+                  </p>
                 </div>
               </div>
 
@@ -462,6 +505,7 @@ const Projects = () => {
                         <PortfolioImage
                           src={project.images[0]}
                           alt={project.title}
+                          variant="project"
                           className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-300"
                           fallback={
                             <div className="w-full h-full flex items-center justify-center text-xs text-amber-400 p-2 text-center">

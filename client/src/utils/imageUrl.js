@@ -1,12 +1,8 @@
+import { getImagePlaceholder } from "./imagePlaceholder";
+
 /**
- * Formats image URLs so that relative paths (/uploads/...) or localhost URLs
- * are properly routed in deployed environments.
- *
- * Production strategy:
- * - data: / blob: URLs → returned as-is (stored in PostgreSQL, survives Render redeploys)
- * - External CDN URLs → returned as-is with HTTPS enforced
- * - Legacy Render /uploads/ paths → proxied through same-origin /media/ on Vercel
- *   (fixes Safari/Brave mixed-content & cross-origin blocking)
+ * Formats image URLs for deployed environments.
+ * Legacy Render /uploads/ files are gone after redeploy — returns SVG placeholder instead.
  */
 
 const getApiBaseUrl = () =>
@@ -18,14 +14,10 @@ const getApiBaseUrl = () =>
 
 const isBrowser = typeof window !== "undefined";
 
-const shouldUseMediaProxy = () => {
+const isProductionHost = () => {
   if (!isBrowser) return false;
   const host = window.location.hostname;
-  return (
-    !host.includes("localhost") &&
-    !host.includes("127.0.0.1") &&
-    (host.includes("vercel.app") || import.meta.env.PROD)
-  );
+  return !host.includes("localhost") && !host.includes("127.0.0.1");
 };
 
 export const isLegacyDiskUrl = (imagePath) => {
@@ -34,18 +26,31 @@ export const isLegacyDiskUrl = (imagePath) => {
   return /\/uploads\//i.test(imagePath);
 };
 
-export const getFullImageUrl = (imagePath) => {
+export const isBrokenImageUrl = (imagePath) => {
+  if (!imagePath || typeof imagePath !== "string") return true;
+  if (imagePath.startsWith("data:") || imagePath.startsWith("blob:")) return false;
+  if (imagePath.startsWith("https://") && !isLegacyDiskUrl(imagePath)) return false;
+  if (isLegacyDiskUrl(imagePath) && isProductionHost()) return true;
+  return false;
+};
+
+export const getFullImageUrl = (imagePath, options = {}) => {
   if (!imagePath || typeof imagePath !== "string") return null;
 
   const cleanPath = imagePath.trim();
   if (!cleanPath) return null;
 
+  const { label = "Image", variant = "default", allowLegacy = false } = options;
+
   if (cleanPath.startsWith("data:") || cleanPath.startsWith("blob:")) {
     return cleanPath;
   }
 
-  const apiUrl = getApiBaseUrl();
+  if (isLegacyDiskUrl(cleanPath) && isProductionHost() && !allowLegacy) {
+    return getImagePlaceholder(label, variant);
+  }
 
+  const apiUrl = getApiBaseUrl();
   let resolved = cleanPath;
 
   if (
@@ -66,13 +71,6 @@ export const getFullImageUrl = (imagePath) => {
 
   if (resolved.startsWith("http://")) {
     resolved = resolved.replace(/^http:\/\//i, "https://");
-  }
-
-  if (shouldUseMediaProxy() && resolved.includes("/uploads/")) {
-    const uploadsIndex = resolved.indexOf("/uploads/");
-    if (uploadsIndex !== -1) {
-      return resolved.substring(uploadsIndex);
-    }
   }
 
   return resolved;
