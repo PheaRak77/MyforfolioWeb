@@ -624,8 +624,9 @@ const Home = () => {
                             ? displayUser.name.charAt(0).toUpperCase()
                             : "P"}
                         </div>
-                        <p className="font-semibold text-lg text-white">
-                          {displayUser?.name || "Portfolio Owner"}
+                        <p className="font-semibold text-lg text-white flex items-center justify-center gap-1.5">
+                          <span>{displayUser?.name || "Yorn Pheareak"}</span>
+                          <VerifiedBadge size="sm" />
                         </p>
                         <p className="text-sm text-slate-400 capitalize">
                           {displayUser?.role || "Developer"}
@@ -640,8 +641,9 @@ const Home = () => {
                         ? displayUser.name.charAt(0).toUpperCase()
                         : "P"}
                     </div>
-                    <p className="font-semibold text-lg text-white">
-                      {displayUser?.name || "Portfolio Owner"}
+                    <p className="font-semibold text-lg text-white flex items-center justify-center gap-1.5">
+                      <span>{displayUser?.name || "Yorn Pheareak"}</span>
+                      <VerifiedBadge size="sm" />
                     </p>
                     <p className="text-sm text-slate-400 capitalize">
                       {displayUser?.role || "Developer"}
