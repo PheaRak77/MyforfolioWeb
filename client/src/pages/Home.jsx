@@ -6,6 +6,7 @@ import { useAuth } from "../context/AuthContext";
 import useScrollReveal from "../hooks/useScrollReveal";
 import PortfolioImage from "../components/PortfolioImage";
 import ProjectCardImage from "../components/ProjectCardImage";
+import VerifiedBadge from "../components/VerifiedBadge";
 import { fetchPublicPortfolioData, hydrateFromCache } from "../utils/publicDataCache";
 import {
   keepPermanentImages,
@@ -265,8 +266,9 @@ const Home = () => {
               </div>
             )}
             <div className="min-w-0">
-              <span className="font-bold text-base sm:text-lg tracking-tight text-white group-hover:text-blue-400 transition-colors block truncate max-w-[140px] sm:max-w-[200px]">
-                {displayUser?.name || "Developer Portfolio"}
+              <span className="font-bold text-base sm:text-lg tracking-tight text-white group-hover:text-blue-400 transition-colors flex items-center gap-1.5 truncate max-w-[160px] sm:max-w-[220px]">
+                <span className="truncate">{displayUser?.name || "Developer Portfolio"}</span>
+                {displayUser?.role === "admin" && <VerifiedBadge size="sm" />}
               </span>
               <span className="block text-xs text-slate-400 font-medium capitalize truncate">
                 {displayUser?.role || "Full Stack Developer"}
@@ -502,10 +504,13 @@ const Home = () => {
                 Hi, I'm <span className="animate-hand-wave text-3xl sm:text-4xl lg:text-5xl">👋</span>
               </span>{" "}
               <br className="hidden sm:inline" />
-              <span className="relative inline-block mt-1 sm:mt-2">
+              <span className="relative inline-flex items-center gap-2 mt-1 sm:mt-2">
                 <span className="animate-name-gradient font-black">
                   {displayUser?.name || "Yorn Pheareak"}
                 </span>
+                {displayUser?.role === "admin" && (
+                  <VerifiedBadge size="lg" className="sm:scale-110 translate-y-0.5" />
+                )}
                 {/* Ambient dynamic glow underneath */}
                 <span
                   aria-hidden="true"

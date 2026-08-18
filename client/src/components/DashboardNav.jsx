@@ -2,6 +2,7 @@ import { useState } from "react";
 import { Link, useLocation, useNavigate } from "react-router-dom";
 import { useAuth } from "../context/AuthContext";
 import PortfolioImage from "./PortfolioImage";
+import VerifiedBadge from "./VerifiedBadge";
 
 const DashboardNav = () => {
   const { user, logout } = useAuth();
@@ -45,8 +46,9 @@ const DashboardNav = () => {
           )}
 
           <div>
-            <div className="flex items-center gap-2">
+            <div className="flex items-center gap-1.5">
               <span className="font-bold text-sm text-white">{user?.name}</span>
+              {user?.role === "admin" && <VerifiedBadge size="sm" />}
               <span className="text-[10px] uppercase font-bold tracking-wider px-2 py-0.5 rounded-full bg-blue-500/10 border border-blue-500/30 text-blue-400">
                 {user?.role}
               </span>
