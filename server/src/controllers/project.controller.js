@@ -1,6 +1,18 @@
 const pool = require("../config/db");
 const ApiError = require("../utils/ApiError");
 const asyncHandler = require("../utils/asyncHandler");
+const {
+  normalizeImageArray,
+  isLegacyDiskUpload,
+} = require("../utils/normalizeImage");
+
+const mapProject = (row) => ({
+  ...row,
+  images: normalizeImageArray(row.images),
+  images_missing: Array.isArray(row.images)
+    ? row.images.some((img) => isLegacyDiskUpload(img))
+    : false,
+});
 
 const parseArray = (value, fieldName) => {
   if (value === undefined || value === null) {
@@ -27,7 +39,7 @@ const getAllProjects = asyncHandler(async (req, res) => {
 
   res.json({
     success: true,
-    projects: result.rows,
+    projects: result.rows.map(mapProject),
   });
 });
 
@@ -42,7 +54,7 @@ const getProjectById = asyncHandler(async (req, res) => {
 
   res.json({
     success: true,
-    project: result.rows[0],
+    project: mapProject(result.rows[0]),
   });
 });
 
@@ -55,7 +67,7 @@ const getMyProjects = asyncHandler(async (req, res) => {
 
   res.json({
     success: true,
-    projects: result.rows,
+    projects: result.rows.map(mapProject),
   });
 });
 
@@ -100,7 +112,7 @@ const createProject = asyncHandler(async (req, res) => {
   res.status(201).json({
     success: true,
     message: "Project created successfully",
-    project: result.rows[0],
+    project: mapProject(result.rows[0]),
   });
 });
 
@@ -171,7 +183,7 @@ const updateProject = asyncHandler(async (req, res) => {
   res.json({
     success: true,
     message: "Project updated successfully",
-    project: result.rows[0],
+    project: mapProject(result.rows[0]),
   });
 });
 

@@ -1,7 +1,7 @@
 import { useState } from "react";
 import { Link, useLocation, useNavigate } from "react-router-dom";
 import { useAuth } from "../context/AuthContext";
-import { getFullImageUrl } from "../utils/imageUrl";
+import PortfolioImage from "./PortfolioImage";
 
 const DashboardNav = () => {
   const { user, logout } = useAuth();
@@ -28,11 +28,15 @@ const DashboardNav = () => {
         {/* User Info / Logo */}
         <div className="flex items-center gap-3">
           {user?.profile_image ? (
-            <img
-              src={getFullImageUrl(user.profile_image)}
+            <PortfolioImage
+              src={user.profile_image}
               alt={user.name}
-              referrerPolicy="no-referrer"
               className="w-10 h-10 rounded-full object-cover ring-2 ring-blue-500/50 shadow-md shadow-blue-500/20"
+              fallback={
+                <div className="w-10 h-10 rounded-full bg-gradient-to-tr from-blue-600 to-indigo-600 flex items-center justify-center font-bold text-white shadow-md text-sm">
+                  {user?.name?.charAt(0)?.toUpperCase() || "A"}
+                </div>
+              }
             />
           ) : (
             <div className="w-10 h-10 rounded-full bg-gradient-to-tr from-blue-600 to-indigo-600 flex items-center justify-center font-bold text-white shadow-md text-sm">

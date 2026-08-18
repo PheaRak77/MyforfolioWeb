@@ -91,9 +91,14 @@ if (process.env.NODE_ENV !== "production") {
   app.use(morgan("dev"));
 }
 
-// Static uploads directory with caching headers
+// Static uploads directory with caching headers and cross-origin access for Vercel proxy
 app.use(
   "/uploads",
+  (req, res, next) => {
+    res.setHeader("Access-Control-Allow-Origin", "*");
+    res.setHeader("Cross-Origin-Resource-Policy", "cross-origin");
+    next();
+  },
   express.static(path.join(__dirname, "uploads"), {
     maxAge: "7d",
     etag: true,

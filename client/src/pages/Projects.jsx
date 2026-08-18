@@ -4,7 +4,9 @@ import DashboardNav from "../components/DashboardNav";
 import ConfirmModal from "../components/ConfirmModal";
 import Toast from "../components/Toast";
 import { compressImageFile } from "../utils/imageCompressor";
-import { getFullImageUrl } from "../utils/imageUrl";
+import { isLegacyDiskUrl } from "../utils/imageUrl";
+import PortfolioImage from "../components/PortfolioImage";
+import { clearPublicDataCache } from "../utils/publicDataCache";
 
 const emptyForm = {
   title: "",
@@ -158,6 +160,7 @@ const Projects = () => {
       }
 
       resetForm();
+      clearPublicDataCache();
       fetchProjects();
     } catch (err) {
       setToast({
@@ -194,6 +197,7 @@ const Projects = () => {
         message: `Project "${deleteTarget.title}" deleted successfully`,
       });
       setDeleteTarget(null);
+      clearPublicDataCache();
       fetchProjects();
     } catch (err) {
       setToast({
@@ -244,6 +248,14 @@ const Projects = () => {
             {projects.length} Total Projects
           </span>
         </div>
+
+        {(form.images && isLegacyDiskUrl(form.images)) ||
+        projects.some((p) => p.images_missing || (p.images || []).some(isLegacyDiskUrl)) ? (
+          <div className="p-4 rounded-2xl bg-amber-500/10 border border-amber-500/30 text-amber-300 text-sm">
+            <strong>Action required:</strong> Some project images were stored on Render&apos;s temporary disk and were lost after a server restart.
+            Edit each project and re-upload images — new uploads are saved permanently in the database.
+          </div>
+        ) : null}
 
         <div className="grid lg:grid-cols-12 gap-8">
           {/* Create / Edit Form */}
@@ -447,13 +459,15 @@ const Projects = () => {
                   >
                     {project.images && project.images.length > 0 && (
                       <div className="w-full md:w-44 h-32 rounded-xl bg-slate-950 border border-slate-800 overflow-hidden flex-shrink-0">
-                        <img
-                          src={getFullImageUrl(project.images[0])}
+                        <PortfolioImage
+                          src={project.images[0]}
                           alt={project.title}
                           className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-300"
-                          onError={(e) => {
-                            e.target.style.display = "none";
-                          }}
+                          fallback={
+                            <div className="w-full h-full flex items-center justify-center text-xs text-amber-400 p-2 text-center">
+                              Re-upload image
+                            </div>
+                          }
                         />
                       </div>
                     )}

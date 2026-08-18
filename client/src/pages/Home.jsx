@@ -1,9 +1,11 @@
-import { useEffect, useRef, useState } from "react";
+import { useEffect, useState } from "react";
 import { Link } from "react-router-dom";
+import publicApi from "../api/publicApi";
 import api from "../api/axios";
 import { useAuth } from "../context/AuthContext";
 import useScrollReveal from "../hooks/useScrollReveal";
-import { getFullImageUrl } from "../utils/imageUrl";
+import PortfolioImage from "../components/PortfolioImage";
+import { fetchPublicPortfolioData } from "../utils/publicDataCache";
 
 const Home = () => {
   const { user: authUser, isAuthenticated, logout } = useAuth();
@@ -42,6 +44,7 @@ const Home = () => {
   const [copiedField, setCopiedField] = useState("");
   const [profileImgError, setProfileImgError] = useState(false);
   const [headerImgError, setHeaderImgError] = useState(false);
+  const [contactApiError, setContactApiError] = useState("");
 
   const handleCopy = (text, fieldName) => {
     navigator.clipboard.writeText(text);
@@ -115,33 +118,37 @@ const Home = () => {
         setLoading(true);
         setError("");
 
-        const [profileRes, projectsRes, certsRes, skillsRes] =
-          await Promise.allSettled([
-            api.get("/users/public-profile"),
-            api.get("/projects"),
-            api.get("/certificates"),
-            api.get("/skills"),
-          ]);
+        const responses = await fetchPublicPortfolioData(publicApi, {
+          profile: "/users/public-profile",
+          projects: "/projects",
+          certificates: "/certificates",
+          skills: "/skills",
+        });
 
-        if (profileRes.status === "fulfilled" && profileRes.value.data?.user) {
+        const profileRes = responses.profile;
+        const projectsRes = responses.projects;
+        const certsRes = responses.certificates;
+        const skillsRes = responses.skills;
+
+        if (profileRes?.status === "fulfilled" && profileRes.value.data?.user) {
           setProfile(profileRes.value.data.user);
         }
 
         if (
-          projectsRes.status === "fulfilled" &&
+          projectsRes?.status === "fulfilled" &&
           projectsRes.value.data?.projects
         ) {
           setProjects(projectsRes.value.data.projects);
         }
 
         if (
-          certsRes.status === "fulfilled" &&
+          certsRes?.status === "fulfilled" &&
           certsRes.value.data?.certificates
         ) {
           setCertificates(certsRes.value.data.certificates);
         }
 
-        if (skillsRes.status === "fulfilled" && skillsRes.value.data?.skills) {
+        if (skillsRes?.status === "fulfilled" && skillsRes.value.data?.skills) {
           setSkills(skillsRes.value.data.skills);
         }
       } catch (err) {
@@ -230,12 +237,18 @@ const Home = () => {
             className="flex items-center gap-3 group transition-transform hover:scale-105 flex-shrink-0"
           >
             {displayUser?.profile_image && !headerImgError ? (
-              <img
-                src={getFullImageUrl(displayUser.profile_image)}
+              <PortfolioImage
+                src={displayUser.profile_image}
                 alt={displayUser.name || "Portfolio"}
-                referrerPolicy="no-referrer"
                 onError={() => setHeaderImgError(true)}
                 className="w-10 h-10 sm:w-11 sm:h-11 rounded-full object-cover ring-2 ring-blue-500/50 shadow-md flex-shrink-0"
+                fallback={
+                  <div className="w-10 h-10 sm:w-11 sm:h-11 rounded-full bg-gradient-to-tr from-blue-600 to-indigo-500 flex items-center justify-center font-bold text-white shadow-md text-lg flex-shrink-0">
+                    {displayUser?.name
+                      ? displayUser.name.charAt(0).toUpperCase()
+                      : "P"}
+                  </div>
+                }
               />
             ) : (
               <div className="w-10 h-10 sm:w-11 sm:h-11 rounded-full bg-gradient-to-tr from-blue-600 to-indigo-500 flex items-center justify-center font-bold text-white shadow-md text-lg flex-shrink-0">
@@ -588,12 +601,26 @@ const Home = () => {
               <div className="absolute -inset-2 bg-gradient-to-r from-blue-600 via-indigo-500 to-purple-600 rounded-3xl blur-xl opacity-75 group-hover:opacity-100 transition duration-500" />
               <div className="relative w-64 h-64 sm:w-72 sm:h-72 lg:w-80 lg:h-80 rounded-3xl overflow-hidden bg-slate-800 border border-slate-700 flex items-center justify-center shadow-2xl">
                 {displayUser?.profile_image && !profileImgError ? (
-                  <img
-                    src={getFullImageUrl(displayUser.profile_image)}
+                  <PortfolioImage
+                    src={displayUser.profile_image}
                     alt={displayUser.name || "Profile"}
-                    referrerPolicy="no-referrer"
                     onError={() => setProfileImgError(true)}
                     className="w-full h-full object-cover transition-transform duration-500 group-hover:scale-105"
+                    fallback={
+                      <div className="text-center p-6">
+                        <div className="w-28 h-28 mx-auto mb-4 rounded-full bg-gradient-to-tr from-blue-600 to-indigo-600 flex items-center justify-center text-5xl font-bold text-white shadow-inner">
+                          {displayUser?.name
+                            ? displayUser.name.charAt(0).toUpperCase()
+                            : "P"}
+                        </div>
+                        <p className="font-semibold text-lg text-white">
+                          {displayUser?.name || "Portfolio Owner"}
+                        </p>
+                        <p className="text-sm text-slate-400 capitalize">
+                          {displayUser?.role || "Developer"}
+                        </p>
+                      </div>
+                    }
                   />
                 ) : (
                   <div className="text-center p-6">
@@ -806,14 +833,15 @@ const Home = () => {
                       <div className="flex items-center gap-3">
                         {skill.icon ? (
                           <div className="w-11 h-11 rounded-xl bg-slate-900/90 border border-slate-700/70 p-2 flex items-center justify-center shadow-md flex-shrink-0 group-hover:scale-110 group-hover:border-blue-500/50 transition-all duration-300">
-                            <img
-                              src={getFullImageUrl(skill.icon)}
+                            <PortfolioImage
+                              src={skill.icon}
                               alt={skill.name}
-                              referrerPolicy="no-referrer"
                               className="w-full h-full object-contain"
-                              onError={(e) => {
-                                e.target.style.display = "none";
-                              }}
+                              fallback={
+                                <span className="text-blue-400 font-bold text-sm">
+                                  {skill.name?.charAt(0)}
+                                </span>
+                              }
                             />
                           </div>
                         ) : (
@@ -980,14 +1008,30 @@ const Home = () => {
                       className="relative w-full h-48 bg-slate-950 overflow-hidden cursor-pointer"
                     >
                       {mainImage ? (
-                        <img
-                          src={getFullImageUrl(mainImage)}
+                        <PortfolioImage
+                          src={mainImage}
                           alt={project.title}
-                          referrerPolicy="no-referrer"
                           className="w-full h-full object-cover transition-transform duration-500 group-hover:scale-105"
-                          onError={(e) => {
-                            e.target.style.display = "none";
-                          }}
+                          fallback={
+                            <div className="w-full h-full flex flex-col items-center justify-center bg-gradient-to-br from-slate-800 to-slate-900 text-slate-500 p-4">
+                              <svg
+                                className="w-10 h-10 mb-2 opacity-50 text-blue-400"
+                                fill="none"
+                                stroke="currentColor"
+                                viewBox="0 0 24 24"
+                              >
+                                <path
+                                  strokeLinecap="round"
+                                  strokeLinejoin="round"
+                                  strokeWidth={1.5}
+                                  d="M4 16l4.586-4.586a2 2 0 012.828 0L16 16m-2-2l1.586-1.586a2 2 0 012.828 0L20 14m-6-6h.01M6 20h12a2 2 0 002-2V6a2 2 0 00-2-2H6a2 2 0 00-2 2v12a2 2 0 002 2z"
+                                />
+                              </svg>
+                              <span className="text-xs uppercase tracking-wider font-semibold">
+                                {project.title}
+                              </span>
+                            </div>
+                          }
                         />
                       ) : (
                         <div className="w-full h-full flex flex-col items-center justify-center bg-gradient-to-br from-slate-800 to-slate-900 text-slate-500 p-4">
@@ -1170,14 +1214,30 @@ const Home = () => {
                     className="relative w-full h-44 bg-slate-950 overflow-hidden cursor-pointer"
                   >
                     {cert.image ? (
-                      <img
-                        src={getFullImageUrl(cert.image)}
+                      <PortfolioImage
+                        src={cert.image}
                         alt={cert.course}
-                        referrerPolicy="no-referrer"
                         className="w-full h-full object-cover transition-transform duration-500 group-hover:scale-105"
-                        onError={(e) => {
-                          e.target.style.display = "none";
-                        }}
+                        fallback={
+                          <div className="w-full h-full flex flex-col items-center justify-center bg-gradient-to-br from-slate-800 to-indigo-950 text-indigo-400 p-4 text-center">
+                            <svg
+                              className="w-12 h-12 mb-2 opacity-60"
+                              fill="none"
+                              stroke="currentColor"
+                              viewBox="0 0 24 24"
+                            >
+                              <path
+                                strokeLinecap="round"
+                                strokeLinejoin="round"
+                                strokeWidth={1.5}
+                                d="M9 12l2 2 4-4M7.835 4.697a3.42 3.42 0 001.946-.806 3.42 3.42 0 014.438 0 3.42 3.42 0 001.946.806 3.42 3.42 0 013.138 3.138 3.42 3.42 0 00.806 1.946 3.42 3.42 0 010 4.438 3.42 3.42 0 00-.806 1.946 3.42 3.42 0 01-3.138 3.138 3.42 3.42 0 00-1.946.806 3.42 3.42 0 01-4.438 0 3.42 3.42 0 00-1.946-.806 3.42 3.42 0 01-3.138-3.138 3.42 3.42 0 00-.806-1.946 3.42 3.42 0 010-4.438 3.42 3.42 0 00.806-1.946 3.42 3.42 0 013.138-3.138z"
+                              />
+                            </svg>
+                            <span className="text-xs uppercase tracking-wider font-semibold text-slate-300">
+                              Certificate
+                            </span>
+                          </div>
+                        }
                       />
                     ) : (
                       <div className="w-full h-full flex flex-col items-center justify-center bg-gradient-to-br from-slate-800 to-indigo-950 text-indigo-400 p-4 text-center">
@@ -1547,10 +1607,9 @@ const Home = () => {
             {selectedProject &&
               getProjectValidImages(selectedProject).length > 0 && (
                 <div className="space-y-3">
-                  <img
-                    src={getFullImageUrl(getProjectValidImages(selectedProject)[0])}
+                  <PortfolioImage
+                    src={getProjectValidImages(selectedProject)[0]}
                     alt={selectedProject.title}
-                    referrerPolicy="no-referrer"
                     className="w-full max-h-72 object-cover rounded-xl border border-slate-800"
                   />
                   {getProjectValidImages(selectedProject).length > 1 && (
@@ -1558,11 +1617,10 @@ const Home = () => {
                       {getProjectValidImages(selectedProject)
                         .slice(1)
                         .map((imgUrl, i) => (
-                          <img
+                          <PortfolioImage
                             key={i}
-                            src={getFullImageUrl(imgUrl)}
+                            src={imgUrl}
                             alt=""
-                            referrerPolicy="no-referrer"
                             className="w-full h-20 object-cover rounded-lg border border-slate-800"
                           />
                         ))}
@@ -1668,10 +1726,9 @@ const Home = () => {
 
             {selectedCertificate.image && (
               <div className="rounded-xl overflow-hidden border border-slate-800 bg-black">
-                <img
-                  src={getFullImageUrl(selectedCertificate.image)}
+                <PortfolioImage
+                  src={selectedCertificate.image}
                   alt={selectedCertificate.course}
-                  referrerPolicy="no-referrer"
                   className="w-full max-h-96 object-contain"
                 />
               </div>

@@ -5,8 +5,15 @@ import api from "../api/axios";
 const AuthContext = createContext(null);
 
 export const AuthProvider = ({ children }) => {
-  const [user, setUser] = useState(null);
-  const [token, setToken] = useState(localStorage.getItem("token"));
+  const [user, setUser] = useState(() => {
+    try {
+      const storedUser = localStorage.getItem("user");
+      return storedUser ? JSON.parse(storedUser) : null;
+    } catch {
+      return null;
+    }
+  });
+  const [token, setToken] = useState(() => localStorage.getItem("token"));
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
@@ -40,12 +47,23 @@ export const AuthProvider = ({ children }) => {
             setUser(JSON.parse(storedUser));
           }
 
-          const { data } = await api.get("/auth/me");
-
-          setUser(data.user);
-          localStorage.setItem("user", JSON.stringify(data.user));
+          // Refresh profile in background — do not block public portfolio rendering
+          api
+            .get("/auth/me")
+            .then(({ data }) => {
+              setUser(data.user);
+              localStorage.setItem("user", JSON.stringify(data.user));
+            })
+            .catch((error) => {
+              if (error.response?.status === 401) {
+                localStorage.removeItem("token");
+                localStorage.removeItem("user");
+                setUser(null);
+                setToken(null);
+              }
+            });
         }
-      } catch (error) {
+      } catch {
         localStorage.removeItem("token");
         localStorage.removeItem("user");
         setUser(null);

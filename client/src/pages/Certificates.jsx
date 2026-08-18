@@ -4,7 +4,9 @@ import DashboardNav from "../components/DashboardNav";
 import ConfirmModal from "../components/ConfirmModal";
 import Toast from "../components/Toast";
 import { compressImageFile } from "../utils/imageCompressor";
-import { getFullImageUrl } from "../utils/imageUrl";
+import { isLegacyDiskUrl } from "../utils/imageUrl";
+import PortfolioImage from "../components/PortfolioImage";
+import { clearPublicDataCache } from "../utils/publicDataCache";
 
 const emptyForm = {
   course: "",
@@ -125,6 +127,7 @@ const Certificates = () => {
       }
 
       resetForm();
+      clearPublicDataCache();
       fetchCertificates();
     } catch (err) {
       setToast({
@@ -160,6 +163,7 @@ const Certificates = () => {
         message: `Certificate "${deleteTarget.course}" deleted successfully`,
       });
       setDeleteTarget(null);
+      clearPublicDataCache();
       fetchCertificates();
     } catch (err) {
       setToast({
@@ -210,6 +214,14 @@ const Certificates = () => {
             {certificates.length} Total Certificates
           </span>
         </div>
+
+        {/* Legacy image warning */}
+        {(form.image && isLegacyDiskUrl(form.image)) || certificates.some((c) => c.image_missing || isLegacyDiskUrl(c.image)) ? (
+          <div className="p-4 rounded-2xl bg-amber-500/10 border border-amber-500/30 text-amber-300 text-sm">
+            <strong>Action required:</strong> Some certificate images were stored on Render&apos;s temporary disk and were lost after a server restart.
+            Please re-upload each certificate image — new uploads are saved permanently in the database.
+          </div>
+        ) : null}
 
         <div className="grid lg:grid-cols-12 gap-8">
           {/* Create / Edit Form */}
@@ -302,13 +314,14 @@ const Certificates = () => {
                   </label>
                   {form.image && (
                     <div className="p-2 bg-slate-950 rounded-xl border border-slate-800 flex items-center gap-3">
-                      <img
-                        src={getFullImageUrl(form.image)}
+                      <PortfolioImage
+                        src={form.image}
                         alt="Preview"
                         className="w-12 h-12 object-cover rounded-lg"
+                        fallback={<span className="text-xs text-slate-500">No preview</span>}
                       />
                       <span className="text-xs text-slate-400 truncate flex-1 font-mono">
-                        {form.image}
+                        {form.image.startsWith("data:") ? "Stored in database (permanent)" : form.image}
                       </span>
                     </div>
                   )}
@@ -361,13 +374,15 @@ const Certificates = () => {
                   >
                     {cert.image && (
                       <div className="w-full md:w-44 h-32 rounded-xl bg-slate-950 border border-slate-800 overflow-hidden flex-shrink-0">
-                        <img
-                          src={getFullImageUrl(cert.image)}
+                        <PortfolioImage
+                          src={cert.image}
                           alt={cert.course}
                           className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-300"
-                          onError={(e) => {
-                            e.target.style.display = "none";
-                          }}
+                          fallback={
+                            <div className="w-full h-full flex items-center justify-center text-xs text-amber-400 p-2 text-center">
+                              Re-upload image
+                            </div>
+                          }
                         />
                       </div>
                     )}

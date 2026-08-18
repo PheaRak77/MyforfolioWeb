@@ -2,6 +2,19 @@ const pool = require("../config/db");
 const ApiError = require("../utils/ApiError");
 const asyncHandler = require("../utils/asyncHandler");
 const sanitizeUser = require("../utils/sanitizeUser");
+const {
+  normalizeImageField,
+  isLegacyDiskUpload,
+} = require("../utils/normalizeImage");
+
+const mapPublicUser = (user) => {
+  const sanitized = sanitizeUser(user);
+  return {
+    ...sanitized,
+    profile_image: normalizeImageField(sanitized.profile_image),
+    profile_image_missing: isLegacyDiskUpload(user.profile_image),
+  };
+};
 
 const getPublicProfile = asyncHandler(async (req, res) => {
   const result = await pool.query(
@@ -25,14 +38,18 @@ const getPublicProfile = asyncHandler(async (req, res) => {
 
   res.json({
     success: true,
-    user: sanitizeUser(result.rows[0]),
+    user: mapPublicUser(result.rows[0]),
   });
 });
 
 const getProfile = asyncHandler(async (req, res) => {
   res.json({
     success: true,
-    user: req.user,
+    user: {
+      ...req.user,
+      profile_image: normalizeImageField(req.user.profile_image),
+      profile_image_missing: isLegacyDiskUpload(req.user.profile_image),
+    },
   });
 });
 
@@ -57,10 +74,12 @@ const updateProfile = asyncHandler(async (req, res) => {
     throw new ApiError(404, "User not found");
   }
 
+  req.app?.locals?.clearPublicCache?.();
+
   res.json({
     success: true,
     message: "Profile updated successfully",
-    user: sanitizeUser(result.rows[0]),
+    user: mapPublicUser(result.rows[0]),
   });
 });
 

@@ -1,6 +1,16 @@
 const pool = require("../config/db");
 const ApiError = require("../utils/ApiError");
 const asyncHandler = require("../utils/asyncHandler");
+const {
+  normalizeImageField,
+  isLegacyDiskUpload,
+} = require("../utils/normalizeImage");
+
+const mapCertificate = (row) => ({
+  ...row,
+  image: normalizeImageField(row.image),
+  image_missing: isLegacyDiskUpload(row.image),
+});
 
 const getAllCertificates = asyncHandler(async (req, res) => {
   const result = await pool.query(
@@ -15,7 +25,7 @@ const getAllCertificates = asyncHandler(async (req, res) => {
 
   res.json({
     success: true,
-    certificates: result.rows,
+    certificates: result.rows.map(mapCertificate),
   });
 });
 
@@ -30,7 +40,7 @@ const getCertificateById = asyncHandler(async (req, res) => {
 
   res.json({
     success: true,
-    certificate: result.rows[0],
+    certificate: mapCertificate(result.rows[0]),
   });
 });
 
@@ -43,7 +53,7 @@ const getMyCertificates = asyncHandler(async (req, res) => {
 
   res.json({
     success: true,
-    certificates: result.rows,
+    certificates: result.rows.map(mapCertificate),
   });
 });
 
@@ -77,10 +87,11 @@ const createCertificate = asyncHandler(async (req, res) => {
     ],
   );
 
+  req.app?.locals?.clearPublicCache?.();
   res.status(201).json({
     success: true,
     message: "Certificate created successfully",
-    certificate: result.rows[0],
+    certificate: mapCertificate(result.rows[0]),
   });
 });
 
@@ -121,10 +132,11 @@ const updateCertificate = asyncHandler(async (req, res) => {
     [course, instructor, image, description, issued_on, req.params.id],
   );
 
+  req.app?.locals?.clearPublicCache?.();
   res.json({
     success: true,
     message: "Certificate updated successfully",
-    certificate: result.rows[0],
+    certificate: mapCertificate(result.rows[0]),
   });
 });
 
@@ -146,6 +158,7 @@ const deleteCertificate = asyncHandler(async (req, res) => {
 
   await pool.query("DELETE FROM certificates WHERE id = $1", [req.params.id]);
 
+  req.app?.locals?.clearPublicCache?.();
   res.json({
     success: true,
     message: "Certificate deleted successfully",

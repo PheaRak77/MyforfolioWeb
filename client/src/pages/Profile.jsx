@@ -3,7 +3,9 @@ import api from "../api/axios";
 import DashboardNav from "../components/DashboardNav";
 import { useAuth } from "../context/AuthContext";
 import { compressImageFile } from "../utils/imageCompressor";
-import { getFullImageUrl } from "../utils/imageUrl";
+import { isLegacyDiskUrl } from "../utils/imageUrl";
+import PortfolioImage from "../components/PortfolioImage";
+import { clearPublicDataCache } from "../utils/publicDataCache";
 
 const Profile = () => {
   const { user, updateUser } = useAuth();
@@ -76,6 +78,7 @@ const Profile = () => {
       });
 
       updateUser(data.user);
+      clearPublicDataCache();
       setMessage("Profile updated successfully");
     } catch (err) {
       setError(err.response?.data?.message || "Failed to update profile");
@@ -117,6 +120,13 @@ const Profile = () => {
           </div>
         )}
 
+        {form.profile_image && isLegacyDiskUrl(form.profile_image) && (
+          <div className="p-4 rounded-2xl bg-amber-500/10 border border-amber-500/30 text-amber-300 text-sm">
+            <strong>Action required:</strong> Your profile photo was stored on Render&apos;s temporary disk and may no longer load in Safari or Brave.
+            Upload a new photo below and click Save — it will be stored permanently in the database.
+          </div>
+        )}
+
         {/* Profile Card */}
         <div className="bg-slate-900/80 backdrop-blur-xl border border-slate-800 rounded-3xl p-6 sm:p-10 shadow-2xl space-y-8">
           <form onSubmit={handleSubmit} className="space-y-6">
@@ -128,11 +138,15 @@ const Profile = () => {
               <div className="flex flex-col sm:flex-row items-center gap-6 p-5 rounded-2xl bg-slate-950/60 border border-slate-800">
                 <div className="relative">
                   {form.profile_image ? (
-                    <img
-                      src={getFullImageUrl(form.profile_image)}
+                    <PortfolioImage
+                      src={form.profile_image}
                       alt="Profile preview"
-                      referrerPolicy="no-referrer"
                       className="w-24 h-24 rounded-full object-cover ring-4 ring-blue-500/30 shadow-xl"
+                      fallback={
+                        <div className="w-24 h-24 rounded-full bg-gradient-to-tr from-blue-600 to-indigo-600 flex items-center justify-center text-3xl font-extrabold text-white shadow-xl">
+                          {form.name?.charAt(0)?.toUpperCase() || "A"}
+                        </div>
+                      }
                     />
                   ) : (
                     <div className="w-24 h-24 rounded-full bg-gradient-to-tr from-blue-600 to-indigo-600 flex items-center justify-center text-3xl font-extrabold text-white shadow-xl">
