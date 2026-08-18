@@ -1,0 +1,37 @@
+-- Add missing columns to skills table
+ALTER TABLE skills ADD COLUMN IF NOT EXISTS level VARCHAR(50) DEFAULT 'Advanced';
+ALTER TABLE skills ADD COLUMN IF NOT EXISTS color VARCHAR(50) DEFAULT '#3B82F6';
+ALTER TABLE skills ADD COLUMN IF NOT EXISTS display_order INTEGER DEFAULT 0;
+ALTER TABLE skills ADD COLUMN IF NOT EXISTS created_at TIMESTAMP WITH TIME ZONE DEFAULT CURRENT_TIMESTAMP;
+ALTER TABLE skills ADD COLUMN IF NOT EXISTS updated_at TIMESTAMP WITH TIME ZONE DEFAULT CURRENT_TIMESTAMP;
+
+-- Add missing columns to users table
+ALTER TABLE users ADD COLUMN IF NOT EXISTS profile_image TEXT;
+ALTER TABLE users ADD COLUMN IF NOT EXISTS phone VARCHAR(50);
+ALTER TABLE users ADD COLUMN IF NOT EXISTS dob DATE;
+ALTER TABLE users ADD COLUMN IF NOT EXISTS bio TEXT;
+ALTER TABLE users ADD COLUMN IF NOT EXISTS provider VARCHAR(50) DEFAULT 'local';
+ALTER TABLE users ADD COLUMN IF NOT EXISTS google_id VARCHAR(255);
+
+-- Add missing columns to projects table
+ALTER TABLE projects ADD COLUMN IF NOT EXISTS is_featured BOOLEAN DEFAULT false;
+ALTER TABLE projects ADD COLUMN IF NOT EXISTS created_at TIMESTAMP WITH TIME ZONE DEFAULT CURRENT_TIMESTAMP;
+ALTER TABLE projects ADD COLUMN IF NOT EXISTS updated_at TIMESTAMP WITH TIME ZONE DEFAULT CURRENT_TIMESTAMP;
+
+-- Add missing columns to certificates table
+ALTER TABLE certificates ADD COLUMN IF NOT EXISTS description TEXT;
+ALTER TABLE certificates ADD COLUMN IF NOT EXISTS image TEXT;
+ALTER TABLE certificates ADD COLUMN IF NOT EXISTS created_at TIMESTAMP WITH TIME ZONE DEFAULT CURRENT_TIMESTAMP;
+ALTER TABLE certificates ADD COLUMN IF NOT EXISTS updated_at TIMESTAMP WITH TIME ZONE DEFAULT CURRENT_TIMESTAMP;
+
+-- Add password_resets missing columns
+ALTER TABLE password_resets ADD COLUMN IF NOT EXISTS used_at TIMESTAMP WITH TIME ZONE;
+
+-- Performance indexes
+CREATE INDEX IF NOT EXISTS idx_users_email ON users(email);
+CREATE INDEX IF NOT EXISTS idx_users_role ON users(role);
+CREATE INDEX IF NOT EXISTS idx_projects_user_id ON projects(user_id);
+CREATE INDEX IF NOT EXISTS idx_certificates_user_id ON certificates(user_id);
+CREATE INDEX IF NOT EXISTS idx_skills_user_id ON skills(user_id);
+CREATE INDEX IF NOT EXISTS idx_skills_category ON skills(category);
+CREATE INDEX IF NOT EXISTS idx_skills_display_order ON skills(display_order);

@@ -59,11 +59,14 @@ router.post("/", async (req, res, next) => {
       [name.trim(), email.trim().toLowerCase(), subject.trim(), message.trim()]
     );
 
-    // 2. Fetch admin recipient email
-    const { rows } = await pool.query(
-      "SELECT email FROM users WHERE role = 'admin' LIMIT 1"
-    );
-    const recipientEmail = rows[0]?.email || process.env.SMTP_EMAIL;
+    // 2. Determine recipient email (Always deliver to the configured portfolio SMTP_EMAIL)
+    let recipientEmail = process.env.SMTP_EMAIL?.trim();
+    if (!recipientEmail) {
+      const { rows } = await pool.query(
+        "SELECT email FROM users WHERE role = 'admin' LIMIT 1"
+      );
+      recipientEmail = rows[0]?.email;
+    }
 
     // 3. Send email asynchronously if SMTP credentials are provided
     if (process.env.SMTP_EMAIL && process.env.SMTP_PASSWORD && recipientEmail) {
