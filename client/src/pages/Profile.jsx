@@ -3,6 +3,7 @@ import api from "../api/axios";
 import DashboardNav from "../components/DashboardNav";
 import { useAuth } from "../context/AuthContext";
 import { compressImageFile } from "../utils/imageCompressor";
+import { getFullImageUrl } from "../utils/imageUrl";
 
 const Profile = () => {
   const { user, updateUser } = useAuth();
@@ -128,7 +129,7 @@ const Profile = () => {
                 <div className="relative">
                   {form.profile_image ? (
                     <img
-                      src={form.profile_image}
+                      src={getFullImageUrl(form.profile_image)}
                       alt="Profile preview"
                       className="w-24 h-24 rounded-full object-cover ring-4 ring-blue-500/30 shadow-xl"
                     />

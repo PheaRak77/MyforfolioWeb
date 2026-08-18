@@ -3,6 +3,7 @@ import { Link } from "react-router-dom";
 import api from "../api/axios";
 import { useAuth } from "../context/AuthContext";
 import useScrollReveal from "../hooks/useScrollReveal";
+import { getFullImageUrl } from "../utils/imageUrl";
 
 const Home = () => {
   const { user: authUser, isAuthenticated, logout } = useAuth();
@@ -230,7 +231,7 @@ const Home = () => {
           >
             {displayUser?.profile_image && !headerImgError ? (
               <img
-                src={displayUser.profile_image}
+                src={getFullImageUrl(displayUser.profile_image)}
                 alt={displayUser.name || "Portfolio"}
                 onError={() => setHeaderImgError(true)}
                 className="w-10 h-10 sm:w-11 sm:h-11 rounded-full object-cover ring-2 ring-blue-500/50 shadow-md flex-shrink-0"
@@ -587,7 +588,7 @@ const Home = () => {
               <div className="relative w-64 h-64 sm:w-72 sm:h-72 lg:w-80 lg:h-80 rounded-3xl overflow-hidden bg-slate-800 border border-slate-700 flex items-center justify-center shadow-2xl">
                 {displayUser?.profile_image && !profileImgError ? (
                   <img
-                    src={displayUser.profile_image}
+                    src={getFullImageUrl(displayUser.profile_image)}
                     alt={displayUser.name || "Profile"}
                     onError={() => setProfileImgError(true)}
                     className="w-full h-full object-cover transition-transform duration-500 group-hover:scale-105"
@@ -804,7 +805,7 @@ const Home = () => {
                         {skill.icon ? (
                           <div className="w-11 h-11 rounded-xl bg-slate-900/90 border border-slate-700/70 p-2 flex items-center justify-center shadow-md flex-shrink-0 group-hover:scale-110 group-hover:border-blue-500/50 transition-all duration-300">
                             <img
-                              src={skill.icon}
+                              src={getFullImageUrl(skill.icon)}
                               alt={skill.name}
                               className="w-full h-full object-contain"
                               onError={(e) => {
@@ -977,7 +978,7 @@ const Home = () => {
                     >
                       {mainImage ? (
                         <img
-                          src={mainImage}
+                          src={getFullImageUrl(mainImage)}
                           alt={project.title}
                           className="w-full h-full object-cover transition-transform duration-500 group-hover:scale-105"
                           onError={(e) => {
@@ -1166,9 +1167,12 @@ const Home = () => {
                   >
                     {cert.image ? (
                       <img
-                        src={cert.image}
+                        src={getFullImageUrl(cert.image)}
                         alt={cert.course}
                         className="w-full h-full object-cover transition-transform duration-500 group-hover:scale-105"
+                        onError={(e) => {
+                          e.target.style.display = "none";
+                        }}
                       />
                     ) : (
                       <div className="w-full h-full flex flex-col items-center justify-center bg-gradient-to-br from-slate-800 to-indigo-950 text-indigo-400 p-4 text-center">
@@ -1539,7 +1543,7 @@ const Home = () => {
               getProjectValidImages(selectedProject).length > 0 && (
                 <div className="space-y-3">
                   <img
-                    src={getProjectValidImages(selectedProject)[0]}
+                    src={getFullImageUrl(getProjectValidImages(selectedProject)[0])}
                     alt={selectedProject.title}
                     className="w-full max-h-72 object-cover rounded-xl border border-slate-800"
                   />
@@ -1550,7 +1554,7 @@ const Home = () => {
                         .map((imgUrl, i) => (
                           <img
                             key={i}
-                            src={imgUrl}
+                            src={getFullImageUrl(imgUrl)}
                             alt=""
                             className="w-full h-20 object-cover rounded-lg border border-slate-800"
                           />
@@ -1658,7 +1662,7 @@ const Home = () => {
             {selectedCertificate.image && (
               <div className="rounded-xl overflow-hidden border border-slate-800 bg-black">
                 <img
-                  src={selectedCertificate.image}
+                  src={getFullImageUrl(selectedCertificate.image)}
                   alt={selectedCertificate.course}
                   className="w-full max-h-96 object-contain"
                 />

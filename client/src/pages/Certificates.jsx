@@ -4,6 +4,7 @@ import DashboardNav from "../components/DashboardNav";
 import ConfirmModal from "../components/ConfirmModal";
 import Toast from "../components/Toast";
 import { compressImageFile } from "../utils/imageCompressor";
+import { getFullImageUrl } from "../utils/imageUrl";
 
 const emptyForm = {
   course: "",
@@ -302,7 +303,7 @@ const Certificates = () => {
                   {form.image && (
                     <div className="p-2 bg-slate-950 rounded-xl border border-slate-800 flex items-center gap-3">
                       <img
-                        src={form.image}
+                        src={getFullImageUrl(form.image)}
                         alt="Preview"
                         className="w-12 h-12 object-cover rounded-lg"
                       />
@@ -361,9 +362,12 @@ const Certificates = () => {
                     {cert.image && (
                       <div className="w-full md:w-44 h-32 rounded-xl bg-slate-950 border border-slate-800 overflow-hidden flex-shrink-0">
                         <img
-                          src={cert.image}
+                          src={getFullImageUrl(cert.image)}
                           alt={cert.course}
                           className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-300"
+                          onError={(e) => {
+                            e.target.style.display = "none";
+                          }}
                         />
                       </div>
                     )}

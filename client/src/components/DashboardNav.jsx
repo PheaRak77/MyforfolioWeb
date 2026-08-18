@@ -1,6 +1,7 @@
 import { useState } from "react";
 import { Link, useLocation, useNavigate } from "react-router-dom";
 import { useAuth } from "../context/AuthContext";
+import { getFullImageUrl } from "../utils/imageUrl";
 
 const DashboardNav = () => {
   const { user, logout } = useAuth();
@@ -28,7 +29,7 @@ const DashboardNav = () => {
         <div className="flex items-center gap-3">
           {user?.profile_image ? (
             <img
-              src={user.profile_image}
+              src={getFullImageUrl(user.profile_image)}
               alt={user.name}
               className="w-10 h-10 rounded-full object-cover ring-2 ring-blue-500/50 shadow-md shadow-blue-500/20"
             />

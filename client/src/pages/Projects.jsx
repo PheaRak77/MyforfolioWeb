@@ -4,6 +4,7 @@ import DashboardNav from "../components/DashboardNav";
 import ConfirmModal from "../components/ConfirmModal";
 import Toast from "../components/Toast";
 import { compressImageFile } from "../utils/imageCompressor";
+import { getFullImageUrl } from "../utils/imageUrl";
 
 const emptyForm = {
   title: "",
@@ -447,7 +448,7 @@ const Projects = () => {
                     {project.images && project.images.length > 0 && (
                       <div className="w-full md:w-44 h-32 rounded-xl bg-slate-950 border border-slate-800 overflow-hidden flex-shrink-0">
                         <img
-                          src={project.images[0]}
+                          src={getFullImageUrl(project.images[0])}
                           alt={project.title}
                           className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-300"
                           onError={(e) => {
