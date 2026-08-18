@@ -5,7 +5,12 @@ import api from "../api/axios";
 import { useAuth } from "../context/AuthContext";
 import useScrollReveal from "../hooks/useScrollReveal";
 import PortfolioImage from "../components/PortfolioImage";
+import ProjectCardImage from "../components/ProjectCardImage";
 import { fetchPublicPortfolioData, hydrateFromCache } from "../utils/publicDataCache";
+import {
+  keepPermanentImages,
+  normalizeProjectImages,
+} from "../utils/projectImages";
 
 const Home = () => {
   const { user: authUser, isAuthenticated, logout } = useAuth();
@@ -212,8 +217,8 @@ const Home = () => {
   };
 
   const getProjectValidImages = (project) => {
-    if (!project?.images || !Array.isArray(project.images)) return [];
-    return project.images.filter(
+    if (!project?.images) return [];
+    return normalizeProjectImages(project.images).filter(
       (url) =>
         typeof url === "string" &&
         url.trim() &&
@@ -224,7 +229,8 @@ const Home = () => {
 
   const getProjectMainImage = (project) => {
     const validImages = getProjectValidImages(project);
-    return validImages.length > 0 ? validImages[0] : null;
+    const permanent = keepPermanentImages(validImages);
+    return permanent[0] || validImages[0] || null;
   };
 
   return (
@@ -989,55 +995,24 @@ const Home = () => {
               {filteredProjects.map((project, index) => {
                 const mainImage = getProjectMainImage(project);
                 const validImages = getProjectValidImages(project);
-                const staggerDelay = Math.min(index * 100, 500);
 
                 return (
                   <div
                     key={project.id}
                     className="group rounded-2xl bg-slate-800/70 border border-slate-800 hover:border-slate-700/80 shadow-lg hover:shadow-xl hover:shadow-blue-500/5 transition-all duration-300 flex flex-col overflow-hidden"
-                    style={{
-                      opacity: revealProjects.isVisible ? 1 : 0,
-                      transform: revealProjects.isVisible ? "none" : "translateY(40px)",
-                      transitionProperty: "opacity, transform",
-                      transitionTimingFunction: "cubic-bezier(0.22, 1, 0.36, 1)",
-                      transitionDuration: "650ms",
-                      transitionDelay: `${staggerDelay}ms`,
-                    }}
                   >
-                    {/* Project Image Preview */}
+                    {/* Project Image Preview — no opacity animation (fixes lazy-load black box) */}
                     <div
                       onClick={() => setSelectedProject(project)}
-                      className="relative w-full h-48 bg-slate-950 overflow-hidden cursor-pointer"
+                      className="relative w-full h-48 min-h-[12rem] bg-slate-950 overflow-hidden cursor-pointer"
                     >
                       {mainImage ? (
-                        <PortfolioImage
+                        <ProjectCardImage
                           src={mainImage}
                           alt={project.title}
-                          variant="project"
-                          className="w-full h-full object-cover transition-transform duration-500 group-hover:scale-105"
-                          fallback={
-                            <div className="w-full h-full flex flex-col items-center justify-center bg-gradient-to-br from-slate-800 to-slate-900 text-slate-500 p-4">
-                              <svg
-                                className="w-10 h-10 mb-2 opacity-50 text-blue-400"
-                                fill="none"
-                                stroke="currentColor"
-                                viewBox="0 0 24 24"
-                              >
-                                <path
-                                  strokeLinecap="round"
-                                  strokeLinejoin="round"
-                                  strokeWidth={1.5}
-                                  d="M4 16l4.586-4.586a2 2 0 012.828 0L16 16m-2-2l1.586-1.586a2 2 0 012.828 0L20 14m-6-6h.01M6 20h12a2 2 0 002-2V6a2 2 0 00-2-2H6a2 2 0 00-2 2v12a2 2 0 002 2z"
-                                />
-                              </svg>
-                              <span className="text-xs uppercase tracking-wider font-semibold">
-                                {project.title}
-                              </span>
-                            </div>
-                          }
                         />
                       ) : (
-                        <div className="w-full h-full flex flex-col items-center justify-center bg-gradient-to-br from-slate-800 to-slate-900 text-slate-500 p-4">
+                        <div className="absolute inset-0 flex flex-col items-center justify-center bg-gradient-to-br from-slate-800 to-slate-900 text-slate-500 p-4">
                           <svg
                             className="w-10 h-10 mb-2 opacity-50 text-blue-400"
                             fill="none"
@@ -1058,20 +1033,30 @@ const Home = () => {
                       )}
 
                       {project.is_featured && (
-                        <span className="absolute top-3 right-3 px-2.5 py-1 rounded-full bg-blue-600/90 backdrop-blur-md text-white text-[11px] font-bold shadow-md">
+                        <span className="absolute top-3 right-3 z-10 px-2.5 py-1 rounded-full bg-blue-600/90 backdrop-blur-md text-white text-[11px] font-bold shadow-md">
                           ★ Featured
                         </span>
                       )}
 
                       {validImages.length > 1 && (
-                        <span className="absolute bottom-3 right-3 px-2 py-0.5 rounded-md bg-black/70 backdrop-blur-md text-slate-300 text-[10px] font-medium">
+                        <span className="absolute bottom-3 right-3 z-10 px-2 py-0.5 rounded-md bg-black/70 backdrop-blur-md text-slate-300 text-[10px] font-medium">
                           +{validImages.length - 1} photos
                         </span>
                       )}
                     </div>
 
-                    {/* Project Content */}
-                    <div className="p-6 flex-1 flex flex-col justify-between space-y-4">
+                    {/* Project Content — scroll reveal animation */}
+                    <div
+                      className="p-6 flex-1 flex flex-col justify-between space-y-4"
+                      style={{
+                        opacity: revealProjects.isVisible ? 1 : 0,
+                        transform: revealProjects.isVisible ? "none" : "translateY(24px)",
+                        transitionProperty: "opacity, transform",
+                        transitionTimingFunction: "cubic-bezier(0.22, 1, 0.36, 1)",
+                        transitionDuration: "650ms",
+                        transitionDelay: `${Math.min(index * 100, 500)}ms`,
+                      }}
+                    >
                       <div>
                         <h3
                           onClick={() => setSelectedProject(project)}

@@ -29,7 +29,7 @@ export default function PortfolioImage({
     return fallback;
   }
 
-  // Legacy Render disk files are gone — never fetch them (avoids black broken img box)
+  // Legacy disk URLs on production — show placeholder image (fills card reliably)
   if (isBrokenImageUrl(src)) {
     if (fallback) return fallback;
     return (
