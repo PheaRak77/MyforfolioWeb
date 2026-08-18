@@ -6,15 +6,12 @@ const SIZE_MAP = {
   md: "w-5 h-5 min-w-[20px]",
   lg: "w-6 h-6 min-w-[24px]",
   xl: "w-7 h-7 sm:w-8 sm:h-8 min-w-[28px]",
-  "2xl": "w-9 h-9 sm:w-10 sm:h-10 min-w-[36px]",
+  "2xl": "w-10 h-10 min-w-[40px]",
 };
 
 /**
- * Authentic Telegram & Facebook Blue Verified Badge
- * - 8-pointed smooth scalloped star rosette
- * - Pure electric blue gradient (#38bdf8 -> #0088cc -> #0072db)
- * - Crisp centered pure white checkmark (✓)
- * - Soft ambient glow and smooth hover scale
+ * Official Facebook / Meta / Instagram Blue Verified Badge
+ * Exactly matches the 12-lobed scalloped rosette with rounded checkmark.
  */
 export default function VerifiedBadge({
   size = "md",
@@ -25,43 +22,40 @@ export default function VerifiedBadge({
 
   return (
     <span
-      className={`inline-flex flex-shrink-0 items-center justify-center align-middle relative group/badge select-none ${
+      className={`inline-flex flex-shrink-0 items-center justify-center align-middle relative select-none ${
         SIZE_MAP[size] || SIZE_MAP.md
       } ${className}`}
       title={title}
       aria-label={title}
       role="img"
     >
-      {/* Soft ambient blue glow */}
-      <span
-        aria-hidden="true"
-        className="absolute -inset-0.5 rounded-full bg-blue-500/30 blur-xs pointer-events-none transition-opacity duration-300 group-hover/badge:opacity-100 opacity-60"
-      />
-
       <svg
         viewBox="0 0 24 24"
+        fill="none"
         xmlns="http://www.w3.org/2000/svg"
-        className="w-full h-full relative z-10 drop-shadow-[0_1px_2px_rgba(0,100,200,0.4)] transition-transform duration-200 group-hover/badge:scale-110"
+        className="w-full h-full relative z-10 transition-transform duration-200 hover:scale-110 drop-shadow-[0_1px_2px_rgba(24,119,242,0.4)]"
         aria-hidden="true"
       >
         <defs>
           <linearGradient id={gradientId} x1="0%" y1="0%" x2="100%" y2="100%">
-            <stop offset="0%" stopColor="#38BDF8" />
-            <stop offset="40%" stopColor="#0088CC" />
-            <stop offset="100%" stopColor="#0284C7" />
+            <stop offset="0%" stopColor="#4599FF" />
+            <stop offset="100%" stopColor="#1877F2" />
           </linearGradient>
         </defs>
 
-        {/* Telegram / Twitter / Facebook Scalloped Rosette */}
+        {/* 12-Petal Scalloped Meta / Facebook / Instagram Rosette */}
         <path
+          d="M12.001 2.002c-1.047 0-1.875.76-2.583 1.41-.535.492-1.025.942-1.63 1.106-.998.272-1.78.96-2.186 1.93-.245.586-.425 1.196-.867 1.638-.727.727-1.233 1.572-1.233 2.614 0 1.042.506 1.887 1.233 2.614.442.442.622 1.052.867 1.638.406.97 1.188 1.658 2.186 1.93.605.164 1.095.614 1.63 1.106.708.65 1.536 1.41 2.583 1.41s1.875-.76 2.583-1.41c.535-.492 1.025-.942 1.63-1.106.998-.272 1.78-.96 2.186-1.93.245-.586.425-1.196.867-1.638.727-.727 1.233-1.572 1.233-2.614 0-1.042-.506-1.887-1.233-2.614-.442-.442-.622-1.052-.867-1.638-.406-.97-1.188-1.658-2.186-1.93-.605-.164-1.095-.614-1.63-1.106-.708-.65-1.536-1.41-2.583-1.41z"
           fill={`url(#${gradientId})`}
-          d="M22.25 12c0-1.43-.88-2.67-2.19-3.34.46-1.39.2-2.9-.81-3.91s-2.52-1.27-3.91-.81c-.67-1.31-1.91-2.19-3.34-2.19s-2.67.88-3.33 2.19c-1.4-.46-2.91-.2-3.92.81s-1.26 2.52-.8 3.91c-1.31.67-2.2 1.91-2.2 3.34s.89 2.67 2.2 3.34c-.46 1.39-.21 2.9.8 3.91s2.52 1.26 3.91.81c.67 1.31 1.91 2.19 3.34 2.19s2.67-.88 3.34-2.19c1.39.45 2.9.2 3.91-.81s1.27-2.52.81-3.91c1.31-.67 2.19-1.91 2.19-3.34z"
         />
 
-        {/* Pure White Centered Checkmark */}
+        {/* Thick Rounded White Checkmark */}
         <path
-          fill="#FFFFFF"
-          d="M10.54 16.2L6.8 12.46l1.41-1.42 2.33 2.33 5.23-5.23 1.42 1.42-6.65 6.64z"
+          d="M7.2 12.5L10.4 15.7L16.8 9.3"
+          stroke="#FFFFFF"
+          strokeWidth="2.8"
+          strokeLinecap="round"
+          strokeLinejoin="round"
         />
       </svg>
     </span>
