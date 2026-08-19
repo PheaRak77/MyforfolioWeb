@@ -676,30 +676,13 @@ const Home = () => {
               <div className="absolute -inset-2 bg-gradient-to-r from-blue-600 via-indigo-500 to-purple-600 rounded-3xl blur-xl opacity-75 group-hover:opacity-100 transition duration-500" />
               <div className="relative w-64 h-64 sm:w-72 sm:h-72 lg:w-80 lg:h-80 rounded-3xl overflow-hidden bg-slate-800 border border-slate-700 flex items-center justify-center shadow-2xl">
                 {displayUser?.profile_image && !profileImgError ? (
-                  <>
-                    <PortfolioImage
+                  <PortfolioImage
                       src={displayUser.profile_image}
                       alt={displayUser.name || "Profile"}
                       variant="profile"
                       onError={() => setProfileImgError(true)}
                       className="w-full h-full object-cover transition-transform duration-500 group-hover:scale-105"
                     />
-                    {/* Profile photo overlay — name + verified badge */}
-                    <div className="absolute inset-x-0 bottom-0 z-10 bg-gradient-to-t from-slate-950 via-slate-950/90 to-transparent px-4 pb-4 pt-12">
-                      <VerifiedName
-                        name={displayUser?.name || "Yorn Pheareak"}
-                        badgeSize="md"
-                        nameClassName="font-semibold text-base sm:text-lg text-white"
-                      />
-                      <p className="text-xs text-slate-400 capitalize mt-0.5">
-                        {displayUser?.role || "Admin"}
-                      </p>
-                    </div>
-                    {/* Corner verified badge on photo */}
-                    <span className="absolute top-3 right-3 z-10 ring-2 ring-slate-900/80 rounded-full bg-slate-900/40 p-0.5 backdrop-blur-sm">
-                      <VerifiedBadge size="lg" />
-                    </span>
-                  </>
                 ) : (
                   <div className="text-center p-6">
                     <div className="w-28 h-28 mx-auto mb-4 rounded-full bg-gradient-to-tr from-blue-600 to-indigo-600 flex items-center justify-center text-5xl font-bold text-white shadow-inner">
