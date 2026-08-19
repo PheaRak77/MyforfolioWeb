@@ -3,7 +3,7 @@ import api from "../api/axios";
 import DashboardNav from "../components/DashboardNav";
 import ConfirmModal from "../components/ConfirmModal";
 import Toast from "../components/Toast";
-import { compressImageFile } from "../utils/imageCompressor";
+import { uploadMediaImage } from "../utils/imageUploader";
 import { isLegacyDiskUrl } from "../utils/imageUrl";
 import {
   hasLegacyProjectImages,
@@ -108,19 +108,27 @@ const Projects = () => {
 
     try {
       setUploading(true);
-      const compressedDataUrl = await compressImageFile(file, 1000, 800, 0.85);
+      const result = await uploadMediaImage(file, "/uploads/project-image", {
+        maxWidth: 1200,
+        maxHeight: 900,
+        quality: 0.85,
+      });
 
       setForm((prev) => {
         const kept = keepPermanentImages(prev.images);
         return {
           ...prev,
-          images: [...kept, compressedDataUrl],
+          images: [...kept, result.url],
         };
       });
 
+      const msg =
+        result.provider === "cloudinary"
+          ? "Project image uploaded to Cloudinary CDN!"
+          : "Image saved — click Update Project to publish!";
       setToast({
         type: "success",
-        message: "Image saved to database — click Update Project to publish!",
+        message: msg,
       });
     } catch (err) {
       setToast({

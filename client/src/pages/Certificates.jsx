@@ -3,7 +3,7 @@ import api from "../api/axios";
 import DashboardNav from "../components/DashboardNav";
 import ConfirmModal from "../components/ConfirmModal";
 import Toast from "../components/Toast";
-import { compressImageFile } from "../utils/imageCompressor";
+import { uploadMediaImage } from "../utils/imageUploader";
 import { isLegacyDiskUrl } from "../utils/imageUrl";
 import PortfolioImage from "../components/PortfolioImage";
 import { clearPublicDataCache } from "../utils/publicDataCache";
@@ -78,14 +78,22 @@ const Certificates = () => {
 
     try {
       setUploading(true);
-      const compressedDataUrl = await compressImageFile(file, 1000, 800, 0.85);
+      const result = await uploadMediaImage(file, "/uploads/certificate-image", {
+        maxWidth: 1200,
+        maxHeight: 900,
+        quality: 0.85,
+      });
 
       setForm((prev) => ({
         ...prev,
-        image: compressedDataUrl,
+        image: result.url,
       }));
 
-      setToast({ type: "success", message: "Certificate image processed & added!" });
+      const msg =
+        result.provider === "cloudinary"
+          ? "Certificate uploaded to Cloudinary CDN!"
+          : "Certificate image processed & added!";
+      setToast({ type: "success", message: msg });
     } catch (err) {
       setToast({
         type: "error",

@@ -2,7 +2,7 @@ import { useEffect, useState } from "react";
 import api from "../api/axios";
 import DashboardNav from "../components/DashboardNav";
 import { useAuth } from "../context/AuthContext";
-import { compressImageFile } from "../utils/imageCompressor";
+import { uploadMediaImage } from "../utils/imageUploader";
 import { isLegacyDiskUrl } from "../utils/imageUrl";
 import PortfolioImage from "../components/PortfolioImage";
 import { clearPublicDataCache } from "../utils/publicDataCache";
@@ -48,15 +48,22 @@ const Profile = () => {
     try {
       setUploading(true);
       setError("");
-      // Compress to lightweight square avatar data URL (max 500x500, quality 0.85)
-      const compressedDataUrl = await compressImageFile(file, 500, 500, 0.85);
+      const result = await uploadMediaImage(file, "/uploads/profile-image", {
+        maxWidth: 600,
+        maxHeight: 600,
+        quality: 0.85,
+      });
 
       setForm((prev) => ({
         ...prev,
-        profile_image: compressedDataUrl,
+        profile_image: result.url,
       }));
 
-      setMessage("Avatar image updated! Click 'Save Profile' to apply changes.");
+      const successMsg =
+        result.provider === "cloudinary"
+          ? "Avatar uploaded to Cloudinary CDN! Click 'Save Profile' to apply."
+          : "Avatar image processed! Click 'Save Profile' to apply.";
+      setMessage(successMsg);
     } catch (err) {
       setError(err.message || "Image processing failed");
     } finally {
