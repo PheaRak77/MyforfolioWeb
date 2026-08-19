@@ -14,16 +14,16 @@ const getSubfolderFromUrl = (originalUrl = "") => {
 };
 
 const uploadImage = asyncHandler(async (req, res) => {
-  if (!req.file) {
+  if (!req.file || !req.file.buffer) {
     throw new ApiError(400, "Image file is required");
   }
 
   const subfolder = getSubfolderFromUrl(req.originalUrl);
 
-  // 1. Try uploading to Cloudinary (permanent CDN URL)
+  // 1. Try uploading Buffer to Cloudinary (permanent CDN URL)
   if (isCloudinaryConfigured()) {
     try {
-      const cloudinaryUrl = await uploadToCloudinary(req.file.path, {
+      const cloudinaryUrl = await uploadToCloudinary(req.file.buffer, {
         folder: subfolder,
       });
 
@@ -40,8 +40,9 @@ const uploadImage = asyncHandler(async (req, res) => {
     }
   }
 
-  // 2. Fallback: Convert to Base64 data URL stored directly in database
-  const dataUrl = await fileToDataUrl(req.file.path);
+  // 2. Fallback: Convert in-memory buffer to Base64 data URL directly
+  const mime = req.file.mimetype || "image/jpeg";
+  const dataUrl = `data:${mime};base64,${req.file.buffer.toString("base64")}`;
 
   res.status(201).json({
     success: true,
