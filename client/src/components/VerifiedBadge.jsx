@@ -2,7 +2,7 @@ import { useId } from "react";
 
 const SIZE_MAP = {
   xs: "w-[16px] h-[16px] min-w-[16px]",
-  sm: "w-[20px] h-[20px] min-w-[20px]",
+  sm: "w-[18px] h-[18px] min-w-[18px]",
   md: "w-[22px] h-[22px] min-w-[22px]",
   lg: "w-[26px] h-[26px] min-w-[26px]",
   xl: "w-[32px] h-[32px] min-w-[32px]",
@@ -10,7 +10,7 @@ const SIZE_MAP = {
 };
 
 /**
- * Facebook / Instagram / Telegram style blue verified badge.
+ * Twitter / Telegram / Meta style blue scalloped verified badge with checkmark.
  */
 export default function VerifiedBadge({
   size = "md",
@@ -32,26 +32,25 @@ export default function VerifiedBadge({
         viewBox="0 0 24 24"
         fill="none"
         xmlns="http://www.w3.org/2000/svg"
-        className="w-full h-full drop-shadow-[0_1px_3px_rgba(24,119,242,0.55)]"
+        className="w-full h-full drop-shadow-[0_1px_3px_rgba(29,155,240,0.6)]"
         aria-hidden="true"
       >
         <defs>
-          <radialGradient id={gradientId} cx="35%" cy="30%" r="75%">
-            <stop offset="0%" stopColor="#5BBAFF" />
-            <stop offset="55%" stopColor="#2196F3" />
-            <stop offset="100%" stopColor="#1877F2" />
-          </radialGradient>
+          <linearGradient id={gradientId} x1="0%" y1="0%" x2="100%" y2="100%">
+            <stop offset="0%" stopColor="#38bdf8" />
+            <stop offset="45%" stopColor="#1d9bf0" />
+            <stop offset="100%" stopColor="#0284c7" />
+          </linearGradient>
         </defs>
+        {/* Scalloped badge flower outline */}
         <path
-          d="M12.001 2.002c-1.047 0-1.875.76-2.583 1.41-.535.492-1.025.942-1.63 1.106-.998.272-1.78.96-2.186 1.93-.245.586-.425 1.196-.867 1.638-.727.727-1.233 1.572-1.233 2.614 0 1.042.506 1.887 1.233 2.614.442.442.622 1.052.867 1.638.406.97 1.188 1.658 2.186 1.93.605.164 1.095.614 1.63 1.106.708.65 1.536 1.41 2.583 1.41s1.875-.76 2.583-1.41c.535-.492 1.025-.942 1.63-1.106.998-.272 1.78-.96 2.186-1.93.245-.586.425-1.196.867-1.638.727-.727 1.233-1.572 1.233-2.614 0-1.042-.506-1.887-1.233-2.614-.442-.442-.622-1.052-.867-1.638-.406-.97-1.188-1.658-2.186-1.93-.605-.164-1.095-.614-1.63-1.106-.708-.65-1.536-1.41-2.583-1.41z"
+          d="M22.25 12c0-1.43-.88-2.67-2.19-3.34.46-1.39.2-2.9-.81-3.91s-2.52-1.27-3.91-.81c-.67-1.31-1.91-2.19-3.34-2.19s-2.67.88-3.33 2.19c-1.4-.46-2.91-.2-3.92.81s-1.26 2.52-.8 3.91c-1.31.67-2.2 1.91-2.2 3.34s.89 2.67 2.2 3.34c-.46 1.39-.21 2.9.8 3.91s2.52 1.26 3.91.81c.67 1.31 1.91 2.19 3.34 2.19s2.67-.88 3.34-2.19c1.39.45 2.9.2 3.91-.81s1.27-2.52.81-3.91c1.31-.67 2.19-1.91 2.19-3.34z"
           fill={`url(#${gradientId})`}
         />
+        {/* Crisp white checkmark */}
         <path
-          d="M7.2 12.5L10.4 15.7L16.8 9.3"
-          stroke="#FFFFFF"
-          strokeWidth="2.8"
-          strokeLinecap="round"
-          strokeLinejoin="round"
+          d="M10.54 16.2L6.8 12.46l1.41-1.42 2.33 2.33 5.3-5.77 1.47 1.36-6.77 7.24z"
+          fill="#FFFFFF"
         />
       </svg>
     </span>
@@ -60,10 +59,11 @@ export default function VerifiedBadge({
 
 export const isVerifiedUser = (user) => Boolean(user?.name || user?.role);
 
-/** Inline name with blue verified badge — use next to profile names */
+/** Inline name with blue verified badge */
 export function VerifiedName({
   name,
   badgeSize = "md",
+  badgePosition = "after", // "after" or "before"
   className = "",
   nameClassName = "",
 }) {
@@ -71,8 +71,14 @@ export function VerifiedName({
 
   return (
     <span className={`inline-flex items-center gap-1.5 min-w-0 ${className}`}>
+      {badgePosition === "before" && (
+        <VerifiedBadge size={badgeSize} className="flex-shrink-0" />
+      )}
       <span className={`truncate ${nameClassName}`}>{name}</span>
-      <VerifiedBadge size={badgeSize} className="flex-shrink-0" />
+      {badgePosition === "after" && (
+        <VerifiedBadge size={badgeSize} className="flex-shrink-0" />
+      )}
     </span>
   );
 }
+

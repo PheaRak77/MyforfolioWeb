@@ -7,7 +7,10 @@ import useScrollReveal from "../hooks/useScrollReveal";
 import PortfolioImage from "../components/PortfolioImage";
 import ProjectCardImage from "../components/ProjectCardImage";
 import VerifiedBadge, { VerifiedName } from "../components/VerifiedBadge";
-import { fetchPublicPortfolioData, hydrateFromCache } from "../utils/publicDataCache";
+import {
+  fetchPublicPortfolioData,
+  hydrateFromCache,
+} from "../utils/publicDataCache";
 import {
   keepPermanentImages,
   normalizeProjectImages,
@@ -16,19 +19,27 @@ import {
 const Home = () => {
   const { user: authUser, isAuthenticated, logout } = useAuth();
 
-  const [profile, setProfile] = useState(() => hydrateFromCache().profile?.user ?? null);
-  const [projects, setProjects] = useState(() => hydrateFromCache().projects?.projects ?? []);
-  const [certificates, setCertificates] = useState(() => hydrateFromCache().certificates?.certificates ?? []);
-  const [skills, setSkills] = useState(() => hydrateFromCache().skills?.skills ?? []);
+  const [profile, setProfile] = useState(
+    () => hydrateFromCache().profile?.user ?? null,
+  );
+  const [projects, setProjects] = useState(
+    () => hydrateFromCache().projects?.projects ?? [],
+  );
+  const [certificates, setCertificates] = useState(
+    () => hydrateFromCache().certificates?.certificates ?? [],
+  );
+  const [skills, setSkills] = useState(
+    () => hydrateFromCache().skills?.skills ?? [],
+  );
   const [loading, setLoading] = useState(() => !hydrateFromCache().profile);
   const [error, setError] = useState("");
 
   // Scroll Reveal Hooks for each section
-  const revealAbout       = useScrollReveal({ threshold: 0.1 });
-  const revealSkills      = useScrollReveal({ threshold: 0.08 });
-  const revealProjects    = useScrollReveal({ threshold: 0.06 });
-  const revealCerts       = useScrollReveal({ threshold: 0.06 });
-  const revealContact     = useScrollReveal({ threshold: 0.08 });
+  const revealAbout = useScrollReveal({ threshold: 0.1 });
+  const revealSkills = useScrollReveal({ threshold: 0.08 });
+  const revealProjects = useScrollReveal({ threshold: 0.06 });
+  const revealCerts = useScrollReveal({ threshold: 0.06 });
+  const revealContact = useScrollReveal({ threshold: 0.08 });
 
   // Filter and Modal States
   const [selectedTech, setSelectedTech] = useState("all");
@@ -106,12 +117,15 @@ const Home = () => {
         setContactForm({ name: "", email: "", subject: "", message: "" });
         setContactErrors({});
       } else {
-        setContactApiError(data.message || "Failed to send message. Please try again.");
+        setContactApiError(
+          data.message || "Failed to send message. Please try again.",
+        );
       }
     } catch (err) {
       const serverMessage = err.response?.data?.message;
       setContactApiError(
-        serverMessage || "Something went wrong. Please try again or contact directly via email."
+        serverMessage ||
+          "Something went wrong. Please try again or contact directly via email.",
       );
     } finally {
       setSendingMessage(false);
@@ -381,14 +395,36 @@ const Home = () => {
               className="lg:hidden p-2.5 rounded-xl bg-slate-800/80 border border-slate-700 text-slate-300 hover:text-white hover:bg-slate-700 focus:outline-none transition-all flex items-center gap-2"
               aria-label="Toggle Navigation Menu"
             >
-              <span className="text-xs font-semibold hidden sm:inline text-slate-400">Menu</span>
+              <span className="text-xs font-semibold hidden sm:inline text-slate-400">
+                Menu
+              </span>
               {mobileMenuOpen ? (
-                <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
+                <svg
+                  className="w-5 h-5"
+                  fill="none"
+                  stroke="currentColor"
+                  viewBox="0 0 24 24"
+                >
+                  <path
+                    strokeLinecap="round"
+                    strokeLinejoin="round"
+                    strokeWidth={2}
+                    d="M6 18L18 6M6 6l12 12"
+                  />
                 </svg>
               ) : (
-                <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M4 6h16M4 12h16M4 18h16" />
+                <svg
+                  className="w-5 h-5"
+                  fill="none"
+                  stroke="currentColor"
+                  viewBox="0 0 24 24"
+                >
+                  <path
+                    strokeLinecap="round"
+                    strokeLinejoin="round"
+                    strokeWidth={2}
+                    d="M4 6h16M4 12h16M4 18h16"
+                  />
                 </svg>
               )}
             </button>
@@ -413,7 +449,9 @@ const Home = () => {
                 className="px-4 py-3 rounded-xl text-slate-300 hover:text-white hover:bg-slate-800 transition-colors flex items-center justify-between"
               >
                 <span>Skills & Technologies</span>
-                <span className="text-xs px-2.5 py-0.5 rounded-md bg-blue-500/10 text-blue-400 font-semibold">{skills.length}</span>
+                <span className="text-xs px-2.5 py-0.5 rounded-md bg-blue-500/10 text-blue-400 font-semibold">
+                  {skills.length}
+                </span>
               </a>
               <a
                 href="#projects"
@@ -421,7 +459,9 @@ const Home = () => {
                 className="px-4 py-3 rounded-xl text-slate-300 hover:text-white hover:bg-slate-800 transition-colors flex items-center justify-between"
               >
                 <span>Featured Projects</span>
-                <span className="text-xs px-2.5 py-0.5 rounded-md bg-blue-500/10 text-blue-400 font-semibold">{projects.length}</span>
+                <span className="text-xs px-2.5 py-0.5 rounded-md bg-blue-500/10 text-blue-400 font-semibold">
+                  {projects.length}
+                </span>
               </a>
               <a
                 href="#certificates"
@@ -429,7 +469,9 @@ const Home = () => {
                 className="px-4 py-3 rounded-xl text-slate-300 hover:text-white hover:bg-slate-800 transition-colors flex items-center justify-between"
               >
                 <span>Certifications</span>
-                <span className="text-xs px-2.5 py-0.5 rounded-md bg-purple-500/10 text-purple-400 font-semibold">{certificates.length}</span>
+                <span className="text-xs px-2.5 py-0.5 rounded-md bg-purple-500/10 text-purple-400 font-semibold">
+                  {certificates.length}
+                </span>
               </a>
               <a
                 href="#contact"
@@ -451,8 +493,18 @@ const Home = () => {
                       onClick={() => setMobileMenuOpen(false)}
                       className="w-full py-3 px-4 rounded-xl bg-blue-600 text-white font-semibold text-xs text-center block shadow-lg shadow-blue-500/25 hover:bg-blue-500 transition-all flex items-center justify-center gap-2"
                     >
-                      <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M4 6a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2H6a2 2 0 01-2-2V6zM14 6a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2h-2a2 2 0 01-2-2V6zM4 16a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2H6a2 2 0 01-2-2v-2zM14 16a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2h-2a2 2 0 01-2-2v-2z" />
+                      <svg
+                        className="w-4 h-4"
+                        fill="none"
+                        stroke="currentColor"
+                        viewBox="0 0 24 24"
+                      >
+                        <path
+                          strokeLinecap="round"
+                          strokeLinejoin="round"
+                          strokeWidth={2}
+                          d="M4 6a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2H6a2 2 0 01-2-2V6zM14 6a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2h-2a2 2 0 01-2-2V6zM4 16a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2H6a2 2 0 01-2-2v-2zM14 16a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2h-2a2 2 0 01-2-2v-2z"
+                        />
                       </svg>
                       <span>Admin Dashboard</span>
                     </Link>
@@ -507,7 +559,10 @@ const Home = () => {
 
             <h1 className="text-4xl sm:text-5xl lg:text-6xl xl:text-7xl font-black tracking-tight text-white leading-[1.15] animate-hero-1">
               <span className="inline-flex items-center gap-2.5">
-                Hi, I'm <span className="animate-hand-wave text-3xl sm:text-4xl lg:text-5xl">👋</span>
+                Hi, I'm{" "}
+                <span className="animate-hand-wave text-3xl sm:text-4xl lg:text-5xl">
+                  👋
+                </span>
               </span>{" "}
               <br className="hidden sm:inline" />
               <span className="relative inline-flex items-center gap-2.5 mt-1 sm:mt-2">
@@ -546,7 +601,9 @@ const Home = () => {
                       d="M3 8l7.89 5.26a2 2 0 002.22 0L21 8M5 19h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z"
                     />
                   </svg>
-                  <span className="text-xs sm:text-sm truncate">{displayUser.email}</span>
+                  <span className="text-xs sm:text-sm truncate">
+                    {displayUser.email}
+                  </span>
                 </div>
               )}
 
@@ -565,7 +622,9 @@ const Home = () => {
                       d="M3 5a2 2 0 012-2h3.28a1 1 0 01.948.684l1.498 4.493a1 1 0 01-.502 1.21l-2.257 1.13a11.042 11.042 0 005.516 5.516l1.13-2.257a1 1 0 011.21-.502l4.493 1.498a1 1 0 01.684.949V19a2 2 0 01-2 2h-1C9.716 21 3 14.284 3 6V5z"
                     />
                   </svg>
-                  <span className="text-xs sm:text-sm">{displayUser.phone}</span>
+                  <span className="text-xs sm:text-sm">
+                    {displayUser.phone}
+                  </span>
                 </div>
               )}
 
@@ -584,7 +643,9 @@ const Home = () => {
                       d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z"
                     />
                   </svg>
-                  <span className="text-xs sm:text-sm">Born {formatDisplayDate(displayUser.dob)}</span>
+                  <span className="text-xs sm:text-sm">
+                    Born {formatDisplayDate(displayUser.dob)}
+                  </span>
                 </div>
               )}
             </div>
@@ -683,7 +744,18 @@ const Home = () => {
           </div>
 
           <div className="grid md:grid-cols-3 gap-6">
-            <div className="p-6 rounded-2xl bg-slate-800/60 border border-slate-800 hover:border-slate-700 transition-colors reveal reveal-scale reveal-delay-1" style={{opacity: revealAbout.isVisible ? 1 : 0, transform: revealAbout.isVisible ? 'none' : 'scale(0.88)', filter: revealAbout.isVisible ? 'none' : 'blur(4px)', transitionProperty: 'opacity, transform, filter', transitionTimingFunction: 'cubic-bezier(0.22, 1, 0.36, 1)', transitionDuration: '700ms', transitionDelay: '80ms'}}>
+            <div
+              className="p-6 rounded-2xl bg-slate-800/60 border border-slate-800 hover:border-slate-700 transition-colors reveal reveal-scale reveal-delay-1"
+              style={{
+                opacity: revealAbout.isVisible ? 1 : 0,
+                transform: revealAbout.isVisible ? "none" : "scale(0.88)",
+                filter: revealAbout.isVisible ? "none" : "blur(4px)",
+                transitionProperty: "opacity, transform, filter",
+                transitionTimingFunction: "cubic-bezier(0.22, 1, 0.36, 1)",
+                transitionDuration: "700ms",
+                transitionDelay: "80ms",
+              }}
+            >
               <div className="w-12 h-12 rounded-xl bg-blue-500/10 text-blue-400 flex items-center justify-center mb-4">
                 <svg
                   className="w-6 h-6"
@@ -709,7 +781,19 @@ const Home = () => {
               </p>
             </div>
 
-            <div className="p-6 rounded-2xl bg-slate-800/60 border border-slate-800 hover:border-slate-700 transition-colors" style={{opacity: revealAbout.isVisible ? 1 : 0, transform: revealAbout.isVisible ? 'none' : 'scale(0.88) translateY(24px)', transitionProperty: 'opacity, transform', transitionTimingFunction: 'cubic-bezier(0.22, 1, 0.36, 1)', transitionDuration: '700ms', transitionDelay: '200ms'}}>
+            <div
+              className="p-6 rounded-2xl bg-slate-800/60 border border-slate-800 hover:border-slate-700 transition-colors"
+              style={{
+                opacity: revealAbout.isVisible ? 1 : 0,
+                transform: revealAbout.isVisible
+                  ? "none"
+                  : "scale(0.88) translateY(24px)",
+                transitionProperty: "opacity, transform",
+                transitionTimingFunction: "cubic-bezier(0.22, 1, 0.36, 1)",
+                transitionDuration: "700ms",
+                transitionDelay: "200ms",
+              }}
+            >
               <div className="w-12 h-12 rounded-xl bg-indigo-500/10 text-indigo-400 flex items-center justify-center mb-4">
                 <svg
                   className="w-6 h-6"
@@ -735,7 +819,19 @@ const Home = () => {
               </p>
             </div>
 
-            <div className="p-6 rounded-2xl bg-slate-800/60 border border-slate-800 hover:border-slate-700 transition-colors" style={{opacity: revealAbout.isVisible ? 1 : 0, transform: revealAbout.isVisible ? 'none' : 'scale(0.88) translateY(24px)', transitionProperty: 'opacity, transform', transitionTimingFunction: 'cubic-bezier(0.22, 1, 0.36, 1)', transitionDuration: '700ms', transitionDelay: '320ms'}}>
+            <div
+              className="p-6 rounded-2xl bg-slate-800/60 border border-slate-800 hover:border-slate-700 transition-colors"
+              style={{
+                opacity: revealAbout.isVisible ? 1 : 0,
+                transform: revealAbout.isVisible
+                  ? "none"
+                  : "scale(0.88) translateY(24px)",
+                transitionProperty: "opacity, transform",
+                transitionTimingFunction: "cubic-bezier(0.22, 1, 0.36, 1)",
+                transitionDuration: "700ms",
+                transitionDelay: "320ms",
+              }}
+            >
               <div className="w-12 h-12 rounded-xl bg-purple-500/10 text-purple-400 flex items-center justify-center mb-4">
                 <svg
                   className="w-6 h-6"
@@ -844,7 +940,9 @@ const Home = () => {
                   className="p-5 rounded-2xl bg-slate-800/70 border border-slate-800 hover:border-slate-700 hover:bg-slate-800/90 shadow-lg hover:shadow-xl transition-all duration-300 group flex flex-col justify-between"
                   style={{
                     opacity: revealSkills.isVisible ? 1 : 0,
-                    transform: revealSkills.isVisible ? "none" : "translateY(32px) scale(0.95)",
+                    transform: revealSkills.isVisible
+                      ? "none"
+                      : "translateY(32px) scale(0.95)",
                     transitionProperty: "opacity, transform",
                     transitionTimingFunction: "cubic-bezier(0.22, 1, 0.36, 1)",
                     transitionDuration: "600ms",
@@ -1022,10 +1120,7 @@ const Home = () => {
                       className="relative w-full h-48 min-h-[12rem] bg-slate-950 overflow-hidden cursor-pointer"
                     >
                       {mainImage ? (
-                        <ProjectCardImage
-                          src={mainImage}
-                          alt={project.title}
-                        />
+                        <ProjectCardImage src={mainImage} alt={project.title} />
                       ) : (
                         <div className="absolute inset-0 flex flex-col items-center justify-center bg-gradient-to-br from-slate-800 to-slate-900 text-slate-500 p-4">
                           <svg
@@ -1065,9 +1160,12 @@ const Home = () => {
                       className="p-6 flex-1 flex flex-col justify-between space-y-4"
                       style={{
                         opacity: revealProjects.isVisible ? 1 : 0,
-                        transform: revealProjects.isVisible ? "none" : "translateY(24px)",
+                        transform: revealProjects.isVisible
+                          ? "none"
+                          : "translateY(24px)",
                         transitionProperty: "opacity, transform",
-                        transitionTimingFunction: "cubic-bezier(0.22, 1, 0.36, 1)",
+                        transitionTimingFunction:
+                          "cubic-bezier(0.22, 1, 0.36, 1)",
                         transitionDuration: "650ms",
                         transitionDelay: `${Math.min(index * 100, 500)}ms`,
                       }}
@@ -1204,7 +1302,9 @@ const Home = () => {
                   className="rounded-2xl bg-slate-800/70 border border-slate-800 hover:border-slate-700/80 shadow-lg hover:shadow-xl hover:shadow-indigo-500/5 transition-all duration-300 flex flex-col overflow-hidden group"
                   style={{
                     opacity: revealCerts.isVisible ? 1 : 0,
-                    transform: revealCerts.isVisible ? "none" : "translateY(40px)",
+                    transform: revealCerts.isVisible
+                      ? "none"
+                      : "translateY(40px)",
                     transitionProperty: "opacity, transform",
                     transitionTimingFunction: "cubic-bezier(0.22, 1, 0.36, 1)",
                     transitionDuration: "650ms",
@@ -1361,7 +1461,8 @@ const Home = () => {
                 </h2>
 
                 <p className="text-slate-300 text-sm sm:text-base leading-relaxed">
-                  Have a project inquiry, job opportunity, or question? Send a message directly or connect through email and phone.
+                  Have a project inquiry, job opportunity, or question? Send a
+                  message directly or connect through email and phone.
                 </p>
 
                 {/* Direct Contact Cards */}
@@ -1370,13 +1471,27 @@ const Home = () => {
                     <div className="p-4 rounded-2xl bg-slate-950/60 border border-slate-800 hover:border-slate-700 flex items-center justify-between gap-3 group transition-all">
                       <div className="flex items-center gap-3 min-w-0">
                         <div className="w-10 h-10 rounded-xl bg-blue-500/10 text-blue-400 flex items-center justify-center flex-shrink-0">
-                          <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M3 8l7.89 5.26a2 2 0 002.22 0L21 8M5 19h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z" />
+                          <svg
+                            className="w-5 h-5"
+                            fill="none"
+                            stroke="currentColor"
+                            viewBox="0 0 24 24"
+                          >
+                            <path
+                              strokeLinecap="round"
+                              strokeLinejoin="round"
+                              strokeWidth={2}
+                              d="M3 8l7.89 5.26a2 2 0 002.22 0L21 8M5 19h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z"
+                            />
                           </svg>
                         </div>
                         <div className="min-w-0">
-                          <p className="text-[11px] font-semibold text-slate-400 uppercase tracking-wider">Email Address</p>
-                          <p className="text-sm font-bold text-white truncate">{displayUser.email}</p>
+                          <p className="text-[11px] font-semibold text-slate-400 uppercase tracking-wider">
+                            Email Address
+                          </p>
+                          <p className="text-sm font-bold text-white truncate">
+                            {displayUser.email}
+                          </p>
                         </div>
                       </div>
 
@@ -1394,13 +1509,27 @@ const Home = () => {
                     <div className="p-4 rounded-2xl bg-slate-950/60 border border-slate-800 hover:border-slate-700 flex items-center justify-between gap-3 group transition-all">
                       <div className="flex items-center gap-3 min-w-0">
                         <div className="w-10 h-10 rounded-xl bg-green-500/10 text-green-400 flex items-center justify-center flex-shrink-0">
-                          <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M3 5a2 2 0 012-2h3.28a1 1 0 01.948.684l1.498 4.493a1 1 0 01-.502 1.21l-2.257 1.13a11.042 11.042 0 005.516 5.516l1.13-2.257a1 1 0 011.21-.502l4.493 1.498a1 1 0 01.684.949V19a2 2 0 01-2 2h-1C9.716 21 3 14.284 3 6V5z" />
+                          <svg
+                            className="w-5 h-5"
+                            fill="none"
+                            stroke="currentColor"
+                            viewBox="0 0 24 24"
+                          >
+                            <path
+                              strokeLinecap="round"
+                              strokeLinejoin="round"
+                              strokeWidth={2}
+                              d="M3 5a2 2 0 012-2h3.28a1 1 0 01.948.684l1.498 4.493a1 1 0 01-.502 1.21l-2.257 1.13a11.042 11.042 0 005.516 5.516l1.13-2.257a1 1 0 011.21-.502l4.493 1.498a1 1 0 01.684.949V19a2 2 0 01-2 2h-1C9.716 21 3 14.284 3 6V5z"
+                            />
                           </svg>
                         </div>
                         <div className="min-w-0">
-                          <p className="text-[11px] font-semibold text-slate-400 uppercase tracking-wider">Phone / Telegram</p>
-                          <p className="text-sm font-bold text-white truncate">{displayUser.phone}</p>
+                          <p className="text-[11px] font-semibold text-slate-400 uppercase tracking-wider">
+                            Phone / Telegram
+                          </p>
+                          <p className="text-sm font-bold text-white truncate">
+                            {displayUser.phone}
+                          </p>
                         </div>
                       </div>
 
@@ -1421,17 +1550,33 @@ const Home = () => {
                 {contactSubmitted ? (
                   <div className="text-center py-10 space-y-4 animate-in zoom-in-95 duration-300">
                     <div className="w-16 h-16 mx-auto rounded-2xl bg-emerald-500/10 border border-emerald-500/30 text-emerald-400 flex items-center justify-center shadow-lg shadow-emerald-500/20">
-                      <svg className="w-8 h-8" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 13l4 4L19 7" />
+                      <svg
+                        className="w-8 h-8"
+                        fill="none"
+                        stroke="currentColor"
+                        viewBox="0 0 24 24"
+                      >
+                        <path
+                          strokeLinecap="round"
+                          strokeLinejoin="round"
+                          strokeWidth={2}
+                          d="M5 13l4 4L19 7"
+                        />
                       </svg>
                     </div>
-                    <h3 className="text-2xl font-bold text-white">Message Sent Successfully!</h3>
+                    <h3 className="text-2xl font-bold text-white">
+                      Message Sent Successfully!
+                    </h3>
                     <p className="text-slate-400 text-sm max-w-sm mx-auto leading-relaxed">
-                      Thank you for reaching out. Your message has been recorded and I will respond to your email shortly!
+                      Thank you for reaching out. Your message has been recorded
+                      and I will respond to your email shortly!
                     </p>
                     <button
                       type="button"
-                      onClick={() => { setContactSubmitted(false); setContactApiError(""); }}
+                      onClick={() => {
+                        setContactSubmitted(false);
+                        setContactApiError("");
+                      }}
                       className="px-6 py-2.5 rounded-xl bg-slate-800 hover:bg-slate-700 text-slate-200 text-xs font-semibold transition-all mt-4"
                     >
                       Send Another Message
@@ -1439,7 +1584,9 @@ const Home = () => {
                   </div>
                 ) : (
                   <form onSubmit={handleContactSubmit} className="space-y-4">
-                    <h3 className="text-xl font-bold text-white mb-2">Send a Message</h3>
+                    <h3 className="text-xl font-bold text-white mb-2">
+                      Send a Message
+                    </h3>
 
                     <div className="grid sm:grid-cols-2 gap-4">
                       <div>
@@ -1450,8 +1597,12 @@ const Home = () => {
                           type="text"
                           value={contactForm.name}
                           onChange={(e) => {
-                            setContactForm({ ...contactForm, name: e.target.value });
-                            if (contactErrors.name) setContactErrors({ ...contactErrors, name: "" });
+                            setContactForm({
+                              ...contactForm,
+                              name: e.target.value,
+                            });
+                            if (contactErrors.name)
+                              setContactErrors({ ...contactErrors, name: "" });
                           }}
                           placeholder="John Doe"
                           className={`w-full px-4 py-3 bg-slate-900 border rounded-xl text-white placeholder-slate-500 text-sm focus:outline-none focus:ring-2 transition-all ${
@@ -1461,7 +1612,9 @@ const Home = () => {
                           }`}
                         />
                         {contactErrors.name && (
-                          <p className="text-red-400 text-xs mt-1 font-medium">⚠ {contactErrors.name}</p>
+                          <p className="text-red-400 text-xs mt-1 font-medium">
+                            ⚠ {contactErrors.name}
+                          </p>
                         )}
                       </div>
 
@@ -1473,8 +1626,12 @@ const Home = () => {
                           type="email"
                           value={contactForm.email}
                           onChange={(e) => {
-                            setContactForm({ ...contactForm, email: e.target.value });
-                            if (contactErrors.email) setContactErrors({ ...contactErrors, email: "" });
+                            setContactForm({
+                              ...contactForm,
+                              email: e.target.value,
+                            });
+                            if (contactErrors.email)
+                              setContactErrors({ ...contactErrors, email: "" });
                           }}
                           placeholder="john@example.com"
                           className={`w-full px-4 py-3 bg-slate-900 border rounded-xl text-white placeholder-slate-500 text-sm focus:outline-none focus:ring-2 transition-all ${
@@ -1484,7 +1641,9 @@ const Home = () => {
                           }`}
                         />
                         {contactErrors.email && (
-                          <p className="text-red-400 text-xs mt-1 font-medium">⚠ {contactErrors.email}</p>
+                          <p className="text-red-400 text-xs mt-1 font-medium">
+                            ⚠ {contactErrors.email}
+                          </p>
                         )}
                       </div>
                     </div>
@@ -1497,8 +1656,12 @@ const Home = () => {
                         type="text"
                         value={contactForm.subject}
                         onChange={(e) => {
-                          setContactForm({ ...contactForm, subject: e.target.value });
-                          if (contactErrors.subject) setContactErrors({ ...contactErrors, subject: "" });
+                          setContactForm({
+                            ...contactForm,
+                            subject: e.target.value,
+                          });
+                          if (contactErrors.subject)
+                            setContactErrors({ ...contactErrors, subject: "" });
                         }}
                         placeholder="Project Discussion / Collaboration"
                         className={`w-full px-4 py-3 bg-slate-900 border rounded-xl text-white placeholder-slate-500 text-sm focus:outline-none focus:ring-2 transition-all ${
@@ -1508,7 +1671,9 @@ const Home = () => {
                         }`}
                       />
                       {contactErrors.subject && (
-                        <p className="text-red-400 text-xs mt-1 font-medium">⚠ {contactErrors.subject}</p>
+                        <p className="text-red-400 text-xs mt-1 font-medium">
+                          ⚠ {contactErrors.subject}
+                        </p>
                       )}
                     </div>
 
@@ -1520,8 +1685,12 @@ const Home = () => {
                         rows={4}
                         value={contactForm.message}
                         onChange={(e) => {
-                          setContactForm({ ...contactForm, message: e.target.value });
-                          if (contactErrors.message) setContactErrors({ ...contactErrors, message: "" });
+                          setContactForm({
+                            ...contactForm,
+                            message: e.target.value,
+                          });
+                          if (contactErrors.message)
+                            setContactErrors({ ...contactErrors, message: "" });
                         }}
                         placeholder="Hi, I would like to discuss a project..."
                         className={`w-full px-4 py-3 bg-slate-900 border rounded-xl text-white placeholder-slate-500 text-sm focus:outline-none focus:ring-2 transition-all ${
@@ -1531,7 +1700,9 @@ const Home = () => {
                         }`}
                       />
                       {contactErrors.message && (
-                        <p className="text-red-400 text-xs mt-1 font-medium">⚠ {contactErrors.message}</p>
+                        <p className="text-red-400 text-xs mt-1 font-medium">
+                          ⚠ {contactErrors.message}
+                        </p>
                       )}
                     </div>
 
@@ -1557,7 +1728,6 @@ const Home = () => {
                       )}
                     </button>
                   </form>
-
                 )}
               </div>
             </div>
@@ -1568,9 +1738,14 @@ const Home = () => {
       {/* FOOTER */}
       <footer className="border-t border-slate-800 bg-slate-950/60 py-8 text-center text-slate-500 text-sm">
         <div className="max-w-7xl mx-auto px-4 flex flex-col sm:flex-row items-center justify-between gap-4">
-          <p>
-            &copy; {new Date().getFullYear()} {displayUser?.name || "Portfolio"}
-            . All rights reserved. (Public Read-Only View)
+          <p className="flex items-center justify-center sm:justify-start gap-1.5 flex-wrap">
+            <span>&copy; {new Date().getFullYear()}</span>
+            <VerifiedName
+              name={displayUser?.name || "Yorn Pheareak"}
+              badgeSize="xs"
+              nameClassName="font-semibold text-slate-300"
+            />
+            <span>. All rights reserved.</span>
           </p>
           <div className="flex items-center gap-4 text-xs">
             <a href="#hero" className="hover:text-slate-300">
