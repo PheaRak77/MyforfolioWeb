@@ -280,9 +280,6 @@ const Home = () => {
                     : "P"}
                 </div>
               )}
-              <span className="absolute -bottom-0.5 -right-0.5 z-10 ring-2 ring-slate-900 rounded-full">
-                <VerifiedBadge size="xs" />
-              </span>
             </div>
             <div className="min-w-0 flex flex-col justify-center">
               <div className="flex items-center gap-1.5 min-w-0">
