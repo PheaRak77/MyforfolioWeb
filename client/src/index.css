@@ -369,3 +369,111 @@ body {
   animation: subtle-float 3s ease-in-out infinite;
 }
 
+/* =====================================================
+   UI ENTRANCE (replaces tailwindcss-animate utilities)
+   ===================================================== */
+@keyframes slide-in-from-top {
+  from {
+    opacity: 0;
+    transform: translateY(-8px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+@keyframes zoom-in {
+  from {
+    opacity: 0;
+    transform: scale(0.95);
+  }
+  to {
+    opacity: 1;
+    transform: scale(1);
+  }
+}
+
+.animate-in {
+  animation-fill-mode: both;
+}
+
+.slide-in-from-top-2 {
+  animation-name: slide-in-from-top;
+}
+
+.zoom-in-95 {
+  animation-name: zoom-in;
+}
+
+.duration-200 {
+  animation-duration: 200ms;
+}
+
+.duration-300 {
+  animation-duration: 300ms;
+}
+
+/* =====================================================
+   RESPONSIVE & PERFORMANCE UTILITIES
+   ===================================================== */
+html {
+  scroll-behavior: smooth;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  html {
+    scroll-behavior: auto;
+  }
+
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+  }
+
+  .reveal {
+    opacity: 1;
+    transform: none !important;
+    filter: none !important;
+    will-change: auto;
+  }
+}
+
+/* Below-fold sections: skip layout/paint until near viewport */
+.section-deferred {
+  content-visibility: auto;
+  contain-intrinsic-size: auto 720px;
+}
+
+/* Lighter ambient glows on mobile — blur is GPU-heavy */
+.ambient-glow {
+  @apply blur-xl sm:blur-2xl lg:blur-3xl pointer-events-none;
+}
+
+/* Glass panels: lighter blur on small screens */
+.glass-panel {
+  @apply bg-slate-950/80 md:bg-slate-950/70 backdrop-blur-sm md:backdrop-blur-xl;
+}
+
+/* Prevent iOS input zoom + comfortable touch targets */
+.form-input {
+  @apply w-full px-4 py-3 min-h-[48px] bg-slate-900 border rounded-xl text-white placeholder-slate-500 text-base sm:text-sm focus:outline-none focus:ring-2 transition-colors;
+}
+
+.form-textarea {
+  @apply w-full px-4 py-3 min-h-[120px] resize-y bg-slate-900 border rounded-xl text-white placeholder-slate-500 text-base sm:text-sm focus:outline-none focus:ring-2 transition-colors;
+}
+
+/* GPU-friendly transforms for interactive elements */
+.gpu-smooth {
+  transform: translateZ(0);
+  backface-visibility: hidden;
+}
+
+.reveal.visible {
+  will-change: auto;
+}
+

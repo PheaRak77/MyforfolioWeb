@@ -1,13 +1,34 @@
 import { useEffect, useRef, useState } from "react";
 
+const observerRegistry = new Map();
+
+function getObserverKey(threshold, rootMargin) {
+  return `${threshold}|${rootMargin}`;
+}
+
+function getSharedObserver(threshold, rootMargin) {
+  const key = getObserverKey(threshold, rootMargin);
+
+  if (!observerRegistry.has(key)) {
+    const callbacks = new Map();
+    const observer = new IntersectionObserver(
+      (entries) => {
+        entries.forEach((entry) => {
+          const cb = callbacks.get(entry.target);
+          if (cb) cb(entry);
+        });
+      },
+      { threshold, rootMargin },
+    );
+    observerRegistry.set(key, { observer, callbacks });
+  }
+
+  return observerRegistry.get(key);
+}
+
 /**
  * useScrollReveal - Intersection Observer hook for scroll-triggered animations.
- *
- * @param {Object} options
- * @param {number} options.threshold  - 0–1, how much of element must be visible (default 0.12)
- * @param {string} options.rootMargin - CSS root margin (default "-40px")
- * @param {boolean} options.once      - Only animate once (default true)
- * @returns {{ ref, isVisible }}
+ * Uses a shared observer per threshold/rootMargin pair to reduce overhead.
  */
 const useScrollReveal = ({
   threshold = 0.12,
@@ -18,23 +39,29 @@ const useScrollReveal = ({
   const [isVisible, setIsVisible] = useState(false);
 
   useEffect(() => {
-    const observer = new IntersectionObserver(
-      ([entry]) => {
-        if (entry.isIntersecting) {
-          setIsVisible(true);
-          if (once) observer.disconnect();
-        } else if (!once) {
-          setIsVisible(false);
-        }
-      },
-      { threshold, rootMargin },
-    );
-
     const el = ref.current;
-    if (el) observer.observe(el);
+    if (!el) return;
+
+    const { observer, callbacks } = getSharedObserver(threshold, rootMargin);
+
+    const handleIntersect = (entry) => {
+      if (entry.isIntersecting) {
+        setIsVisible(true);
+        if (once) {
+          callbacks.delete(el);
+          observer.unobserve(el);
+        }
+      } else if (!once) {
+        setIsVisible(false);
+      }
+    };
+
+    callbacks.set(el, handleIntersect);
+    observer.observe(el);
 
     return () => {
-      if (el) observer.unobserve(el);
+      callbacks.delete(el);
+      observer.unobserve(el);
     };
   }, [threshold, rootMargin, once]);
 

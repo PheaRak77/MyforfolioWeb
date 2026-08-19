@@ -251,8 +251,8 @@ const Home = () => {
   return (
     <div className="min-h-screen bg-slate-900 text-slate-100 selection:bg-blue-600 selection:text-white font-sans antialiased">
       {/* Top Navigation Bar */}
-      <header className="sticky top-0 z-40 backdrop-blur-md bg-slate-900/90 border-b border-slate-800/80">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 h-20 flex items-center justify-between gap-4">
+      <header className="sticky top-0 z-40 backdrop-blur-sm md:backdrop-blur-md bg-slate-900/95 border-b border-slate-800/80 pt-safe-top">
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 h-16 sm:h-20 flex items-center justify-between gap-3 sm:gap-4">
           <a
             href="#hero"
             className="flex items-center gap-3 group transition-transform hover:scale-105 flex-shrink-0"
@@ -431,7 +431,7 @@ const Home = () => {
 
         {/* Mobile / Tablet Dropdown Menu */}
         {mobileMenuOpen && (
-          <div className="lg:hidden bg-slate-900/95 backdrop-blur-xl border-b border-slate-800 px-4 sm:px-6 pt-3 pb-6 space-y-3 shadow-2xl animate-in slide-in-from-top-2 duration-200">
+          <div className="lg:hidden bg-slate-900/98 backdrop-blur-sm md:backdrop-blur-xl border-b border-slate-800 px-4 sm:px-6 pt-3 pb-6 pb-safe-bottom space-y-3 shadow-2xl animate-in slide-in-from-top-2 duration-200">
             <nav className="flex flex-col space-y-1.5 text-sm font-medium">
               <a
                 href="#about"
@@ -532,20 +532,20 @@ const Home = () => {
       </header>
 
       {/* Main Content Area */}
-      <main className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 space-y-24 py-12">
+      <main className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 space-y-16 sm:space-y-20 lg:space-y-24 py-8 sm:py-12">
         {/* HERO / PROFILE SECTION */}
         <section
           id="hero"
           className="relative pt-6 pb-12 flex flex-col lg:flex-row items-center justify-between gap-12 lg:gap-16"
         >
           {/* Ambient Glows */}
-          <div className="absolute top-1/4 -left-20 w-72 h-72 bg-blue-600/15 rounded-full blur-3xl pointer-events-none" />
-          <div className="absolute bottom-0 right-0 w-96 h-96 bg-indigo-600/10 rounded-full blur-3xl pointer-events-none" />
+          <div className="absolute top-1/4 -left-20 w-48 sm:w-72 h-48 sm:h-72 bg-blue-600/15 rounded-full ambient-glow" />
+          <div className="absolute bottom-0 right-0 w-64 sm:w-96 h-64 sm:h-96 bg-indigo-600/10 rounded-full ambient-glow" />
 
           {/* Left Text Column */}
           <div className="flex-1 space-y-6 text-center lg:text-left z-10 w-full">
             {/* Modern Availability Badge */}
-            <div className="inline-flex items-center gap-2.5 px-4 py-1.5 rounded-full bg-slate-800/90 border border-slate-700/80 shadow-lg shadow-blue-500/5 backdrop-blur-md animate-role-pill">
+            <div className="inline-flex items-center gap-2.5 px-4 py-1.5 rounded-full bg-slate-800/90 border border-slate-700/80 shadow-lg shadow-blue-500/5 backdrop-blur-sm sm:backdrop-blur-md animate-role-pill">
               <span className="relative flex h-2.5 w-2.5">
                 <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-emerald-400 opacity-75"></span>
                 <span className="relative inline-flex rounded-full h-2.5 w-2.5 bg-emerald-500"></span>
@@ -673,7 +673,7 @@ const Home = () => {
           {/* Right Profile Card / Avatar Column */}
           <div className="flex-shrink-0 z-10 animate-hero-avatar">
             <div className="relative group animate-float">
-              <div className="absolute -inset-2 bg-gradient-to-r from-blue-600 via-indigo-500 to-purple-600 rounded-3xl blur-xl opacity-75 group-hover:opacity-100 transition duration-500" />
+              <div className="absolute -inset-2 bg-gradient-to-r from-blue-600 via-indigo-500 to-purple-600 rounded-3xl blur-lg sm:blur-xl opacity-75 group-hover:opacity-100 transition duration-500" />
               <div className="relative w-64 h-64 sm:w-72 sm:h-72 lg:w-80 lg:h-80 rounded-3xl overflow-hidden bg-slate-800 border border-slate-700 flex items-center justify-center shadow-2xl">
                 {displayUser?.profile_image && !profileImgError ? (
                   <PortfolioImage
@@ -710,7 +710,7 @@ const Home = () => {
         <section
           id="about"
           ref={revealAbout.ref}
-          className={`scroll-mt-28 space-y-8 reveal reveal-up reveal-slow ${revealAbout.isVisible ? "visible" : ""}`}
+          className={`scroll-mt-24 sm:scroll-mt-28 space-y-8 reveal reveal-up reveal-slow section-deferred ${revealAbout.isVisible ? "visible" : ""}`}
         >
           <div className="border-b border-slate-800 pb-4 flex items-center justify-between">
             <div>
@@ -843,7 +843,7 @@ const Home = () => {
         <section
           id="skills"
           ref={revealSkills.ref}
-          className={`scroll-mt-28 space-y-8 reveal reveal-up ${revealSkills.isVisible ? "visible" : ""}`}
+          className={`scroll-mt-24 sm:scroll-mt-28 space-y-8 reveal reveal-up section-deferred ${revealSkills.isVisible ? "visible" : ""}`}
         >
           <div className="flex flex-col md:flex-row md:items-end justify-between gap-4 border-b border-slate-800 pb-4">
             <div>
@@ -999,7 +999,7 @@ const Home = () => {
         <section
           id="projects"
           ref={revealProjects.ref}
-          className={`scroll-mt-28 space-y-8 reveal reveal-up ${revealProjects.isVisible ? "visible" : ""}`}
+          className={`scroll-mt-24 sm:scroll-mt-28 space-y-8 reveal reveal-up section-deferred ${revealProjects.isVisible ? "visible" : ""}`}
         >
           <div className="flex flex-col md:flex-row md:items-end justify-between gap-4 border-b border-slate-800 pb-4">
             <div>
@@ -1232,7 +1232,7 @@ const Home = () => {
         <section
           id="certificates"
           ref={revealCerts.ref}
-          className={`scroll-mt-28 space-y-8 reveal reveal-up ${revealCerts.isVisible ? "visible" : ""}`}
+          className={`scroll-mt-24 sm:scroll-mt-28 space-y-8 reveal reveal-up section-deferred ${revealCerts.isVisible ? "visible" : ""}`}
         >
           <div className="border-b border-slate-800 pb-4">
             <div className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-indigo-500/10 text-indigo-400 text-xs font-semibold mb-2">
@@ -1423,20 +1423,20 @@ const Home = () => {
         <section
           id="contact"
           ref={revealContact.ref}
-          className={`scroll-mt-28 reveal reveal-scale-up ${revealContact.isVisible ? "visible" : ""}`}
+          className={`scroll-mt-24 sm:scroll-mt-28 reveal reveal-scale-up section-deferred ${revealContact.isVisible ? "visible" : ""}`}
         >
-          <div className="rounded-3xl bg-gradient-to-br from-slate-900 via-slate-900/90 to-slate-800/80 border border-slate-800 p-8 sm:p-12 relative overflow-hidden shadow-2xl">
-            <div className="absolute top-0 right-0 w-96 h-96 bg-blue-600/10 rounded-full blur-3xl pointer-events-none" />
-            <div className="absolute bottom-0 left-0 w-96 h-96 bg-purple-600/10 rounded-full blur-3xl pointer-events-none" />
+          <div className="rounded-2xl sm:rounded-3xl bg-gradient-to-br from-slate-900 via-slate-900/90 to-slate-800/80 border border-slate-800 p-5 sm:p-8 lg:p-12 relative overflow-hidden shadow-2xl">
+            <div className="absolute top-0 right-0 w-48 sm:w-96 h-48 sm:h-96 bg-blue-600/10 rounded-full ambient-glow" />
+            <div className="absolute bottom-0 left-0 w-48 sm:w-96 h-48 sm:h-96 bg-purple-600/10 rounded-full ambient-glow" />
 
-            <div className="relative z-10 grid lg:grid-cols-12 gap-10 lg:gap-14">
+            <div className="relative z-10 grid md:grid-cols-2 lg:grid-cols-12 gap-8 md:gap-10 lg:gap-14">
               {/* Left Column: Direct Info & Quick Copy */}
-              <div className="lg:col-span-5 space-y-6">
+              <div className="md:col-span-1 lg:col-span-5 space-y-5 sm:space-y-6">
                 <div className="inline-flex items-center gap-1.5 px-3.5 py-1.5 rounded-full bg-blue-500/10 text-blue-400 text-xs font-semibold">
                   Get In Touch
                 </div>
 
-                <h2 className="text-3xl sm:text-4xl font-extrabold text-white tracking-tight">
+                <h2 className="text-2xl sm:text-3xl lg:text-4xl font-extrabold text-white tracking-tight leading-tight">
                   Let's Build Something Great Together
                 </h2>
 
@@ -1446,7 +1446,7 @@ const Home = () => {
                 </p>
 
                 {/* Direct Contact Cards */}
-                <div className="space-y-3 pt-2">
+                <div className="grid sm:grid-cols-2 md:grid-cols-1 gap-3 pt-1 sm:pt-2">
                   {displayUser?.email && (
                     <div className="p-4 rounded-2xl bg-slate-950/60 border border-slate-800 hover:border-slate-700 flex items-center justify-between gap-3 group transition-all">
                       <div className="flex items-center gap-3 min-w-0">
@@ -1526,7 +1526,7 @@ const Home = () => {
               </div>
 
               {/* Right Column: Interactive Send Message Form */}
-              <div className="lg:col-span-7 bg-slate-950/70 backdrop-blur-xl border border-slate-800/80 rounded-3xl p-6 sm:p-8 shadow-xl">
+              <div className="md:col-span-1 lg:col-span-7 glass-panel border border-slate-800/80 rounded-2xl sm:rounded-3xl p-5 sm:p-6 lg:p-8 shadow-xl gpu-smooth">
                 {contactSubmitted ? (
                   <div className="text-center py-10 space-y-4 animate-in zoom-in-95 duration-300">
                     <div className="w-16 h-16 mx-auto rounded-2xl bg-emerald-500/10 border border-emerald-500/30 text-emerald-400 flex items-center justify-center shadow-lg shadow-emerald-500/20">
@@ -1563,12 +1563,12 @@ const Home = () => {
                     </button>
                   </div>
                 ) : (
-                  <form onSubmit={handleContactSubmit} className="space-y-4">
-                    <h3 className="text-xl font-bold text-white mb-2">
+                  <form onSubmit={handleContactSubmit} className="space-y-4 sm:space-y-5">
+                    <h3 className="text-lg sm:text-xl font-bold text-white mb-1 sm:mb-2">
                       Send a Message
                     </h3>
 
-                    <div className="grid sm:grid-cols-2 gap-4">
+                    <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
                       <div>
                         <label className="block text-xs font-semibold uppercase tracking-wider text-slate-300 mb-1.5">
                           Your Name
@@ -1585,7 +1585,7 @@ const Home = () => {
                               setContactErrors({ ...contactErrors, name: "" });
                           }}
                           placeholder="John Doe"
-                          className={`w-full px-4 py-3 bg-slate-900 border rounded-xl text-white placeholder-slate-500 text-sm focus:outline-none focus:ring-2 transition-all ${
+                          className={`form-input ${
                             contactErrors.name
                               ? "border-red-500 focus:ring-red-500 bg-red-500/5"
                               : "border-slate-800 focus:ring-blue-500 focus:border-transparent"
@@ -1614,7 +1614,7 @@ const Home = () => {
                               setContactErrors({ ...contactErrors, email: "" });
                           }}
                           placeholder="john@example.com"
-                          className={`w-full px-4 py-3 bg-slate-900 border rounded-xl text-white placeholder-slate-500 text-sm focus:outline-none focus:ring-2 transition-all ${
+                          className={`form-input ${
                             contactErrors.email
                               ? "border-red-500 focus:ring-red-500 bg-red-500/5"
                               : "border-slate-800 focus:ring-blue-500 focus:border-transparent"
@@ -1644,7 +1644,7 @@ const Home = () => {
                             setContactErrors({ ...contactErrors, subject: "" });
                         }}
                         placeholder="Project Discussion / Collaboration"
-                        className={`w-full px-4 py-3 bg-slate-900 border rounded-xl text-white placeholder-slate-500 text-sm focus:outline-none focus:ring-2 transition-all ${
+                        className={`form-input ${
                           contactErrors.subject
                             ? "border-red-500 focus:ring-red-500 bg-red-500/5"
                             : "border-slate-800 focus:ring-blue-500 focus:border-transparent"
@@ -1673,7 +1673,7 @@ const Home = () => {
                             setContactErrors({ ...contactErrors, message: "" });
                         }}
                         placeholder="Hi, I would like to discuss a project..."
-                        className={`w-full px-4 py-3 bg-slate-900 border rounded-xl text-white placeholder-slate-500 text-sm focus:outline-none focus:ring-2 transition-all ${
+                        className={`form-textarea ${
                           contactErrors.message
                             ? "border-red-500 focus:ring-red-500 bg-red-500/5"
                             : "border-slate-800 focus:ring-blue-500 focus:border-transparent"
@@ -1696,7 +1696,7 @@ const Home = () => {
                     <button
                       type="submit"
                       disabled={sendingMessage}
-                      className="w-full py-3.5 px-6 rounded-xl bg-gradient-to-r from-blue-600 via-indigo-600 to-purple-600 text-white font-semibold shadow-lg shadow-blue-500/25 hover:from-blue-500 hover:to-purple-500 hover:shadow-blue-500/40 hover:-translate-y-0.5 active:translate-y-0 disabled:opacity-60 transition-all text-sm flex items-center justify-center gap-2"
+                      className="w-full min-h-touch py-3.5 px-6 rounded-xl bg-gradient-to-r from-blue-600 via-indigo-600 to-purple-600 text-white font-semibold shadow-lg shadow-blue-500/25 hover:from-blue-500 hover:to-purple-500 hover:shadow-blue-500/40 hover:-translate-y-0.5 active:translate-y-0 disabled:opacity-60 transition-all text-sm sm:text-base flex items-center justify-center gap-2 gpu-smooth"
                     >
                       {sendingMessage ? (
                         <>
@@ -1716,7 +1716,7 @@ const Home = () => {
       </main>
 
       {/* FOOTER */}
-      <footer className="border-t border-slate-800 bg-slate-950/60 py-8 text-center text-slate-500 text-sm">
+      <footer className="border-t border-slate-800 bg-slate-950/60 py-8 pb-safe-bottom text-center text-slate-500 text-sm">
         <div className="max-w-7xl mx-auto px-4 flex flex-col sm:flex-row items-center justify-between gap-4">
           <p className="flex items-center justify-center sm:justify-start gap-1.5 flex-wrap">
             <span>&copy; {new Date().getFullYear()}</span>
