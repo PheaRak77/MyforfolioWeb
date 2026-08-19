@@ -284,12 +284,13 @@ const Home = () => {
                 <VerifiedBadge size="xs" />
               </span>
             </div>
-            <div className="min-w-0">
-              <VerifiedName
-                name={displayUser?.name || "Yorn Pheareak"}
-                badgeSize="lg"
-                nameClassName="font-bold text-base sm:text-lg tracking-tight text-white group-hover:text-blue-400 transition-colors max-w-[130px] sm:max-w-[170px]"
-              />
+            <div className="min-w-0 flex flex-col justify-center">
+              <div className="flex items-center gap-1.5 min-w-0">
+                <span className="font-bold text-base sm:text-lg tracking-tight text-white group-hover:text-blue-400 transition-colors truncate max-w-[130px] sm:max-w-[170px]">
+                  {displayUser?.name || "Yorn Pheareak"}
+                </span>
+                <VerifiedBadge size="sm" className="flex-shrink-0" />
+              </div>
               <span className="block text-xs text-slate-400 font-medium capitalize truncate">
                 {displayUser?.role || "Admin"}
               </span>
@@ -565,12 +566,11 @@ const Home = () => {
                 </span>
               </span>{" "}
               <br className="hidden sm:inline" />
-              <span className="relative inline-flex items-center gap-2.5 mt-1 sm:mt-2">
-                <VerifiedName
-                  name={displayUser?.name || "Yorn Pheareak"}
-                  badgeSize="2xl"
-                  nameClassName="animate-name-gradient font-black text-4xl sm:text-5xl lg:text-6xl xl:text-7xl"
-                />
+              <span className="relative inline-flex items-center gap-2.5 sm:gap-3.5 mt-1 sm:mt-2 flex-wrap">
+                <span className="animate-name-gradient font-black text-4xl sm:text-5xl lg:text-6xl xl:text-7xl">
+                  {displayUser?.name || "Yorn Pheareak"}
+                </span>
+                <VerifiedBadge size="2xl" className="inline-block flex-shrink-0" />
                 {/* Ambient dynamic glow underneath */}
                 <span
                   aria-hidden="true"
