@@ -9,6 +9,7 @@ import ProjectCardImage from "../components/ProjectCardImage";
 import VerifiedBadge, { VerifiedName } from "../components/VerifiedBadge";
 import AnimatedBackground from "../components/AnimatedBackground";
 import HeroBanner3D from "../components/HeroBanner3D";
+import CvModal from "../components/CvModal";
 import {
   fetchPublicPortfolioData,
   hydrateFromCache,
@@ -49,6 +50,7 @@ const Home = () => {
   const [selectedProject, setSelectedProject] = useState(null);
   const [selectedCertificate, setSelectedCertificate] = useState(null);
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
+  const [cvModalOpen, setCvModalOpen] = useState(false);
 
   // Contact Form State & Validation
   const [contactForm, setContactForm] = useState({
@@ -332,6 +334,27 @@ const Home = () => {
             >
               Contact
             </a>
+            <button
+              type="button"
+              onClick={() => setCvModalOpen(true)}
+              className="text-blue-400 hover:text-blue-300 font-semibold transition-all hover:translate-y-[-1px] flex items-center gap-1.5 px-3 py-1.5 rounded-xl bg-blue-500/10 border border-blue-500/30 hover:bg-blue-500/20 shadow-sm shadow-blue-500/10"
+              title="Look and Download CV"
+            >
+              <svg
+                className="w-3.5 h-3.5"
+                fill="none"
+                stroke="currentColor"
+                viewBox="0 0 24 24"
+              >
+                <path
+                  strokeLinecap="round"
+                  strokeLinejoin="round"
+                  strokeWidth={2}
+                  d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"
+                />
+              </svg>
+              <span>Look CV</span>
+            </button>
           </nav>
 
           {/* Right Action / Mobile Hamburger Toggle */}
@@ -485,6 +508,34 @@ const Home = () => {
                 <span>Contact</span>
                 <span className="text-xs text-slate-500">&rarr;</span>
               </a>
+              <button
+                type="button"
+                onClick={() => {
+                  setMobileMenuOpen(false);
+                  setCvModalOpen(true);
+                }}
+                className="w-full px-4 py-3 rounded-xl bg-blue-600/15 border border-blue-500/30 text-blue-400 font-semibold hover:bg-blue-600/25 transition-colors flex items-center justify-between text-left"
+              >
+                <div className="flex items-center gap-2.5">
+                  <svg
+                    className="w-4 h-4"
+                    fill="none"
+                    stroke="currentColor"
+                    viewBox="0 0 24 24"
+                  >
+                    <path
+                      strokeLinecap="round"
+                      strokeLinejoin="round"
+                      strokeWidth={2}
+                      d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"
+                    />
+                  </svg>
+                  <span>Look & Download CV</span>
+                </div>
+                <span className="text-[10px] px-2 py-0.5 rounded bg-blue-500/20 text-blue-300 font-bold uppercase">
+                  PDF
+                </span>
+              </button>
             </nav>
 
             {/* Mobile / Tablet Auth Actions */}
@@ -656,22 +707,52 @@ const Home = () => {
             </div>
 
             {/* Quick Actions */}
-            <div className="flex flex-wrap items-center justify-center lg:justify-start gap-4 pt-4 animate-hero-4">
+            <div className="flex flex-wrap items-center justify-center lg:justify-start gap-3 sm:gap-4 pt-4 animate-hero-4">
+              <button
+                type="button"
+                onClick={() => setCvModalOpen(true)}
+                className="px-6 py-3.5 rounded-xl bg-gradient-to-r from-blue-600 via-indigo-600 to-purple-600 text-white font-bold shadow-xl shadow-blue-500/25 hover:shadow-blue-500/40 hover:-translate-y-0.5 transition-all text-sm flex items-center gap-2.5 group"
+              >
+                <svg
+                  className="w-4 h-4 group-hover:scale-110 transition-transform"
+                  fill="none"
+                  stroke="currentColor"
+                  viewBox="0 0 24 24"
+                >
+                  <path
+                    strokeLinecap="round"
+                    strokeLinejoin="round"
+                    strokeWidth={2}
+                    d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"
+                  />
+                  <path
+                    strokeLinecap="round"
+                    strokeLinejoin="round"
+                    strokeWidth={2}
+                    d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z"
+                  />
+                </svg>
+                <span>Look CV</span>
+                <span className="text-[10px] uppercase font-semibold px-2 py-0.5 rounded-full bg-white/20 text-white">
+                  PDF
+                </span>
+              </button>
+
               <a
                 href="#projects"
-                className="px-6 py-3.5 rounded-xl bg-gradient-to-r from-blue-600 to-indigo-600 text-white font-semibold shadow-lg shadow-blue-500/25 hover:from-blue-500 hover:to-indigo-500 hover:shadow-blue-500/40 hover:-translate-y-0.5 transition-all text-sm"
+                className="px-5 py-3.5 rounded-xl bg-slate-800 hover:bg-slate-700 text-white font-semibold border border-slate-700 hover:border-slate-600 transition-all hover:-translate-y-0.5 text-sm"
               >
                 View Projects
               </a>
               <a
                 href="#certificates"
-                className="px-6 py-3.5 rounded-xl bg-slate-800 hover:bg-slate-700 text-white font-semibold border border-slate-700 hover:border-slate-600 transition-all hover:-translate-y-0.5 text-sm"
+                className="px-5 py-3.5 rounded-xl bg-slate-800/80 hover:bg-slate-700 text-slate-200 font-semibold border border-slate-700 hover:border-slate-600 transition-all hover:-translate-y-0.5 text-sm"
               >
-                View Certificates
+                Certificates
               </a>
               <a
                 href="#contact"
-                className="px-6 py-3.5 rounded-xl bg-transparent hover:bg-slate-800/50 text-slate-300 hover:text-white font-medium transition-all text-sm"
+                className="px-5 py-3.5 rounded-xl bg-transparent hover:bg-slate-800/50 text-slate-300 hover:text-white font-medium transition-all text-sm"
               >
                 Contact Me &rarr;
               </a>
@@ -844,6 +925,86 @@ const Home = () => {
                   ? `Holds ${certificates.length} completed course certification${certificates.length > 1 ? "s" : ""} validating web development and software principles.`
                   : "Committed to ongoing education, certifications, and technical mastery."}
               </p>
+            </div>
+          </div>
+
+          {/* Quick CV Highlight Card */}
+          <div className="p-6 rounded-2xl bg-gradient-to-r from-blue-950/40 via-slate-900/80 to-indigo-950/40 border border-blue-500/20 flex flex-col md:flex-row items-center justify-between gap-5 shadow-xl">
+            <div className="flex items-center gap-4 text-center md:text-left">
+              <div className="w-12 h-12 rounded-xl bg-blue-500/10 border border-blue-500/30 flex items-center justify-center text-blue-400 flex-shrink-0">
+                <svg
+                  className="w-6 h-6"
+                  fill="none"
+                  stroke="currentColor"
+                  viewBox="0 0 24 24"
+                >
+                  <path
+                    strokeLinecap="round"
+                    strokeLinejoin="round"
+                    strokeWidth={2}
+                    d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"
+                  />
+                </svg>
+              </div>
+              <div>
+                <h4 className="text-base font-bold text-white">
+                  Looking for my Full Curriculum Vitae?
+                </h4>
+                <p className="text-xs sm:text-sm text-slate-300 mt-0.5">
+                  Detailed background, technical proficiency, NUM academic education, and contact references.
+                </p>
+              </div>
+            </div>
+            <div className="flex items-center gap-3 flex-shrink-0">
+              <button
+                type="button"
+                onClick={() => setCvModalOpen(true)}
+                className="px-5 py-2.5 rounded-xl bg-blue-600 hover:bg-blue-500 text-white font-semibold text-xs shadow-lg shadow-blue-500/25 transition-all flex items-center gap-2 hover:scale-[1.02]"
+              >
+                <svg
+                  className="w-4 h-4"
+                  fill="none"
+                  stroke="currentColor"
+                  viewBox="0 0 24 24"
+                >
+                  <path
+                    strokeLinecap="round"
+                    strokeLinejoin="round"
+                    strokeWidth={2}
+                    d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"
+                  />
+                  <path
+                    strokeLinecap="round"
+                    strokeLinejoin="round"
+                    strokeWidth={2}
+                    d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z"
+                  />
+                </svg>
+                <span>Look CV</span>
+              </button>
+              <button
+                type="button"
+                onClick={() => {
+                  setCvModalOpen(true);
+                  setTimeout(() => window.print(), 350);
+                }}
+                className="px-4 py-2.5 rounded-xl bg-slate-800 hover:bg-slate-700 text-slate-200 font-semibold text-xs border border-slate-700 transition-colors flex items-center gap-1.5"
+              >
+                <svg
+                  className="w-4 h-4"
+                  fill="none"
+                  stroke="currentColor"
+                  viewBox="0 0 24 24"
+                >
+                  <path
+                    strokeLinecap="round"
+                    strokeLinejoin="round"
+                    strokeWidth={2}
+                    d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-4l-4 4m0 0l-4-4m4 4V4"
+                  />
+                </svg>
+                <span>Download PDF</span>
+              </button>
             </div>
           </div>
         </section>
@@ -1737,6 +1898,13 @@ const Home = () => {
             <span>. All rights reserved.</span>
           </p>
           <div className="flex items-center gap-4 text-xs">
+            <button
+              type="button"
+              onClick={() => setCvModalOpen(true)}
+              className="text-blue-400 hover:text-blue-300 font-medium"
+            >
+              Look CV
+            </button>
             <a href="#hero" className="hover:text-slate-300">
               Back to top &uarr;
             </a>
@@ -1927,6 +2095,13 @@ const Home = () => {
           </div>
         </div>
       )}
+
+      {/* CURRICULUM VITAE (CV) VIEWER & DOWNLOAD MODAL */}
+      <CvModal
+        isOpen={cvModalOpen}
+        onClose={() => setCvModalOpen(false)}
+        user={displayUser}
+      />
     </div>
   );
 };

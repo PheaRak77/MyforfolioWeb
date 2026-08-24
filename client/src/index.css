@@ -477,3 +477,47 @@ html {
   will-change: auto;
 }
 
+/* =====================================================
+   CV PRINT & PDF EXPORT STYLES
+   ===================================================== */
+@media print {
+  /* Hide everything on page except the printable CV */
+  body * {
+    visibility: hidden !important;
+  }
+
+  /* Reset body styles for pure printing */
+  html, body {
+    background: #ffffff !important;
+    color: #1e293b !important;
+    margin: 0 !important;
+    padding: 0 !important;
+    -webkit-print-color-adjust: exact !important;
+    print-color-adjust: exact !important;
+  }
+
+  /* Show only printable CV sheet */
+  #printable-cv-sheet,
+  #printable-cv-sheet * {
+    visibility: visible !important;
+  }
+
+  #printable-cv-sheet {
+    position: absolute !important;
+    left: 0 !important;
+    top: 0 !important;
+    width: 100% !important;
+    max-width: 100% !important;
+    margin: 0 !important;
+    padding: 0 !important;
+    border: none !important;
+    box-shadow: none !important;
+    border-radius: 0 !important;
+    background-color: #ffffff !important;
+  }
+
+  @page {
+    size: A4 portrait;
+    margin: 8mm;
+  }
+}
