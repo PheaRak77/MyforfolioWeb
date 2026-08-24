@@ -8,6 +8,7 @@ import PortfolioImage from "../components/PortfolioImage";
 import ProjectCardImage from "../components/ProjectCardImage";
 import VerifiedBadge, { VerifiedName } from "../components/VerifiedBadge";
 import CvModal from "../components/CvModal";
+import MotionBackground from "../components/MotionBackground";
 import { useTheme } from "../context/ThemeContext";
 import {
   fetchPublicPortfolioData,
@@ -253,24 +254,9 @@ const Home = () => {
   };
 
   return (
-    <div className="relative min-h-screen bg-slate-50 text-slate-900 dark:bg-[#070b14] dark:text-slate-100 selection:bg-indigo-500 selection:text-white font-sans antialiased overflow-x-hidden transition-colors duration-500">
-      {/* Dynamic Aurora Mesh Background Layers */}
-      <div className="fixed inset-0 z-0 pointer-events-none overflow-hidden" aria-hidden="true">
-        {/* Subtle Tech Grid Texture */}
-        <div className="absolute inset-0 bg-grid-mesh opacity-60 dark:opacity-40" />
-
-        {/* Ambient Floating Aurora Glow 1 (Cyan/Blue - Top Left) */}
-        <div className="absolute -top-40 -left-40 w-[550px] h-[550px] rounded-full bg-gradient-to-tr from-cyan-500/20 via-blue-600/20 to-indigo-600/10 blur-3xl animate-aurora-1" />
-
-        {/* Ambient Floating Aurora Glow 2 (Purple/Fuchsia - Top Right / Hero) */}
-        <div className="absolute top-20 right-[-10%] w-[650px] h-[650px] rounded-full bg-gradient-to-bl from-purple-600/25 via-fuchsia-500/15 to-pink-500/10 blur-3xl animate-aurora-2" />
-
-        {/* Ambient Floating Aurora Glow 3 (Indigo/Blue - Center) */}
-        <div className="absolute top-1/2 left-[-15%] w-[600px] h-[600px] rounded-full bg-gradient-to-r from-blue-600/15 via-indigo-600/15 to-purple-600/10 blur-3xl animate-aurora-1" />
-
-        {/* Ambient Floating Aurora Glow 4 (Emerald/Teal - Bottom) */}
-        <div className="absolute bottom-10 right-[-5%] w-[500px] h-[500px] rounded-full bg-gradient-to-tl from-emerald-500/15 via-teal-500/10 to-transparent blur-3xl" />
-      </div>
+    <div className="relative min-h-screen bg-slate-50 text-slate-900 dark:bg-[#070b14] dark:text-slate-100 selection:bg-amber-400 selection:text-black font-sans antialiased overflow-x-hidden transition-colors duration-500">
+      {/* Motion-style Parametric Matrix Wave & Ambient Aurora Glow */}
+      <MotionBackground />
 
       {/* Top Navigation Bar */}
       <header className="sticky top-0 z-40 backdrop-blur-xl bg-white/80 dark:bg-[#070b14]/85 border-b border-slate-200/80 dark:border-slate-800/80 pt-safe-top transition-colors duration-300 shadow-sm dark:shadow-2xl">
@@ -280,7 +266,7 @@ const Home = () => {
             className="flex items-center gap-3 group transition-transform hover:scale-105 flex-shrink-0"
           >
             <div className="relative flex-shrink-0">
-              <div className="absolute -inset-1 bg-gradient-to-r from-blue-500 via-indigo-500 to-purple-500 rounded-full blur-sm opacity-60 group-hover:opacity-100 transition duration-300" />
+              <div className="absolute -inset-1 bg-gradient-to-r from-amber-400 via-yellow-500 to-indigo-500 rounded-full blur-sm opacity-60 group-hover:opacity-100 transition duration-300" />
               {displayUser?.profile_image && !headerImgError ? (
                 <PortfolioImage
                   src={displayUser.profile_image}
@@ -289,7 +275,7 @@ const Home = () => {
                   onError={() => setHeaderImgError(true)}
                   className="relative w-10 h-10 sm:w-11 sm:h-11 rounded-full object-cover ring-2 ring-white dark:ring-slate-900 shadow-md"
                   fallback={
-                    <div className="relative w-10 h-10 sm:w-11 sm:h-11 rounded-full bg-gradient-to-tr from-blue-600 via-indigo-600 to-purple-600 flex items-center justify-center font-bold text-white shadow-md text-lg">
+                    <div className="relative w-10 h-10 sm:w-11 sm:h-11 rounded-full bg-gradient-to-tr from-amber-500 via-indigo-600 to-purple-600 flex items-center justify-center font-bold text-white shadow-md text-lg">
                       {displayUser?.name
                         ? displayUser.name.charAt(0).toUpperCase()
                         : "P"}
@@ -297,7 +283,7 @@ const Home = () => {
                   }
                 />
               ) : (
-                <div className="relative w-10 h-10 sm:w-11 sm:h-11 rounded-full bg-gradient-to-tr from-blue-600 via-indigo-600 to-purple-600 flex items-center justify-center font-bold text-white shadow-md text-lg">
+                <div className="relative w-10 h-10 sm:w-11 sm:h-11 rounded-full bg-gradient-to-tr from-amber-500 via-indigo-600 to-purple-600 flex items-center justify-center font-bold text-white shadow-md text-lg">
                   {displayUser?.name
                     ? displayUser.name.charAt(0).toUpperCase()
                     : "P"}
@@ -306,7 +292,7 @@ const Home = () => {
             </div>
             <div className="min-w-0 flex flex-col justify-center">
               <div className="flex items-center gap-1.5 min-w-0">
-                <span className="font-bold text-base sm:text-lg tracking-tight text-slate-900 dark:text-white group-hover:text-blue-600 dark:group-hover:text-blue-400 transition-colors truncate max-w-[130px] sm:max-w-[170px]">
+                <span className="font-bold text-base sm:text-lg tracking-tight text-slate-900 dark:text-white group-hover:text-amber-500 dark:group-hover:text-amber-300 transition-colors truncate max-w-[130px] sm:max-w-[170px]">
                   {displayUser?.name || "Yorn Pheareak"}
                 </span>
                 <VerifiedBadge size="sm" className="flex-shrink-0" />
@@ -321,38 +307,38 @@ const Home = () => {
           <nav className="hidden lg:flex items-center gap-5 xl:gap-7 text-sm font-medium text-slate-600 dark:text-slate-300">
             <a
               href="#about"
-              className="hover:text-blue-600 dark:hover:text-cyan-400 transition-colors hover:translate-y-[-1px]"
+              className="hover:text-amber-500 dark:hover:text-amber-300 transition-colors hover:translate-y-[-1px]"
             >
               About
             </a>
             <a
               href="#skills"
-              className="hover:text-blue-600 dark:hover:text-cyan-400 transition-colors hover:translate-y-[-1px]"
+              className="hover:text-amber-500 dark:hover:text-amber-300 transition-colors hover:translate-y-[-1px]"
             >
               Skills ({skills.length})
             </a>
             <a
               href="#projects"
-              className="hover:text-blue-600 dark:hover:text-cyan-400 transition-colors hover:translate-y-[-1px]"
+              className="hover:text-amber-500 dark:hover:text-amber-300 transition-colors hover:translate-y-[-1px]"
             >
               Projects ({projects.length})
             </a>
             <a
               href="#certificates"
-              className="hover:text-blue-600 dark:hover:text-cyan-400 transition-colors hover:translate-y-[-1px]"
+              className="hover:text-amber-500 dark:hover:text-amber-300 transition-colors hover:translate-y-[-1px]"
             >
               Certificates ({certificates.length})
             </a>
             <a
               href="#contact"
-              className="hover:text-blue-600 dark:hover:text-cyan-400 transition-colors hover:translate-y-[-1px]"
+              className="hover:text-amber-500 dark:hover:text-amber-300 transition-colors hover:translate-y-[-1px]"
             >
               Contact
             </a>
             <button
               type="button"
               onClick={() => setCvModalOpen(true)}
-              className="text-white font-semibold transition-all hover:translate-y-[-1px] flex items-center gap-2 px-3.5 py-1.5 rounded-xl bg-gradient-to-r from-blue-600 via-indigo-600 to-purple-600 hover:from-blue-500 hover:to-purple-500 shadow-md shadow-indigo-500/20 hover:shadow-indigo-500/35"
+              className="text-white font-bold transition-all hover:translate-y-[-1px] flex items-center gap-2 px-4 py-2 rounded-xl bg-gradient-to-r from-amber-500 via-orange-500 to-indigo-600 hover:from-amber-400 hover:to-indigo-500 shadow-md shadow-amber-500/20 hover:shadow-amber-500/35"
               title="Look and Download CV"
             >
               <svg
@@ -400,7 +386,7 @@ const Home = () => {
                   {authUser?.role === "admin" && (
                     <Link
                       to="/dashboard"
-                      className="px-3.5 py-2 text-xs font-semibold rounded-xl bg-gradient-to-r from-blue-600 to-indigo-600 text-white hover:from-blue-500 hover:to-indigo-500 shadow-lg shadow-blue-500/25 transition-all flex items-center gap-1.5"
+                      className="px-3.5 py-2 text-xs font-semibold rounded-xl bg-gradient-to-r from-amber-500 via-orange-500 to-indigo-600 text-white hover:from-amber-400 hover:to-indigo-500 shadow-lg shadow-amber-500/25 transition-all flex items-center gap-1.5"
                     >
                       <svg
                         className="w-3.5 h-3.5"
@@ -499,7 +485,7 @@ const Home = () => {
               <a
                 href="#about"
                 onClick={() => setMobileMenuOpen(false)}
-                className="px-4 py-3 rounded-xl text-slate-700 dark:text-slate-300 hover:text-blue-600 dark:hover:text-white hover:bg-slate-100 dark:hover:bg-slate-800/80 transition-colors flex items-center justify-between"
+                className="px-4 py-3 rounded-xl text-slate-700 dark:text-slate-300 hover:text-amber-500 dark:hover:text-white hover:bg-slate-100 dark:hover:bg-slate-800/80 transition-colors flex items-center justify-between"
               >
                 <span>About & Overview</span>
                 <span className="text-xs text-slate-400">&rarr;</span>
@@ -507,17 +493,17 @@ const Home = () => {
               <a
                 href="#skills"
                 onClick={() => setMobileMenuOpen(false)}
-                className="px-4 py-3 rounded-xl text-slate-700 dark:text-slate-300 hover:text-blue-600 dark:hover:text-white hover:bg-slate-100 dark:hover:bg-slate-800/80 transition-colors flex items-center justify-between"
+                className="px-4 py-3 rounded-xl text-slate-700 dark:text-slate-300 hover:text-amber-500 dark:hover:text-white hover:bg-slate-100 dark:hover:bg-slate-800/80 transition-colors flex items-center justify-between"
               >
                 <span>Skills & Technologies</span>
-                <span className="text-xs px-2.5 py-0.5 rounded-md bg-blue-500/10 text-blue-600 dark:text-blue-400 font-semibold">
+                <span className="text-xs px-2.5 py-0.5 rounded-md bg-amber-500/10 text-amber-600 dark:text-amber-400 font-semibold">
                   {skills.length}
                 </span>
               </a>
               <a
                 href="#projects"
                 onClick={() => setMobileMenuOpen(false)}
-                className="px-4 py-3 rounded-xl text-slate-700 dark:text-slate-300 hover:text-blue-600 dark:hover:text-white hover:bg-slate-100 dark:hover:bg-slate-800/80 transition-colors flex items-center justify-between"
+                className="px-4 py-3 rounded-xl text-slate-700 dark:text-slate-300 hover:text-amber-500 dark:hover:text-white hover:bg-slate-100 dark:hover:bg-slate-800/80 transition-colors flex items-center justify-between"
               >
                 <span>Featured Projects</span>
                 <span className="text-xs px-2.5 py-0.5 rounded-md bg-blue-500/10 text-blue-600 dark:text-blue-400 font-semibold">
@@ -527,7 +513,7 @@ const Home = () => {
               <a
                 href="#certificates"
                 onClick={() => setMobileMenuOpen(false)}
-                className="px-4 py-3 rounded-xl text-slate-700 dark:text-slate-300 hover:text-blue-600 dark:hover:text-white hover:bg-slate-100 dark:hover:bg-slate-800/80 transition-colors flex items-center justify-between"
+                className="px-4 py-3 rounded-xl text-slate-700 dark:text-slate-300 hover:text-amber-500 dark:hover:text-white hover:bg-slate-100 dark:hover:bg-slate-800/80 transition-colors flex items-center justify-between"
               >
                 <span>Certifications</span>
                 <span className="text-xs px-2.5 py-0.5 rounded-md bg-purple-500/10 text-purple-600 dark:text-purple-400 font-semibold">
@@ -537,7 +523,7 @@ const Home = () => {
               <a
                 href="#contact"
                 onClick={() => setMobileMenuOpen(false)}
-                className="px-4 py-3 rounded-xl text-slate-700 dark:text-slate-300 hover:text-blue-600 dark:hover:text-white hover:bg-slate-100 dark:hover:bg-slate-800/80 transition-colors flex items-center justify-between"
+                className="px-4 py-3 rounded-xl text-slate-700 dark:text-slate-300 hover:text-amber-500 dark:hover:text-white hover:bg-slate-100 dark:hover:bg-slate-800/80 transition-colors flex items-center justify-between"
               >
                 <span>Contact</span>
                 <span className="text-xs text-slate-400">&rarr;</span>
@@ -548,7 +534,7 @@ const Home = () => {
                   setMobileMenuOpen(false);
                   setCvModalOpen(true);
                 }}
-                className="w-full px-4 py-3 rounded-xl bg-gradient-to-r from-blue-600 to-indigo-600 text-white font-semibold shadow-lg shadow-blue-500/20 transition-all flex items-center justify-between text-left"
+                className="w-full px-4 py-3 rounded-xl bg-gradient-to-r from-amber-500 via-orange-500 to-indigo-600 text-white font-semibold shadow-lg shadow-amber-500/20 transition-all flex items-center justify-between text-left"
               >
                 <div className="flex items-center gap-2.5">
                   <svg
@@ -589,7 +575,7 @@ const Home = () => {
                     <Link
                       to="/dashboard"
                       onClick={() => setMobileMenuOpen(false)}
-                      className="w-full py-3 px-4 rounded-xl bg-gradient-to-r from-blue-600 to-indigo-600 text-white font-semibold text-xs text-center block shadow-lg shadow-blue-500/25 hover:from-blue-500 hover:to-indigo-500 transition-all flex items-center justify-center gap-2"
+                      className="w-full py-3 px-4 rounded-xl bg-gradient-to-r from-amber-500 via-orange-500 to-indigo-600 text-white font-semibold text-xs text-center block shadow-lg shadow-amber-500/25 hover:from-amber-400 hover:to-indigo-500 transition-all flex items-center justify-center gap-2"
                     >
                       <svg
                         className="w-4 h-4"
@@ -636,7 +622,7 @@ const Home = () => {
         {/* HERO / PROFILE SECTION */}
         <section
           id="hero"
-          className="relative pt-6 pb-12 flex flex-col lg:flex-row items-center justify-between gap-12 lg:gap-16 overflow-hidden rounded-3xl"
+          className="relative pt-6 pb-12 flex flex-col lg:flex-row items-center justify-between gap-12 lg:gap-14 overflow-hidden rounded-3xl"
         >
           {/* Left Text Column */}
           <div className="flex-1 space-y-6 text-center lg:text-left z-10 w-full">
@@ -651,23 +637,23 @@ const Home = () => {
               </span>
             </div>
 
-            <h1 className="text-4xl sm:text-5xl lg:text-6xl xl:text-7xl font-black tracking-tight text-slate-900 dark:text-white leading-[1.15] animate-hero-1">
-              <span className="inline-flex items-center gap-2.5 font-extrabold text-slate-800 dark:text-slate-100">
+            <h1 className="text-4xl sm:text-5xl lg:text-6xl xl:text-7xl font-black tracking-tight text-slate-900 dark:text-white leading-[1.12] animate-hero-1">
+              <span className="inline-flex items-center gap-3 font-extrabold text-slate-800 dark:text-slate-100 animate-greeting-shimmer">
                 Hi, I'm{" "}
-                <span className="animate-hand-wave text-3xl sm:text-4xl lg:text-5xl">
+                <span className="animate-hand-wave text-3xl sm:text-4xl lg:text-5xl drop-shadow-md">
                   👋
                 </span>
               </span>{" "}
               <br className="hidden sm:inline" />
               <span className="relative inline-flex items-center gap-3 sm:gap-4 mt-2 sm:mt-3 flex-wrap">
-                <span className="animate-name-gradient font-black text-4xl sm:text-5xl lg:text-6xl xl:text-7xl tracking-tight">
+                <span className="animate-name-gradient font-black text-4xl sm:text-5xl lg:text-6xl xl:text-7xl tracking-tight drop-shadow-sm">
                   {displayUser?.name || "Yorn Pheareak"}
                 </span>
-                <VerifiedBadge size="2xl" className="inline-block flex-shrink-0 drop-shadow-[0_0_12px_rgba(56,189,248,0.5)]" />
+                <VerifiedBadge size="2xl" className="inline-block flex-shrink-0 drop-shadow-[0_0_14px_rgba(56,189,248,0.6)]" />
                 {/* Ambient dynamic glow underneath */}
                 <span
                   aria-hidden="true"
-                  className="absolute -inset-3 rounded-3xl bg-gradient-to-r from-cyan-500/20 via-indigo-500/20 to-fuchsia-500/20 blur-2xl -z-10"
+                  className="absolute -inset-4 rounded-3xl bg-gradient-to-r from-amber-400/20 via-indigo-500/20 to-fuchsia-500/20 blur-3xl -z-10 animate-aurora-1"
                 />
               </span>
             </h1>
@@ -680,8 +666,8 @@ const Home = () => {
             {/* Badges Info */}
             <div className="flex flex-wrap items-center justify-center lg:justify-start gap-3 sm:gap-4 pt-2 text-sm animate-hero-3">
               {displayUser?.email && (
-                <div className="flex items-center gap-2 px-4 py-2.5 rounded-2xl bg-white/80 dark:bg-slate-900/70 border border-slate-200/80 dark:border-slate-800/80 shadow-sm dark:shadow-md hover:border-blue-500/40 transition-all backdrop-blur-md group">
-                  <div className="w-6 h-6 rounded-lg bg-blue-500/10 text-blue-500 dark:text-blue-400 flex items-center justify-center flex-shrink-0 group-hover:scale-110 transition-transform">
+                <div className="flex items-center gap-2 px-4 py-2.5 rounded-2xl bg-white/80 dark:bg-slate-900/70 border border-slate-200/80 dark:border-slate-800/80 shadow-sm dark:shadow-md hover:border-amber-500/40 transition-all backdrop-blur-md group">
+                  <div className="w-6 h-6 rounded-lg bg-amber-500/10 text-amber-500 dark:text-amber-400 flex items-center justify-center flex-shrink-0 group-hover:scale-110 transition-transform">
                     <svg
                       className="w-3.5 h-3.5"
                       fill="none"
@@ -754,9 +740,9 @@ const Home = () => {
               <button
                 type="button"
                 onClick={() => setCvModalOpen(true)}
-                className="relative group overflow-hidden px-6 sm:px-7 py-3.5 rounded-2xl bg-gradient-to-r from-blue-600 via-indigo-600 to-purple-600 hover:from-blue-500 hover:via-indigo-500 hover:to-fuchsia-500 text-white font-bold shadow-xl shadow-indigo-500/30 hover:shadow-2xl hover:shadow-indigo-500/50 hover:-translate-y-0.5 active:translate-y-0 transition-all text-sm sm:text-base flex items-center gap-3"
+                className="relative group overflow-hidden px-6 sm:px-7 py-3.5 rounded-2xl bg-gradient-to-r from-amber-500 via-orange-500 to-indigo-600 hover:from-amber-400 hover:to-indigo-500 text-white font-bold shadow-xl shadow-amber-500/25 hover:shadow-2xl hover:shadow-amber-500/40 hover:-translate-y-0.5 active:translate-y-0 transition-all text-sm sm:text-base flex items-center gap-3"
               >
-                <div className="absolute inset-0 w-1/2 h-full bg-white/20 skew-x-12 -translate-x-full group-hover:translate-x-[300%] transition-transform duration-1000" />
+                <div className="absolute inset-0 w-1/2 h-full bg-white/25 skew-x-12 -translate-x-full group-hover:translate-x-[300%] transition-transform duration-1000" />
                 <svg
                   className="w-4 h-4 group-hover:scale-110 transition-transform"
                   fill="none"
@@ -784,7 +770,7 @@ const Home = () => {
 
               <a
                 href="#projects"
-                className="px-5 py-3.5 rounded-2xl bg-white/80 dark:bg-slate-900/80 hover:bg-white dark:hover:bg-slate-800 text-slate-800 dark:text-white font-semibold border border-slate-200 dark:border-slate-800 hover:border-indigo-500/40 transition-all hover:-translate-y-0.5 text-sm shadow-sm backdrop-blur-md"
+                className="px-5 py-3.5 rounded-2xl bg-white/80 dark:bg-slate-900/80 hover:bg-white dark:hover:bg-slate-800 text-slate-800 dark:text-white font-semibold border border-slate-200 dark:border-slate-800 hover:border-amber-500/40 transition-all hover:-translate-y-0.5 text-sm shadow-sm backdrop-blur-md"
               >
                 View Projects
               </a>
@@ -803,25 +789,15 @@ const Home = () => {
             </div>
           </div>
 
-          {/* Right Profile Card / Avatar Column */}
+          {/* Right Profile Card / Avatar Column (Clean, Extended Size, No Overlay Badges) */}
           <div className="flex-shrink-0 z-10 animate-hero-avatar relative">
-            {/* Floating Floating Tech Chips */}
-            <div className="hidden sm:flex absolute -top-4 -left-6 z-20 items-center gap-2 px-3 py-1.5 rounded-2xl bg-white/90 dark:bg-slate-900/90 border border-slate-200 dark:border-indigo-500/30 shadow-xl backdrop-blur-xl text-xs font-bold text-slate-800 dark:text-cyan-300 animate-float-badge-1">
-              <span className="text-sm">⚡</span>
-              <span>Full-Stack Dev</span>
-            </div>
-
-            <div className="hidden sm:flex absolute -bottom-4 -right-4 z-20 items-center gap-2 px-3 py-1.5 rounded-2xl bg-white/90 dark:bg-slate-900/90 border border-slate-200 dark:border-purple-500/30 shadow-xl backdrop-blur-xl text-xs font-bold text-slate-800 dark:text-fuchsia-300 animate-float-badge-2">
-              <span className="text-sm">🎓</span>
-              <span>NUM 4th Year</span>
-            </div>
-
             <div className="relative group">
               {/* Dynamic Multi-Layer Holographic Aura Glow */}
-              <div className="absolute -inset-3 bg-gradient-to-tr from-cyan-500 via-indigo-600 to-fuchsia-600 rounded-[2.5rem] blur-xl opacity-75 group-hover:opacity-100 group-hover:blur-2xl transition duration-700" />
-              <div className="absolute -inset-1 bg-gradient-to-r from-blue-400 to-purple-400 rounded-3xl opacity-30 group-hover:opacity-60 transition duration-500" />
+              <div className="absolute -inset-4 bg-gradient-to-tr from-amber-400 via-yellow-500 via-indigo-600 to-fuchsia-600 rounded-[2.5rem] blur-2xl opacity-75 group-hover:opacity-100 group-hover:blur-3xl transition duration-700" />
+              <div className="absolute -inset-1.5 bg-gradient-to-r from-amber-400 to-purple-500 rounded-[2.2rem] opacity-40 group-hover:opacity-75 transition duration-500" />
 
-              <div className="relative w-64 h-64 sm:w-72 sm:h-72 lg:w-80 lg:h-80 rounded-3xl overflow-hidden bg-slate-900 border-2 border-white/20 dark:border-slate-700/80 flex items-center justify-center shadow-2xl">
+              {/* Extended Profile Picture Container */}
+              <div className="relative w-72 h-72 sm:w-88 sm:h-88 md:w-[24rem] md:h-[24rem] lg:w-[26rem] lg:h-[26rem] xl:w-[29rem] xl:h-[29rem] rounded-[2rem] sm:rounded-[2.2rem] overflow-hidden bg-slate-900 border-2 border-white/20 dark:border-slate-700/80 flex items-center justify-center shadow-2xl">
                 {displayUser?.profile_image && !profileImgError ? (
                   <PortfolioImage
                     src={displayUser.profile_image}
@@ -832,19 +808,19 @@ const Home = () => {
                     className="w-full h-full object-cover transition-transform duration-700 group-hover:scale-105"
                   />
                 ) : (
-                  <div className="text-center p-6">
-                    <div className="w-28 h-28 mx-auto mb-4 rounded-full bg-gradient-to-tr from-blue-600 via-indigo-600 to-purple-600 flex items-center justify-center text-5xl font-bold text-white shadow-inner">
+                  <div className="text-center p-8">
+                    <div className="w-32 h-32 mx-auto mb-4 rounded-full bg-gradient-to-tr from-amber-500 via-indigo-600 to-purple-600 flex items-center justify-center text-6xl font-bold text-white shadow-inner">
                       {displayUser?.name
                         ? displayUser.name.charAt(0).toUpperCase()
                         : "P"}
                     </div>
-                    <p className="font-semibold text-lg text-slate-900 dark:text-white flex items-center justify-center gap-1.5">
+                    <p className="font-semibold text-xl text-slate-900 dark:text-white flex items-center justify-center gap-1.5">
                       <VerifiedName
                         name={displayUser?.name || "Yorn Pheareak"}
-                        badgeSize="md"
+                        badgeSize="lg"
                       />
                     </p>
-                    <p className="text-sm text-slate-500 dark:text-slate-400 capitalize">
+                    <p className="text-base text-slate-500 dark:text-slate-400 capitalize mt-1">
                       {displayUser?.role || "Developer"}
                     </p>
                   </div>

@@ -340,10 +340,19 @@ body {
 
 @keyframes name-glow {
   0%, 100% {
-    filter: drop-shadow(0 0 16px rgba(99, 102, 241, 0.45)) drop-shadow(0 0 32px rgba(168, 85, 247, 0.25));
+    filter: drop-shadow(0 0 16px rgba(56, 189, 248, 0.4)) drop-shadow(0 0 32px rgba(168, 85, 247, 0.25));
   }
   50% {
-    filter: drop-shadow(0 0 28px rgba(99, 102, 241, 0.75)) drop-shadow(0 0 48px rgba(168, 85, 247, 0.45));
+    filter: drop-shadow(0 0 28px rgba(99, 102, 241, 0.7)) drop-shadow(0 0 52px rgba(236, 72, 153, 0.4));
+  }
+}
+
+@keyframes text-shimmer-sweep {
+  0% {
+    background-position: -200% 0;
+  }
+  100% {
+    background-position: 200% 0;
   }
 }
 
@@ -390,23 +399,34 @@ body {
   background: linear-gradient(
     135deg,
     #38bdf8 0%,
-    #818cf8 25%,
-    #c084fc 50%,
-    #f472b6 75%,
-    #60a5fa 100%
+    #818cf8 20%,
+    #c084fc 40%,
+    #f472b6 60%,
+    #fbbf24 80%,
+    #38bdf8 100%
   );
   background-size: 300% 300%;
   -webkit-background-clip: text;
   -webkit-text-fill-color: transparent;
-  animation: text-gradient-flow 6s ease infinite, name-glow 4s ease-in-out infinite;
+  animation: text-gradient-flow 5s ease infinite, name-glow 4s ease-in-out infinite;
+}
+
+.animate-greeting-shimmer {
+  background: linear-gradient(
+    90deg,
+    currentColor 0%,
+    #60a5fa 25%,
+    #a855f7 50%,
+    #ec4899 75%,
+    currentColor 100%
+  );
+  background-size: 200% 100%;
+  -webkit-background-clip: text;
+  animation: text-shimmer-sweep 6s infinite linear;
 }
 
 .animate-role-pill {
   animation: subtle-float 3s ease-in-out infinite;
-}
-
-.animate-float-badge-1 {
-  animation: float-badge 4s ease-in-out infinite;
 }
 
 .animate-float-badge-2 {
