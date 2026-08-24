@@ -7,9 +7,8 @@ import useScrollReveal from "../hooks/useScrollReveal";
 import PortfolioImage from "../components/PortfolioImage";
 import ProjectCardImage from "../components/ProjectCardImage";
 import VerifiedBadge, { VerifiedName } from "../components/VerifiedBadge";
-import AnimatedBackground from "../components/AnimatedBackground";
-import HeroBanner3D from "../components/HeroBanner3D";
 import CvModal from "../components/CvModal";
+import { useTheme } from "../context/ThemeContext";
 import {
   fetchPublicPortfolioData,
   hydrateFromCache,
@@ -21,6 +20,7 @@ import {
 
 const Home = () => {
   const { user: authUser, isAuthenticated, logout } = useAuth();
+  const { isDark, toggleTheme } = useTheme();
 
   const [profile, setProfile] = useState(
     () => hydrateFromCache().profile?.user ?? null,
@@ -253,13 +253,9 @@ const Home = () => {
   };
 
   return (
-    <div className="relative min-h-screen bg-slate-900 text-slate-100 selection:bg-blue-600 selection:text-white font-sans antialiased overflow-x-hidden">
-      {/* 3D Animated Canvas Background */}
-      <div className="fixed inset-0 z-0 pointer-events-none" aria-hidden="true">
-        <AnimatedBackground />
-      </div>
+    <div className="relative min-h-screen bg-slate-50 text-slate-900 dark:bg-slate-950 dark:text-slate-100 selection:bg-blue-600 selection:text-white font-sans antialiased overflow-x-hidden transition-colors duration-300">
       {/* Top Navigation Bar */}
-      <header className="sticky top-0 z-40 backdrop-blur-sm md:backdrop-blur-md bg-slate-900/95 border-b border-slate-800/80 pt-safe-top">
+      <header className="sticky top-0 z-40 backdrop-blur-md bg-white/90 dark:bg-slate-900/95 border-b border-slate-200 dark:border-slate-800/80 pt-safe-top transition-colors duration-300">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 h-16 sm:h-20 flex items-center justify-between gap-3 sm:gap-4">
           <a
             href="#hero"
@@ -291,53 +287,53 @@ const Home = () => {
             </div>
             <div className="min-w-0 flex flex-col justify-center">
               <div className="flex items-center gap-1.5 min-w-0">
-                <span className="font-bold text-base sm:text-lg tracking-tight text-white group-hover:text-blue-400 transition-colors truncate max-w-[130px] sm:max-w-[170px]">
+                <span className="font-bold text-base sm:text-lg tracking-tight text-slate-900 dark:text-white group-hover:text-blue-600 dark:group-hover:text-blue-400 transition-colors truncate max-w-[130px] sm:max-w-[170px]">
                   {displayUser?.name || "Yorn Pheareak"}
                 </span>
                 <VerifiedBadge size="sm" className="flex-shrink-0" />
               </div>
-              <span className="block text-xs text-slate-400 font-medium capitalize truncate">
+              <span className="block text-xs text-slate-500 dark:text-slate-400 font-medium capitalize truncate">
                 {displayUser?.role || "Admin"}
               </span>
             </div>
           </a>
 
           {/* Desktop Nav Links (Visible on LG screens 1024px and up) */}
-          <nav className="hidden lg:flex items-center gap-5 xl:gap-7 text-sm font-medium text-slate-300">
+          <nav className="hidden lg:flex items-center gap-5 xl:gap-7 text-sm font-medium text-slate-600 dark:text-slate-300">
             <a
               href="#about"
-              className="hover:text-blue-400 transition-colors hover:translate-y-[-1px]"
+              className="hover:text-blue-600 dark:hover:text-blue-400 transition-colors hover:translate-y-[-1px]"
             >
               About
             </a>
             <a
               href="#skills"
-              className="hover:text-blue-400 transition-colors hover:translate-y-[-1px]"
+              className="hover:text-blue-600 dark:hover:text-blue-400 transition-colors hover:translate-y-[-1px]"
             >
               Skills ({skills.length})
             </a>
             <a
               href="#projects"
-              className="hover:text-blue-400 transition-colors hover:translate-y-[-1px]"
+              className="hover:text-blue-600 dark:hover:text-blue-400 transition-colors hover:translate-y-[-1px]"
             >
               Projects ({projects.length})
             </a>
             <a
               href="#certificates"
-              className="hover:text-blue-400 transition-colors hover:translate-y-[-1px]"
+              className="hover:text-blue-600 dark:hover:text-blue-400 transition-colors hover:translate-y-[-1px]"
             >
               Certificates ({certificates.length})
             </a>
             <a
               href="#contact"
-              className="hover:text-blue-400 transition-colors hover:translate-y-[-1px]"
+              className="hover:text-blue-600 dark:hover:text-blue-400 transition-colors hover:translate-y-[-1px]"
             >
               Contact
             </a>
             <button
               type="button"
               onClick={() => setCvModalOpen(true)}
-              className="text-blue-400 hover:text-blue-300 font-semibold transition-all hover:translate-y-[-1px] flex items-center gap-1.5 px-3 py-1.5 rounded-xl bg-blue-500/10 border border-blue-500/30 hover:bg-blue-500/20 shadow-sm shadow-blue-500/10"
+              className="text-blue-600 dark:text-blue-400 hover:text-blue-700 dark:hover:text-blue-300 font-semibold transition-all hover:translate-y-[-1px] flex items-center gap-1.5 px-3 py-1.5 rounded-xl bg-blue-50 dark:bg-blue-500/10 border border-blue-200 dark:border-blue-500/30 hover:bg-blue-100 dark:hover:bg-blue-500/20 shadow-sm"
               title="Look and Download CV"
             >
               <svg
@@ -359,6 +355,25 @@ const Home = () => {
 
           {/* Right Action / Mobile Hamburger Toggle */}
           <div className="flex items-center gap-2 sm:gap-3 flex-shrink-0">
+            {/* Theme Toggle Button (Light / Dark) */}
+            <button
+              type="button"
+              onClick={toggleTheme}
+              className="p-2 sm:p-2.5 rounded-xl bg-slate-100 hover:bg-slate-200 dark:bg-slate-800 dark:hover:bg-slate-700 text-slate-700 dark:text-yellow-400 border border-slate-200 dark:border-slate-700 transition-all shadow-sm flex items-center justify-center"
+              title={isDark ? "Switch to Light (Normal) Mode" : "Switch to Dark Mode"}
+              aria-label="Toggle Theme Mode"
+            >
+              {isDark ? (
+                <svg className="w-4 h-4 text-yellow-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 3v1m0 16v1m9-9h-1M4 12H3m15.364 6.364l-.707-.707M6.343 6.343l-.707-.707m12.728 0l-.707.707M6.343 17.657l-.707.707M16 12a4 4 0 11-8 0 4 4 0 018 0z" />
+                </svg>
+              ) : (
+                <svg className="w-4 h-4 text-slate-700" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M20.354 15.354A9 9 0 018.646 3.646 9.003 9.003 0 0012 21a9.003 9.003 0 008.354-5.646z" />
+                </svg>
+              )}
+            </button>
+
             {/* Desktop Auth Action */}
             <div className="hidden lg:flex items-center gap-2">
               {isAuthenticated ? (
@@ -386,7 +401,7 @@ const Home = () => {
                   )}
                   <button
                     onClick={logout}
-                    className="px-3 py-2 text-xs font-semibold rounded-xl bg-slate-800 text-slate-300 hover:text-white hover:bg-slate-700 transition-colors"
+                    className="px-3 py-2 text-xs font-semibold rounded-xl bg-slate-100 dark:bg-slate-800 text-slate-700 dark:text-slate-300 hover:text-black dark:hover:text-white hover:bg-slate-200 dark:hover:bg-slate-700 transition-colors border border-slate-200 dark:border-slate-700"
                     title="Logout"
                   >
                     Logout
@@ -395,7 +410,7 @@ const Home = () => {
               ) : (
                 <Link
                   to="/login"
-                  className="px-3.5 py-2 text-xs font-semibold rounded-xl bg-slate-800/80 border border-slate-700 text-slate-300 hover:text-white hover:bg-slate-700 transition-all flex items-center gap-1.5"
+                  className="px-3.5 py-2 text-xs font-semibold rounded-xl bg-slate-100 dark:bg-slate-800/80 border border-slate-200 dark:border-slate-700 text-slate-700 dark:text-slate-300 hover:text-black dark:hover:text-white hover:bg-slate-200 dark:hover:bg-slate-700 transition-all flex items-center gap-1.5"
                 >
                   <svg
                     className="w-3.5 h-3.5 text-slate-400"
@@ -415,14 +430,14 @@ const Home = () => {
               )}
             </div>
 
-            {/* Mobile / Tablet Hamburger Button (Visible on screens below 1024px) */}
+            {/* Mobile / Tablet Hamburger Button */}
             <button
               type="button"
               onClick={() => setMobileMenuOpen(!mobileMenuOpen)}
-              className="lg:hidden p-2.5 rounded-xl bg-slate-800/80 border border-slate-700 text-slate-300 hover:text-white hover:bg-slate-700 focus:outline-none transition-all flex items-center gap-2"
+              className="lg:hidden p-2.5 rounded-xl bg-slate-100 dark:bg-slate-800/80 border border-slate-200 dark:border-slate-700 text-slate-700 dark:text-slate-300 hover:text-black dark:hover:text-white hover:bg-slate-200 dark:hover:bg-slate-700 focus:outline-none transition-all flex items-center gap-2"
               aria-label="Toggle Navigation Menu"
             >
-              <span className="text-xs font-semibold hidden sm:inline text-slate-400">
+              <span className="text-xs font-semibold hidden sm:inline text-slate-500 dark:text-slate-400">
                 Menu
               </span>
               {mobileMenuOpen ? (
@@ -460,53 +475,53 @@ const Home = () => {
 
         {/* Mobile / Tablet Dropdown Menu */}
         {mobileMenuOpen && (
-          <div className="lg:hidden bg-slate-900/98 backdrop-blur-sm md:backdrop-blur-xl border-b border-slate-800 px-4 sm:px-6 pt-3 pb-6 pb-safe-bottom space-y-3 shadow-2xl animate-in slide-in-from-top-2 duration-200">
+          <div className="lg:hidden bg-white/98 dark:bg-slate-900/98 backdrop-blur-xl border-b border-slate-200 dark:border-slate-800 px-4 sm:px-6 pt-3 pb-6 pb-safe-bottom space-y-3 shadow-2xl animate-in slide-in-from-top-2 duration-200">
             <nav className="flex flex-col space-y-1.5 text-sm font-medium">
               <a
                 href="#about"
                 onClick={() => setMobileMenuOpen(false)}
-                className="px-4 py-3 rounded-xl text-slate-300 hover:text-white hover:bg-slate-800 transition-colors flex items-center justify-between"
+                className="px-4 py-3 rounded-xl text-slate-700 dark:text-slate-300 hover:text-blue-600 dark:hover:text-white hover:bg-slate-100 dark:hover:bg-slate-800 transition-colors flex items-center justify-between"
               >
                 <span>About & Overview</span>
-                <span className="text-xs text-slate-500">&rarr;</span>
+                <span className="text-xs text-slate-400">&rarr;</span>
               </a>
               <a
                 href="#skills"
                 onClick={() => setMobileMenuOpen(false)}
-                className="px-4 py-3 rounded-xl text-slate-300 hover:text-white hover:bg-slate-800 transition-colors flex items-center justify-between"
+                className="px-4 py-3 rounded-xl text-slate-700 dark:text-slate-300 hover:text-blue-600 dark:hover:text-white hover:bg-slate-100 dark:hover:bg-slate-800 transition-colors flex items-center justify-between"
               >
                 <span>Skills & Technologies</span>
-                <span className="text-xs px-2.5 py-0.5 rounded-md bg-blue-500/10 text-blue-400 font-semibold">
+                <span className="text-xs px-2.5 py-0.5 rounded-md bg-blue-500/10 text-blue-600 dark:text-blue-400 font-semibold">
                   {skills.length}
                 </span>
               </a>
               <a
                 href="#projects"
                 onClick={() => setMobileMenuOpen(false)}
-                className="px-4 py-3 rounded-xl text-slate-300 hover:text-white hover:bg-slate-800 transition-colors flex items-center justify-between"
+                className="px-4 py-3 rounded-xl text-slate-700 dark:text-slate-300 hover:text-blue-600 dark:hover:text-white hover:bg-slate-100 dark:hover:bg-slate-800 transition-colors flex items-center justify-between"
               >
                 <span>Featured Projects</span>
-                <span className="text-xs px-2.5 py-0.5 rounded-md bg-blue-500/10 text-blue-400 font-semibold">
+                <span className="text-xs px-2.5 py-0.5 rounded-md bg-blue-500/10 text-blue-600 dark:text-blue-400 font-semibold">
                   {projects.length}
                 </span>
               </a>
               <a
                 href="#certificates"
                 onClick={() => setMobileMenuOpen(false)}
-                className="px-4 py-3 rounded-xl text-slate-300 hover:text-white hover:bg-slate-800 transition-colors flex items-center justify-between"
+                className="px-4 py-3 rounded-xl text-slate-700 dark:text-slate-300 hover:text-blue-600 dark:hover:text-white hover:bg-slate-100 dark:hover:bg-slate-800 transition-colors flex items-center justify-between"
               >
                 <span>Certifications</span>
-                <span className="text-xs px-2.5 py-0.5 rounded-md bg-purple-500/10 text-purple-400 font-semibold">
+                <span className="text-xs px-2.5 py-0.5 rounded-md bg-purple-500/10 text-purple-600 dark:text-purple-400 font-semibold">
                   {certificates.length}
                 </span>
               </a>
               <a
                 href="#contact"
                 onClick={() => setMobileMenuOpen(false)}
-                className="px-4 py-3 rounded-xl text-slate-300 hover:text-white hover:bg-slate-800 transition-colors flex items-center justify-between"
+                className="px-4 py-3 rounded-xl text-slate-700 dark:text-slate-300 hover:text-blue-600 dark:hover:text-white hover:bg-slate-100 dark:hover:bg-slate-800 transition-colors flex items-center justify-between"
               >
                 <span>Contact</span>
-                <span className="text-xs text-slate-500">&rarr;</span>
+                <span className="text-xs text-slate-400">&rarr;</span>
               </a>
               <button
                 type="button"
@@ -514,7 +529,7 @@ const Home = () => {
                   setMobileMenuOpen(false);
                   setCvModalOpen(true);
                 }}
-                className="w-full px-4 py-3 rounded-xl bg-blue-600/15 border border-blue-500/30 text-blue-400 font-semibold hover:bg-blue-600/25 transition-colors flex items-center justify-between text-left"
+                className="w-full px-4 py-3 rounded-xl bg-blue-50 dark:bg-blue-600/15 border border-blue-200 dark:border-blue-500/30 text-blue-600 dark:text-blue-400 font-semibold hover:bg-blue-100 dark:hover:bg-blue-600/25 transition-colors flex items-center justify-between text-left"
               >
                 <div className="flex items-center gap-2.5">
                   <svg
@@ -532,14 +547,23 @@ const Home = () => {
                   </svg>
                   <span>Look & Download CV</span>
                 </div>
-                <span className="text-[10px] px-2 py-0.5 rounded bg-blue-500/20 text-blue-300 font-bold uppercase">
+                <span className="text-[10px] px-2 py-0.5 rounded bg-blue-500/20 text-blue-600 dark:text-blue-300 font-bold uppercase">
                   PDF
                 </span>
               </button>
             </nav>
 
-            {/* Mobile / Tablet Auth Actions */}
-            <div className="pt-3 border-t border-slate-800 space-y-2">
+            {/* Mobile / Tablet Auth Actions & Theme Switch */}
+            <div className="pt-3 border-t border-slate-200 dark:border-slate-800 space-y-2">
+              <button
+                type="button"
+                onClick={toggleTheme}
+                className="w-full py-2.5 px-4 rounded-xl bg-slate-100 dark:bg-slate-800 text-slate-800 dark:text-slate-200 text-xs font-semibold flex items-center justify-between border border-slate-200 dark:border-slate-700"
+              >
+                <span>Theme: {isDark ? "Dark Mode" : "Light (Normal) Mode"}</span>
+                <span>{isDark ? "🌙" : "☀️"}</span>
+              </button>
+
               {isAuthenticated ? (
                 <>
                   {authUser?.role === "admin" && (
@@ -569,7 +593,7 @@ const Home = () => {
                       logout();
                       setMobileMenuOpen(false);
                     }}
-                    className="w-full py-3 px-4 rounded-xl bg-slate-800 text-slate-300 hover:text-white hover:bg-slate-700 text-xs font-semibold transition-all text-center"
+                    className="w-full py-3 px-4 rounded-xl bg-slate-100 dark:bg-slate-800 text-slate-700 dark:text-slate-300 hover:text-black dark:hover:text-white hover:bg-slate-200 dark:hover:bg-slate-700 text-xs font-semibold transition-all text-center border border-slate-200 dark:border-slate-700"
                   >
                     Logout
                   </button>
@@ -578,7 +602,7 @@ const Home = () => {
                 <Link
                   to="/login"
                   onClick={() => setMobileMenuOpen(false)}
-                  className="w-full py-3 px-4 rounded-xl bg-slate-800 border border-slate-700 text-slate-200 hover:text-white text-xs font-semibold text-center block transition-all"
+                  className="w-full py-3 px-4 rounded-xl bg-slate-100 dark:bg-slate-800 border border-slate-200 dark:border-slate-700 text-slate-700 dark:text-slate-200 hover:text-black dark:hover:text-white text-xs font-semibold text-center block transition-all"
                 >
                   Sign In
                 </Link>
@@ -595,26 +619,24 @@ const Home = () => {
           id="hero"
           className="relative pt-6 pb-12 flex flex-col lg:flex-row items-center justify-between gap-12 lg:gap-16 overflow-hidden rounded-3xl"
         >
-          {/* 3D Live Hero Banner Animation */}
-          <HeroBanner3D />
           {/* Ambient Glows */}
-          <div className="absolute top-1/4 -left-20 w-48 sm:w-72 h-48 sm:h-72 bg-blue-600/15 rounded-full ambient-glow" />
-          <div className="absolute bottom-0 right-0 w-64 sm:w-96 h-64 sm:h-96 bg-indigo-600/10 rounded-full ambient-glow" />
+          <div className="absolute top-1/4 -left-20 w-48 sm:w-72 h-48 sm:h-72 bg-blue-600/10 dark:bg-blue-600/15 rounded-full ambient-glow pointer-events-none" />
+          <div className="absolute bottom-0 right-0 w-64 sm:w-96 h-64 sm:h-96 bg-indigo-600/10 rounded-full ambient-glow pointer-events-none" />
 
           {/* Left Text Column */}
           <div className="flex-1 space-y-6 text-center lg:text-left z-10 w-full">
             {/* Modern Availability Badge */}
-            <div className="inline-flex items-center gap-2.5 px-4 py-1.5 rounded-full bg-slate-800/90 border border-slate-700/80 shadow-lg shadow-blue-500/5 backdrop-blur-sm sm:backdrop-blur-md animate-role-pill">
+            <div className="inline-flex items-center gap-2.5 px-4 py-1.5 rounded-full bg-slate-100 dark:bg-slate-800/90 border border-slate-200 dark:border-slate-700/80 shadow-md shadow-blue-500/5 backdrop-blur-md animate-role-pill">
               <span className="relative flex h-2.5 w-2.5">
                 <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-emerald-400 opacity-75"></span>
                 <span className="relative inline-flex rounded-full h-2.5 w-2.5 bg-emerald-500"></span>
               </span>
-              <span className="text-xs font-semibold tracking-wide text-slate-200">
+              <span className="text-xs font-semibold tracking-wide text-slate-700 dark:text-slate-200">
                 Full-Stack Developer • Available for Projects
               </span>
             </div>
 
-            <h1 className="text-4xl sm:text-5xl lg:text-6xl xl:text-7xl font-black tracking-tight text-white leading-[1.15] animate-hero-1">
+            <h1 className="text-4xl sm:text-5xl lg:text-6xl xl:text-7xl font-black tracking-tight text-slate-900 dark:text-white leading-[1.15] animate-hero-1">
               <span className="inline-flex items-center gap-2.5">
                 Hi, I'm{" "}
                 <span className="animate-hand-wave text-3xl sm:text-4xl lg:text-5xl">
@@ -630,22 +652,22 @@ const Home = () => {
                 {/* Ambient dynamic glow underneath */}
                 <span
                   aria-hidden="true"
-                  className="absolute -inset-2 rounded-3xl bg-gradient-to-r from-blue-500/25 via-indigo-500/25 to-purple-500/25 blur-2xl -z-10"
+                  className="absolute -inset-2 rounded-3xl bg-gradient-to-r from-blue-500/20 via-indigo-500/20 to-purple-500/20 blur-2xl -z-10"
                 />
               </span>
             </h1>
 
-            <p className="text-base sm:text-lg text-slate-300 max-w-2xl mx-auto lg:mx-0 leading-relaxed font-normal animate-hero-2">
+            <p className="text-base sm:text-lg text-slate-600 dark:text-slate-300 max-w-2xl mx-auto lg:mx-0 leading-relaxed font-normal animate-hero-2">
               Welcome to my portfolio! Explore my latest completed projects,
               verified credentials, and technical skills below.
             </p>
 
             {/* Badges Info */}
-            <div className="flex flex-wrap items-center justify-center lg:justify-start gap-3 sm:gap-4 pt-2 text-sm text-slate-300 animate-hero-3">
+            <div className="flex flex-wrap items-center justify-center lg:justify-start gap-3 sm:gap-4 pt-2 text-sm text-slate-700 dark:text-slate-300 animate-hero-3">
               {displayUser?.email && (
-                <div className="flex items-center gap-2 px-3.5 py-2 rounded-xl bg-slate-800/80 border border-slate-700/60 shadow-sm">
+                <div className="flex items-center gap-2 px-3.5 py-2 rounded-xl bg-white dark:bg-slate-800/80 border border-slate-200 dark:border-slate-700/60 shadow-sm">
                   <svg
-                    className="w-4 h-4 text-blue-400 flex-shrink-0"
+                    className="w-4 h-4 text-blue-500 dark:text-blue-400 flex-shrink-0"
                     fill="none"
                     stroke="currentColor"
                     viewBox="0 0 24 24"
@@ -664,9 +686,9 @@ const Home = () => {
               )}
 
               {displayUser?.phone && (
-                <div className="flex items-center gap-2 px-3.5 py-2 rounded-xl bg-slate-800/80 border border-slate-700/60 shadow-sm">
+                <div className="flex items-center gap-2 px-3.5 py-2 rounded-xl bg-white dark:bg-slate-800/80 border border-slate-200 dark:border-slate-700/60 shadow-sm">
                   <svg
-                    className="w-4 h-4 text-green-400 flex-shrink-0"
+                    className="w-4 h-4 text-emerald-500 dark:text-green-400 flex-shrink-0"
                     fill="none"
                     stroke="currentColor"
                     viewBox="0 0 24 24"
@@ -685,9 +707,9 @@ const Home = () => {
               )}
 
               {displayUser?.dob && (
-                <div className="flex items-center gap-2 px-3.5 py-2 rounded-xl bg-slate-800/80 border border-slate-700/60 shadow-sm">
+                <div className="flex items-center gap-2 px-3.5 py-2 rounded-xl bg-white dark:bg-slate-800/80 border border-slate-200 dark:border-slate-700/60 shadow-sm">
                   <svg
-                    className="w-4 h-4 text-purple-400 flex-shrink-0"
+                    className="w-4 h-4 text-purple-500 dark:text-purple-400 flex-shrink-0"
                     fill="none"
                     stroke="currentColor"
                     viewBox="0 0 24 24"
@@ -740,19 +762,19 @@ const Home = () => {
 
               <a
                 href="#projects"
-                className="px-5 py-3.5 rounded-xl bg-slate-800 hover:bg-slate-700 text-white font-semibold border border-slate-700 hover:border-slate-600 transition-all hover:-translate-y-0.5 text-sm"
+                className="px-5 py-3.5 rounded-xl bg-white hover:bg-slate-100 text-slate-800 border-slate-200 dark:bg-slate-800 dark:hover:bg-slate-700 dark:text-white font-semibold border dark:border-slate-700 transition-all hover:-translate-y-0.5 text-sm shadow-sm"
               >
                 View Projects
               </a>
               <a
                 href="#certificates"
-                className="px-5 py-3.5 rounded-xl bg-slate-800/80 hover:bg-slate-700 text-slate-200 font-semibold border border-slate-700 hover:border-slate-600 transition-all hover:-translate-y-0.5 text-sm"
+                className="px-5 py-3.5 rounded-xl bg-white/80 hover:bg-slate-100 text-slate-700 border-slate-200 dark:bg-slate-800/80 dark:hover:bg-slate-700 dark:text-slate-200 font-semibold border dark:border-slate-700 transition-all hover:-translate-y-0.5 text-sm shadow-sm"
               >
                 Certificates
               </a>
               <a
                 href="#contact"
-                className="px-5 py-3.5 rounded-xl bg-transparent hover:bg-slate-800/50 text-slate-300 hover:text-white font-medium transition-all text-sm"
+                className="px-5 py-3.5 rounded-xl bg-transparent hover:bg-slate-100 dark:hover:bg-slate-800/50 text-slate-600 dark:text-slate-300 hover:text-slate-900 dark:hover:text-white font-medium transition-all text-sm"
               >
                 Contact Me &rarr;
               </a>
@@ -761,9 +783,9 @@ const Home = () => {
 
           {/* Right Profile Card / Avatar Column */}
           <div className="flex-shrink-0 z-10 animate-hero-avatar">
-            <div className="relative group animate-float">
+            <div className="relative group">
               <div className="absolute -inset-2 bg-gradient-to-r from-blue-600 via-indigo-500 to-purple-600 rounded-3xl blur-lg sm:blur-xl opacity-75 group-hover:opacity-100 transition duration-500" />
-              <div className="relative w-64 h-64 sm:w-72 sm:h-72 lg:w-80 lg:h-80 rounded-3xl overflow-hidden bg-slate-800 border border-slate-700 flex items-center justify-center shadow-2xl">
+              <div className="relative w-64 h-64 sm:w-72 sm:h-72 lg:w-80 lg:h-80 rounded-3xl overflow-hidden bg-white dark:bg-slate-800 border border-slate-200 dark:border-slate-700 flex items-center justify-center shadow-2xl">
                 {displayUser?.profile_image && !profileImgError ? (
                   <PortfolioImage
                       src={displayUser.profile_image}
@@ -780,13 +802,13 @@ const Home = () => {
                         ? displayUser.name.charAt(0).toUpperCase()
                         : "P"}
                     </div>
-                    <p className="font-semibold text-lg text-white flex items-center justify-center gap-1.5">
+                    <p className="font-semibold text-lg text-slate-900 dark:text-white flex items-center justify-center gap-1.5">
                       <VerifiedName
                         name={displayUser?.name || "Yorn Pheareak"}
                         badgeSize="md"
                       />
                     </p>
-                    <p className="text-sm text-slate-400 capitalize">
+                    <p className="text-sm text-slate-500 dark:text-slate-400 capitalize">
                       {displayUser?.role || "Developer"}
                     </p>
                   </div>
@@ -802,12 +824,12 @@ const Home = () => {
           ref={revealAbout.ref}
           className={`scroll-mt-24 sm:scroll-mt-28 space-y-8 reveal reveal-up reveal-slow section-deferred ${revealAbout.isVisible ? "visible" : ""}`}
         >
-          <div className="border-b border-slate-800 pb-4 flex items-center justify-between">
+          <div className="border-b border-slate-200 dark:border-slate-800 pb-4 flex items-center justify-between">
             <div>
-              <h2 className="text-2xl sm:text-3xl font-bold text-white tracking-tight">
+              <h2 className="text-2xl sm:text-3xl font-bold text-slate-900 dark:text-white tracking-tight">
                 About & Overview
               </h2>
-              <p className="text-slate-400 text-sm mt-1">
+              <p className="text-slate-500 dark:text-slate-400 text-sm mt-1">
                 Background, skills, and summary
               </p>
             </div>
@@ -815,7 +837,7 @@ const Home = () => {
 
           <div className="grid md:grid-cols-3 gap-6">
             <div
-              className="p-6 rounded-2xl bg-slate-800/60 border border-slate-800 hover:border-slate-700 transition-colors reveal reveal-scale reveal-delay-1"
+              className="p-6 rounded-2xl bg-white dark:bg-slate-800/60 border border-slate-200 dark:border-slate-800 hover:border-slate-300 dark:hover:border-slate-700 transition-colors shadow-sm reveal reveal-scale reveal-delay-1"
               style={{
                 opacity: revealAbout.isVisible ? 1 : 0,
                 transform: revealAbout.isVisible ? "none" : "scale(0.88)",
@@ -826,7 +848,7 @@ const Home = () => {
                 transitionDelay: "80ms",
               }}
             >
-              <div className="w-12 h-12 rounded-xl bg-blue-500/10 text-blue-400 flex items-center justify-center mb-4">
+              <div className="w-12 h-12 rounded-xl bg-blue-500/10 text-blue-600 dark:text-blue-400 flex items-center justify-center mb-4">
                 <svg
                   className="w-6 h-6"
                   fill="none"
@@ -841,10 +863,10 @@ const Home = () => {
                   />
                 </svg>
               </div>
-              <h3 className="text-lg font-semibold text-white mb-2">
+              <h3 className="text-lg font-semibold text-slate-900 dark:text-white mb-2">
                 Full-Stack Architecture
               </h3>
-              <p className="text-slate-400 text-sm leading-relaxed">
+              <p className="text-slate-600 dark:text-slate-400 text-sm leading-relaxed">
                 Building responsive frontend user interfaces, robust REST APIs,
                 secure authentication workflows, and relational database
                 schemas.
@@ -852,7 +874,7 @@ const Home = () => {
             </div>
 
             <div
-              className="p-6 rounded-2xl bg-slate-800/60 border border-slate-800 hover:border-slate-700 transition-colors"
+              className="p-6 rounded-2xl bg-white dark:bg-slate-800/60 border border-slate-200 dark:border-slate-800 hover:border-slate-300 dark:hover:border-slate-700 transition-colors shadow-sm"
               style={{
                 opacity: revealAbout.isVisible ? 1 : 0,
                 transform: revealAbout.isVisible
@@ -864,7 +886,7 @@ const Home = () => {
                 transitionDelay: "200ms",
               }}
             >
-              <div className="w-12 h-12 rounded-xl bg-indigo-500/10 text-indigo-400 flex items-center justify-center mb-4">
+              <div className="w-12 h-12 rounded-xl bg-indigo-500/10 text-indigo-600 dark:text-indigo-400 flex items-center justify-center mb-4">
                 <svg
                   className="w-6 h-6"
                   fill="none"
@@ -879,10 +901,10 @@ const Home = () => {
                   />
                 </svg>
               </div>
-              <h3 className="text-lg font-semibold text-white mb-2">
+              <h3 className="text-lg font-semibold text-slate-900 dark:text-white mb-2">
                 Projects & Deliverables
               </h3>
-              <p className="text-slate-400 text-sm leading-relaxed">
+              <p className="text-slate-600 dark:text-slate-400 text-sm leading-relaxed">
                 {projects.length > 0
                   ? `Featuring ${projects.length} curated project${projects.length > 1 ? "s" : ""} built with modern frameworks and practical full-stack integrations.`
                   : "Continuous development of modern web applications and real-world tools."}
@@ -890,7 +912,7 @@ const Home = () => {
             </div>
 
             <div
-              className="p-6 rounded-2xl bg-slate-800/60 border border-slate-800 hover:border-slate-700 transition-colors"
+              className="p-6 rounded-2xl bg-white dark:bg-slate-800/60 border border-slate-200 dark:border-slate-800 hover:border-slate-300 dark:hover:border-slate-700 transition-colors shadow-sm"
               style={{
                 opacity: revealAbout.isVisible ? 1 : 0,
                 transform: revealAbout.isVisible
@@ -902,7 +924,7 @@ const Home = () => {
                 transitionDelay: "320ms",
               }}
             >
-              <div className="w-12 h-12 rounded-xl bg-purple-500/10 text-purple-400 flex items-center justify-center mb-4">
+              <div className="w-12 h-12 rounded-xl bg-purple-500/10 text-purple-600 dark:text-purple-400 flex items-center justify-center mb-4">
                 <svg
                   className="w-6 h-6"
                   fill="none"
@@ -917,10 +939,10 @@ const Home = () => {
                   />
                 </svg>
               </div>
-              <h3 className="text-lg font-semibold text-white mb-2">
+              <h3 className="text-lg font-semibold text-slate-900 dark:text-white mb-2">
                 Certified & Verified
               </h3>
-              <p className="text-slate-400 text-sm leading-relaxed">
+              <p className="text-slate-600 dark:text-slate-400 text-sm leading-relaxed">
                 {certificates.length > 0
                   ? `Holds ${certificates.length} completed course certification${certificates.length > 1 ? "s" : ""} validating web development and software principles.`
                   : "Committed to ongoing education, certifications, and technical mastery."}
@@ -929,9 +951,9 @@ const Home = () => {
           </div>
 
           {/* Quick CV Highlight Card */}
-          <div className="p-6 rounded-2xl bg-gradient-to-r from-blue-950/40 via-slate-900/80 to-indigo-950/40 border border-blue-500/20 flex flex-col md:flex-row items-center justify-between gap-5 shadow-xl">
+          <div className="p-6 rounded-2xl bg-gradient-to-r from-blue-50 via-indigo-50/50 to-purple-50 dark:from-blue-950/40 dark:via-slate-900/80 dark:to-indigo-950/40 border border-blue-200 dark:border-blue-500/20 flex flex-col md:flex-row items-center justify-between gap-5 shadow-xl">
             <div className="flex items-center gap-4 text-center md:text-left">
-              <div className="w-12 h-12 rounded-xl bg-blue-500/10 border border-blue-500/30 flex items-center justify-center text-blue-400 flex-shrink-0">
+              <div className="w-12 h-12 rounded-xl bg-blue-500/10 border border-blue-500/30 flex items-center justify-center text-blue-600 dark:text-blue-400 flex-shrink-0">
                 <svg
                   className="w-6 h-6"
                   fill="none"
@@ -947,10 +969,10 @@ const Home = () => {
                 </svg>
               </div>
               <div>
-                <h4 className="text-base font-bold text-white">
+                <h4 className="text-base font-bold text-slate-900 dark:text-white">
                   Looking for my Full Curriculum Vitae?
                 </h4>
-                <p className="text-xs sm:text-sm text-slate-300 mt-0.5">
+                <p className="text-xs sm:text-sm text-slate-600 dark:text-slate-300 mt-0.5">
                   Detailed background, technical proficiency, NUM academic education, and contact references.
                 </p>
               </div>
@@ -982,13 +1004,10 @@ const Home = () => {
                 </svg>
                 <span>Look CV</span>
               </button>
-              <button
-                type="button"
-                onClick={() => {
-                  setCvModalOpen(true);
-                  setTimeout(() => window.print(), 350);
-                }}
-                className="px-4 py-2.5 rounded-xl bg-slate-800 hover:bg-slate-700 text-slate-200 font-semibold text-xs border border-slate-700 transition-colors flex items-center gap-1.5"
+              <a
+                href="/Yorn_Pheareak_CV.pdf"
+                download="Yorn_Pheareak_CV.pdf"
+                className="px-4 py-2.5 rounded-xl bg-white hover:bg-slate-100 dark:bg-slate-800 dark:hover:bg-slate-700 text-slate-800 dark:text-slate-200 font-semibold text-xs border border-slate-200 dark:border-slate-700 transition-colors flex items-center gap-1.5 shadow-sm"
               >
                 <svg
                   className="w-4 h-4"
@@ -1004,7 +1023,7 @@ const Home = () => {
                   />
                 </svg>
                 <span>Download PDF</span>
-              </button>
+              </a>
             </div>
           </div>
         </section>
@@ -1015,15 +1034,15 @@ const Home = () => {
           ref={revealSkills.ref}
           className={`scroll-mt-24 sm:scroll-mt-28 space-y-8 reveal reveal-up section-deferred ${revealSkills.isVisible ? "visible" : ""}`}
         >
-          <div className="flex flex-col md:flex-row md:items-end justify-between gap-4 border-b border-slate-800 pb-4">
+          <div className="flex flex-col md:flex-row md:items-end justify-between gap-4 border-b border-slate-200 dark:border-slate-800 pb-4">
             <div>
-              <div className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-blue-500/10 text-blue-400 text-xs font-semibold mb-2">
+              <div className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-blue-500/10 text-blue-600 dark:text-blue-400 text-xs font-semibold mb-2">
                 Technical Expertise
               </div>
-              <h2 className="text-2xl sm:text-3xl font-bold text-white tracking-tight">
+              <h2 className="text-2xl sm:text-3xl font-bold text-slate-900 dark:text-white tracking-tight">
                 Skills & Technologies
               </h2>
-              <p className="text-slate-400 text-sm mt-1">
+              <p className="text-slate-500 dark:text-slate-400 text-sm mt-1">
                 Languages, frameworks, databases, and development tools with
                 proficiency levels.
               </p>
@@ -1036,7 +1055,7 @@ const Home = () => {
                 className={`px-3.5 py-1.5 rounded-xl text-xs font-medium transition-all ${
                   selectedSkillCategory === "all"
                     ? "bg-blue-600 text-white shadow-md shadow-blue-500/30"
-                    : "bg-slate-800 text-slate-400 hover:text-white hover:bg-slate-700"
+                    : "bg-slate-100 hover:bg-slate-200 dark:bg-slate-800 text-slate-600 dark:text-slate-400 hover:text-slate-900 dark:hover:text-white dark:hover:bg-slate-700"
                 }`}
               >
                 All ({skills.length})
@@ -1048,7 +1067,7 @@ const Home = () => {
                   className={`px-3.5 py-1.5 rounded-xl text-xs font-medium transition-all ${
                     selectedSkillCategory === "featured"
                       ? "bg-blue-600 text-white shadow-md shadow-blue-500/30"
-                      : "bg-slate-800 text-slate-400 hover:text-white hover:bg-slate-700"
+                      : "bg-slate-100 hover:bg-slate-200 dark:bg-slate-800 text-slate-600 dark:text-slate-400 hover:text-slate-900 dark:hover:text-white dark:hover:bg-slate-700"
                   }`}
                 >
                   ★ Featured
@@ -1062,7 +1081,7 @@ const Home = () => {
                   className={`px-3.5 py-1.5 rounded-xl text-xs font-medium transition-all ${
                     selectedSkillCategory === cat
                       ? "bg-blue-600 text-white shadow-md shadow-blue-500/30"
-                      : "bg-slate-800 text-slate-400 hover:text-white hover:bg-slate-700"
+                      : "bg-slate-100 hover:bg-slate-200 dark:bg-slate-800 text-slate-600 dark:text-slate-400 hover:text-slate-900 dark:hover:text-white dark:hover:bg-slate-700"
                   }`}
                 >
                   {cat}
@@ -1072,13 +1091,13 @@ const Home = () => {
           </div>
 
           {loading ? (
-            <div className="p-12 text-center text-slate-400 bg-slate-800/30 rounded-2xl border border-slate-800">
+            <div className="p-12 text-center text-slate-400 bg-white dark:bg-slate-800/30 rounded-2xl border border-slate-200 dark:border-slate-800">
               <div className="w-8 h-8 mx-auto mb-3 border-2 border-blue-500 border-t-transparent rounded-full animate-spin" />
               <p>Loading skills...</p>
             </div>
           ) : filteredSkills.length === 0 ? (
-            <div className="p-12 text-center text-slate-400 bg-slate-800/30 rounded-2xl border border-slate-800">
-              <p className="text-slate-300">
+            <div className="p-12 text-center text-slate-400 bg-white dark:bg-slate-800/30 rounded-2xl border border-slate-200 dark:border-slate-800">
+              <p className="text-slate-600 dark:text-slate-300">
                 No skills found in this category.
               </p>
             </div>
@@ -1087,7 +1106,7 @@ const Home = () => {
               {filteredSkills.map((skill, index) => (
                 <div
                   key={skill.id}
-                  className="p-5 rounded-2xl bg-slate-800/70 border border-slate-800 hover:border-slate-700 hover:bg-slate-800/90 shadow-lg hover:shadow-xl transition-all duration-300 group flex flex-col justify-between"
+                  className="p-5 rounded-2xl bg-white dark:bg-slate-800/70 border border-slate-200 dark:border-slate-800 hover:border-slate-300 dark:hover:border-slate-700 hover:bg-slate-50 dark:hover:bg-slate-800/90 shadow-sm dark:shadow-lg hover:shadow-md dark:hover:shadow-xl transition-all duration-300 group flex flex-col justify-between"
                   style={{
                     opacity: revealSkills.isVisible ? 1 : 0,
                     transform: revealSkills.isVisible
@@ -1103,61 +1122,62 @@ const Home = () => {
                     <div className="flex items-start justify-between gap-3 mb-3">
                       <div className="flex items-center gap-3">
                         {skill.icon ? (
-                          <div className="w-11 h-11 rounded-xl bg-slate-900/90 border border-slate-700/70 p-2 flex items-center justify-center shadow-md flex-shrink-0 group-hover:scale-110 group-hover:border-blue-500/50 transition-all duration-300">
+                          <div className="w-11 h-11 rounded-xl bg-slate-50 dark:bg-slate-900/90 border border-slate-200 dark:border-slate-700/70 p-2 flex items-center justify-center shadow-sm flex-shrink-0 group-hover:scale-110 group-hover:border-blue-500/50 transition-all duration-300">
                             <PortfolioImage
                               src={skill.icon}
                               alt={skill.name}
                               className="w-full h-full object-contain"
                               fallback={
-                                <span className="text-blue-400 font-bold text-sm">
+                                <span className="text-blue-500 font-bold text-sm">
                                   {skill.name?.charAt(0)}
                                 </span>
                               }
                             />
                           </div>
                         ) : (
-                          <div className="w-11 h-11 rounded-xl bg-gradient-to-tr from-blue-600/20 to-indigo-600/20 border border-blue-500/30 text-blue-400 flex items-center justify-center font-bold text-base shadow-md flex-shrink-0">
+                          <div className="w-11 h-11 rounded-xl bg-gradient-to-tr from-blue-600/20 to-indigo-600/20 border border-blue-500/30 text-blue-500 flex items-center justify-center font-bold text-base shadow-sm flex-shrink-0">
                             {skill.name?.charAt(0)}
                           </div>
                         )}
 
                         <div>
                           <div className="flex items-center gap-1.5">
-                            <span className="text-[11px] font-semibold px-2 py-0.5 rounded-md bg-blue-500/10 text-blue-400 border border-blue-500/20">
+                            <span className="text-[11px] font-semibold px-2 py-0.5 rounded-md bg-blue-500/10 text-blue-600 dark:text-blue-400 border border-blue-500/20">
                               {skill.category}
                             </span>
                             {skill.is_featured && (
-                              <span className="text-[11px] font-semibold px-1.5 py-0.5 rounded-md bg-amber-500/10 text-amber-400 border border-amber-500/20">
+                              <span className="text-[11px] font-semibold px-1.5 py-0.5 rounded-md bg-amber-500/10 text-amber-500 dark:text-amber-400 border border-amber-500/20">
                                 ★
                               </span>
                             )}
                           </div>
-                          <h3 className="text-base font-bold text-white group-hover:text-blue-400 transition-colors mt-1">
+                          <h3 className="font-bold text-slate-900 dark:text-white text-base mt-1 group-hover:text-blue-600 dark:group-hover:text-blue-400 transition-colors">
                             {skill.name}
                           </h3>
                         </div>
                       </div>
-
-                      <span className="text-base font-extrabold text-blue-400 font-mono flex-shrink-0">
-                        {skill.percentage}%
-                      </span>
-                    </div>
-
-                    {/* Animated Progress Bar */}
-                    <div className="w-full bg-slate-900 rounded-full h-2 overflow-hidden my-3 border border-slate-700/50">
-                      <div
-                        className="bg-gradient-to-r from-blue-500 via-indigo-500 to-purple-500 h-2 rounded-full transition-all duration-700 group-hover:brightness-125"
-                        style={{ width: `${skill.percentage}%` }}
-                      />
                     </div>
                   </div>
 
-                  <div className="flex items-center justify-between text-xs text-slate-400 pt-2 border-t border-slate-800/80">
-                    <span>Proficiency</span>
-                    <span className="font-semibold text-slate-300">
-                      {skill.level ||
-                        (skill.percentage >= 85 ? "Advanced" : "Intermediate")}
-                    </span>
+                  <div className="mt-4 pt-3 border-t border-slate-100 dark:border-slate-700/60">
+                    <div className="flex items-center justify-between text-xs mb-1.5">
+                      <span className="text-slate-500 dark:text-slate-400 font-medium">
+                        Proficiency
+                      </span>
+                      <span className="font-bold text-blue-600 dark:text-blue-400">
+                        {skill.percentage || 80}%
+                      </span>
+                    </div>
+                    <div className="w-full h-2 bg-slate-100 dark:bg-slate-700/60 rounded-full overflow-hidden">
+                      <div
+                        className="h-full bg-gradient-to-r from-blue-500 to-indigo-500 rounded-full transition-all duration-1000 ease-out"
+                        style={{
+                          width: revealSkills.isVisible
+                            ? `${skill.percentage || 80}%`
+                            : "0%",
+                        }}
+                      />
+                    </div>
                   </div>
                 </div>
               ))}
@@ -1171,15 +1191,15 @@ const Home = () => {
           ref={revealProjects.ref}
           className={`scroll-mt-24 sm:scroll-mt-28 space-y-8 reveal reveal-up section-deferred ${revealProjects.isVisible ? "visible" : ""}`}
         >
-          <div className="flex flex-col md:flex-row md:items-end justify-between gap-4 border-b border-slate-800 pb-4">
+          <div className="flex flex-col md:flex-row md:items-end justify-between gap-4 border-b border-slate-200 dark:border-slate-800 pb-4">
             <div>
-              <div className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-blue-500/10 text-blue-400 text-xs font-semibold mb-2">
+              <div className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-blue-500/10 text-blue-600 dark:text-blue-400 text-xs font-semibold mb-2">
                 Portfolio Showcase
               </div>
-              <h2 className="text-2xl sm:text-3xl font-bold text-white tracking-tight">
+              <h2 className="text-2xl sm:text-3xl font-bold text-slate-900 dark:text-white tracking-tight">
                 Featured Projects
               </h2>
-              <p className="text-slate-400 text-sm mt-1">
+              <p className="text-slate-500 dark:text-slate-400 text-sm mt-1">
                 Explore live applications, source code, and tech stacks.
               </p>
             </div>
@@ -1191,7 +1211,7 @@ const Home = () => {
                 className={`px-3.5 py-1.5 rounded-xl text-xs font-medium transition-all ${
                   selectedTech === "all"
                     ? "bg-blue-600 text-white shadow-md shadow-blue-500/30"
-                    : "bg-slate-800 text-slate-400 hover:text-white hover:bg-slate-700"
+                    : "bg-slate-100 hover:bg-slate-200 dark:bg-slate-800 text-slate-600 dark:text-slate-400 hover:text-slate-900 dark:hover:text-white dark:hover:bg-slate-700"
                 }`}
               >
                 All ({projects.length})
@@ -1203,7 +1223,7 @@ const Home = () => {
                   className={`px-3.5 py-1.5 rounded-xl text-xs font-medium transition-all ${
                     selectedTech === "featured"
                       ? "bg-blue-600 text-white shadow-md shadow-blue-500/30"
-                      : "bg-slate-800 text-slate-400 hover:text-white hover:bg-slate-700"
+                      : "bg-slate-100 hover:bg-slate-200 dark:bg-slate-800 text-slate-600 dark:text-slate-400 hover:text-slate-900 dark:hover:text-white dark:hover:bg-slate-700"
                   }`}
                 >
                   ★ Featured
@@ -1217,7 +1237,7 @@ const Home = () => {
                   className={`px-3.5 py-1.5 rounded-xl text-xs font-medium transition-all ${
                     selectedTech === tech
                       ? "bg-blue-600 text-white shadow-md shadow-blue-500/30"
-                      : "bg-slate-800 text-slate-400 hover:text-white hover:bg-slate-700"
+                      : "bg-slate-100 hover:bg-slate-200 dark:bg-slate-800 text-slate-600 dark:text-slate-400 hover:text-slate-900 dark:hover:text-white dark:hover:bg-slate-700"
                   }`}
                 >
                   {tech}
@@ -1227,14 +1247,14 @@ const Home = () => {
           </div>
 
           {loading ? (
-            <div className="p-12 text-center text-slate-400 bg-slate-800/30 rounded-2xl border border-slate-800">
+            <div className="p-12 text-center text-slate-400 bg-white dark:bg-slate-800/30 rounded-2xl border border-slate-200 dark:border-slate-800">
               <div className="w-8 h-8 mx-auto mb-3 border-2 border-blue-500 border-t-transparent rounded-full animate-spin" />
               <p>Loading projects...</p>
             </div>
           ) : filteredProjects.length === 0 ? (
-            <div className="p-12 text-center text-slate-400 bg-slate-800/30 rounded-2xl border border-slate-800">
+            <div className="p-12 text-center text-slate-400 bg-white dark:bg-slate-800/30 rounded-2xl border border-slate-200 dark:border-slate-800">
               <svg
-                className="w-12 h-12 mx-auto mb-3 text-slate-600"
+                className="w-12 h-12 mx-auto mb-3 text-slate-400 dark:text-slate-600"
                 fill="none"
                 stroke="currentColor"
                 viewBox="0 0 24 24"
@@ -1246,7 +1266,7 @@ const Home = () => {
                   d="M19 11H5m14 0a2 2 0 012 2v6a2 2 0 01-2 2H5a2 2 0 01-2-2v-6a2 2 0 012-2m14 0V9a2 2 0 00-2-2M5 11V9a2 2 0 012-2m0 0V5a2 2 0 012-2h6a2 2 0 012 2v2M7 7h10"
                 />
               </svg>
-              <p className="text-lg font-medium text-slate-300">
+              <p className="text-lg font-medium text-slate-700 dark:text-slate-300">
                 No projects found in this category.
               </p>
               <p className="text-sm text-slate-500 mt-1">
@@ -1262,19 +1282,19 @@ const Home = () => {
                 return (
                   <div
                     key={project.id}
-                    className="group rounded-2xl bg-slate-800/70 border border-slate-800 hover:border-slate-700/80 shadow-lg hover:shadow-xl hover:shadow-blue-500/5 transition-all duration-300 flex flex-col overflow-hidden"
+                    className="group rounded-2xl bg-white dark:bg-slate-800/70 border border-slate-200 dark:border-slate-800 hover:border-slate-300 dark:hover:border-slate-700/80 shadow-sm dark:shadow-lg hover:shadow-md dark:hover:shadow-xl transition-all duration-300 flex flex-col overflow-hidden"
                   >
                     {/* Project Image Preview — no opacity animation (fixes lazy-load black box) */}
                     <div
                       onClick={() => setSelectedProject(project)}
-                      className="relative w-full h-48 min-h-[12rem] bg-slate-950 overflow-hidden cursor-pointer"
+                      className="relative w-full h-48 min-h-[12rem] bg-slate-100 dark:bg-slate-950 overflow-hidden cursor-pointer"
                     >
                       {mainImage ? (
                         <ProjectCardImage src={mainImage} alt={project.title} />
                       ) : (
-                        <div className="absolute inset-0 flex flex-col items-center justify-center bg-gradient-to-br from-slate-800 to-slate-900 text-slate-500 p-4">
+                        <div className="absolute inset-0 flex flex-col items-center justify-center bg-gradient-to-br from-slate-100 to-slate-200 dark:from-slate-800 dark:to-slate-900 text-slate-400 dark:text-slate-500 p-4">
                           <svg
-                            className="w-10 h-10 mb-2 opacity-50 text-blue-400"
+                            className="w-10 h-10 mb-2 opacity-50 text-blue-500"
                             fill="none"
                             stroke="currentColor"
                             viewBox="0 0 24 24"
@@ -1299,7 +1319,7 @@ const Home = () => {
                       )}
 
                       {validImages.length > 1 && (
-                        <span className="absolute bottom-3 right-3 z-10 px-2 py-0.5 rounded-md bg-black/70 backdrop-blur-md text-slate-300 text-[10px] font-medium">
+                        <span className="absolute bottom-3 right-3 z-10 px-2 py-0.5 rounded-md bg-black/70 backdrop-blur-md text-slate-200 text-[10px] font-medium">
                           +{validImages.length - 1} photos
                         </span>
                       )}
@@ -1323,12 +1343,12 @@ const Home = () => {
                       <div>
                         <h3
                           onClick={() => setSelectedProject(project)}
-                          className="text-xl font-bold text-white hover:text-blue-400 transition-colors cursor-pointer"
+                          className="text-xl font-bold text-slate-900 dark:text-white hover:text-blue-600 dark:hover:text-blue-400 transition-colors cursor-pointer"
                         >
                           {project.title}
                         </h3>
 
-                        <p className="text-slate-400 text-sm mt-2 line-clamp-3 leading-relaxed">
+                        <p className="text-slate-600 dark:text-slate-400 text-sm mt-2 line-clamp-3 leading-relaxed">
                           {project.description ||
                             "No project description provided."}
                         </p>
@@ -1340,7 +1360,7 @@ const Home = () => {
                           {project.tech_stack.map((tech) => (
                             <span
                               key={tech}
-                              className="px-2.5 py-1 rounded-lg bg-slate-900/80 border border-slate-700/60 text-slate-300 text-xs font-medium"
+                              className="px-2.5 py-1 rounded-lg bg-slate-100 dark:bg-slate-900/80 border border-slate-200 dark:border-slate-700/60 text-slate-700 dark:text-slate-300 text-xs font-medium"
                             >
                               {tech}
                             </span>
@@ -1349,7 +1369,7 @@ const Home = () => {
                       )}
 
                       {/* Project Links (Read-Only) */}
-                      <div className="pt-4 border-t border-slate-800/80 flex flex-wrap items-center justify-between gap-2">
+                      <div className="pt-4 border-t border-slate-100 dark:border-slate-800/80 flex flex-wrap items-center justify-between gap-2">
                         <div className="flex flex-wrap gap-3">
                           {project.links && project.links.length > 0 ? (
                             project.links.map((link, idx) => (
@@ -1358,7 +1378,7 @@ const Home = () => {
                                 href={link.url}
                                 target="_blank"
                                 rel="noopener noreferrer"
-                                className="inline-flex items-center gap-1 text-xs font-semibold text-blue-400 hover:text-blue-300 transition-colors"
+                                className="inline-flex items-center gap-1 text-xs font-semibold text-blue-600 dark:text-blue-400 hover:text-blue-500 transition-colors"
                               >
                                 <span>{link.label}</span>
                                 <svg
@@ -1377,7 +1397,7 @@ const Home = () => {
                               </a>
                             ))
                           ) : (
-                            <span className="text-xs text-slate-500">
+                            <span className="text-xs text-slate-400 dark:text-slate-500">
                               No external links
                             </span>
                           )}
@@ -1385,7 +1405,7 @@ const Home = () => {
 
                         <button
                           onClick={() => setSelectedProject(project)}
-                          className="text-xs text-slate-400 hover:text-white font-medium transition-colors"
+                          className="text-xs text-slate-500 dark:text-slate-400 hover:text-slate-900 dark:hover:text-white font-medium transition-colors"
                         >
                           Details &rarr;
                         </button>
@@ -1404,28 +1424,28 @@ const Home = () => {
           ref={revealCerts.ref}
           className={`scroll-mt-24 sm:scroll-mt-28 space-y-8 reveal reveal-up section-deferred ${revealCerts.isVisible ? "visible" : ""}`}
         >
-          <div className="border-b border-slate-800 pb-4">
-            <div className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-indigo-500/10 text-indigo-400 text-xs font-semibold mb-2">
+          <div className="border-b border-slate-200 dark:border-slate-800 pb-4">
+            <div className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-indigo-500/10 text-indigo-600 dark:text-indigo-400 text-xs font-semibold mb-2">
               Credentials
             </div>
-            <h2 className="text-2xl sm:text-3xl font-bold text-white tracking-tight">
+            <h2 className="text-2xl sm:text-3xl font-bold text-slate-900 dark:text-white tracking-tight">
               Certifications & Courses
             </h2>
-            <p className="text-slate-400 text-sm mt-1">
+            <p className="text-slate-500 dark:text-slate-400 text-sm mt-1">
               Verified certifications, academy achievements, and completed
               training courses.
             </p>
           </div>
 
           {loading ? (
-            <div className="p-12 text-center text-slate-400 bg-slate-800/30 rounded-2xl border border-slate-800">
+            <div className="p-12 text-center text-slate-400 bg-white dark:bg-slate-800/30 rounded-2xl border border-slate-200 dark:border-slate-800">
               <div className="w-8 h-8 mx-auto mb-3 border-2 border-indigo-500 border-t-transparent rounded-full animate-spin" />
               <p>Loading certificates...</p>
             </div>
           ) : certificates.length === 0 ? (
-            <div className="p-12 text-center text-slate-400 bg-slate-800/30 rounded-2xl border border-slate-800">
+            <div className="p-12 text-center text-slate-400 bg-white dark:bg-slate-800/30 rounded-2xl border border-slate-200 dark:border-slate-800">
               <svg
-                className="w-12 h-12 mx-auto mb-3 text-slate-600"
+                className="w-12 h-12 mx-auto mb-3 text-slate-400 dark:text-slate-600"
                 fill="none"
                 stroke="currentColor"
                 viewBox="0 0 24 24"
@@ -1434,10 +1454,10 @@ const Home = () => {
                   strokeLinecap="round"
                   strokeLinejoin="round"
                   strokeWidth={1.5}
-                  d="M9 12l2 2 4-4M7.835 4.697a3.42 3.42 0 001.946-.806 3.42 3.42 0 014.438 0 3.42 3.42 0 001.946.806 3.42 3.42 0 013.138 3.138 3.42 3.42 0 00.806 1.946 3.42 3.42 0 010 4.438 3.42 3.42 0 00-.806 1.946 3.42 3.42 0 01-3.138 3.138 3.42 3.42 0 00-1.946.806 3.42 3.42 0 01-4.438 0 3.42 3.42 0 00-1.946-.806 3.42 3.42 0 01-3.138-3.138 3.42 3.42 0 00-.806-1.946 3.42 3.42 0 010-4.438 3.42 3.42 0 00.806-1.946 3.42 3.42 0 013.138-3.138z"
+                  d="M9 12l2 2 4-4M7.835 4.697a3.42 3.42 0 001.946-.806 3.42 3.42 0 014.438 0 3.42 3.42 0 001.946.806 3.42 3.42 0 013.138 3.138 3.42 3.42 0 00.806 1.946 3.42 3.42 0 010 4.438 3.42 3.42 0 00-.806 1.946 3.42 3.42 0 01-3.138 3.138 3.42 3.42 0 00-1.946.806 3.42 3.42 0 01-4.438 0 3.42 3.42 0 00-1.946-.806 3.42 3.42 0 01-3.138-3.138z"
                 />
               </svg>
-              <p className="text-lg font-medium text-slate-300">
+              <p className="text-lg font-medium text-slate-700 dark:text-slate-300">
                 No certificates published yet.
               </p>
               <p className="text-sm text-slate-500 mt-1">
@@ -1449,7 +1469,7 @@ const Home = () => {
               {certificates.map((cert, index) => (
                 <div
                   key={cert.id}
-                  className="rounded-2xl bg-slate-800/70 border border-slate-800 hover:border-slate-700/80 shadow-lg hover:shadow-xl hover:shadow-indigo-500/5 transition-all duration-300 flex flex-col overflow-hidden group"
+                  className="rounded-2xl bg-white dark:bg-slate-800/70 border border-slate-200 dark:border-slate-800 hover:border-slate-300 dark:hover:border-slate-700/80 shadow-sm dark:shadow-lg hover:shadow-md dark:hover:shadow-xl transition-all duration-300 flex flex-col overflow-hidden group"
                   style={{
                     opacity: revealCerts.isVisible ? 1 : 0,
                     transform: revealCerts.isVisible
@@ -1464,7 +1484,7 @@ const Home = () => {
                   {/* Certificate Image Preview */}
                   <div
                     onClick={() => setSelectedCertificate(cert)}
-                    className="relative w-full h-44 bg-slate-950 overflow-hidden cursor-pointer"
+                    className="relative w-full h-44 bg-slate-100 dark:bg-slate-950 overflow-hidden cursor-pointer"
                   >
                     {cert.image ? (
                       <PortfolioImage
@@ -1473,7 +1493,7 @@ const Home = () => {
                         variant="certificate"
                         className="w-full h-full object-cover transition-transform duration-500 group-hover:scale-105"
                         fallback={
-                          <div className="w-full h-full flex flex-col items-center justify-center bg-gradient-to-br from-slate-800 to-indigo-950 text-indigo-400 p-4 text-center">
+                          <div className="w-full h-full flex flex-col items-center justify-center bg-gradient-to-br from-slate-100 to-indigo-100 dark:from-slate-800 dark:to-indigo-950 text-indigo-500 dark:text-indigo-400 p-4 text-center">
                             <svg
                               className="w-12 h-12 mb-2 opacity-60"
                               fill="none"
@@ -1484,17 +1504,17 @@ const Home = () => {
                                 strokeLinecap="round"
                                 strokeLinejoin="round"
                                 strokeWidth={1.5}
-                                d="M9 12l2 2 4-4M7.835 4.697a3.42 3.42 0 001.946-.806 3.42 3.42 0 014.438 0 3.42 3.42 0 001.946.806 3.42 3.42 0 013.138 3.138 3.42 3.42 0 00.806 1.946 3.42 3.42 0 010 4.438 3.42 3.42 0 00-.806 1.946 3.42 3.42 0 01-3.138 3.138 3.42 3.42 0 00-1.946.806 3.42 3.42 0 01-4.438 0 3.42 3.42 0 00-1.946-.806 3.42 3.42 0 01-3.138-3.138 3.42 3.42 0 00-.806-1.946 3.42 3.42 0 010-4.438 3.42 3.42 0 00.806-1.946 3.42 3.42 0 013.138-3.138z"
+                                d="M9 12l2 2 4-4M7.835 4.697a3.42 3.42 0 001.946-.806 3.42 3.42 0 014.438 0 3.42 3.42 0 001.946.806 3.42 3.42 0 013.138 3.138 3.42 3.42 0 00.806 1.946 3.42 3.42 0 010 4.438 3.42 3.42 0 00-.806 1.946 3.42 3.42 0 01-3.138 3.138 3.42 3.42 0 00-1.946.806 3.42 3.42 0 01-4.438 0 3.42 3.42 0 00-1.946-.806 3.42 3.42 0 01-3.138-3.138z"
                               />
                             </svg>
-                            <span className="text-xs uppercase tracking-wider font-semibold text-slate-300">
+                            <span className="text-xs uppercase tracking-wider font-semibold text-slate-600 dark:text-slate-300">
                               Certificate
                             </span>
                           </div>
                         }
                       />
                     ) : (
-                      <div className="w-full h-full flex flex-col items-center justify-center bg-gradient-to-br from-slate-800 to-indigo-950 text-indigo-400 p-4 text-center">
+                      <div className="w-full h-full flex flex-col items-center justify-center bg-gradient-to-br from-slate-100 to-indigo-100 dark:from-slate-800 dark:to-indigo-950 text-indigo-500 dark:text-indigo-400 p-4 text-center">
                         <svg
                           className="w-12 h-12 mb-2 opacity-60"
                           fill="none"
@@ -1505,10 +1525,10 @@ const Home = () => {
                             strokeLinecap="round"
                             strokeLinejoin="round"
                             strokeWidth={1.5}
-                            d="M9 12l2 2 4-4M7.835 4.697a3.42 3.42 0 001.946-.806 3.42 3.42 0 014.438 0 3.42 3.42 0 001.946.806 3.42 3.42 0 013.138 3.138 3.42 3.42 0 00.806 1.946 3.42 3.42 0 010 4.438 3.42 3.42 0 00-.806 1.946 3.42 3.42 0 01-3.138 3.138 3.42 3.42 0 00-1.946.806 3.42 3.42 0 01-4.438 0 3.42 3.42 0 00-1.946-.806 3.42 3.42 0 01-3.138-3.138 3.42 3.42 0 00-.806-1.946 3.42 3.42 0 010-4.438 3.42 3.42 0 00.806-1.946 3.42 3.42 0 013.138-3.138z"
+                            d="M9 12l2 2 4-4M7.835 4.697a3.42 3.42 0 001.946-.806 3.42 3.42 0 014.438 0 3.42 3.42 0 001.946.806 3.42 3.42 0 013.138 3.138 3.42 3.42 0 00.806 1.946 3.42 3.42 0 010 4.438 3.42 3.42 0 00-.806 1.946 3.42 3.42 0 01-3.138 3.138 3.42 3.42 0 00-1.946.806 3.42 3.42 0 01-4.438 0 3.42 3.42 0 00-1.946-.806 3.42 3.42 0 01-3.138-3.138z"
                           />
                         </svg>
-                        <span className="text-xs uppercase tracking-wider font-semibold text-slate-300">
+                        <span className="text-xs uppercase tracking-wider font-semibold text-slate-600 dark:text-slate-300">
                           Certificate
                         </span>
                       </div>
@@ -1539,13 +1559,13 @@ const Home = () => {
                     <div>
                       <h3
                         onClick={() => setSelectedCertificate(cert)}
-                        className="text-lg font-bold text-white hover:text-indigo-400 transition-colors cursor-pointer"
+                        className="text-lg font-bold text-slate-900 dark:text-white hover:text-indigo-600 dark:hover:text-indigo-400 transition-colors cursor-pointer"
                       >
                         {cert.course}
                       </h3>
 
                       {cert.instructor && (
-                        <p className="text-xs font-semibold text-indigo-400 mt-1 flex items-center gap-1.5">
+                        <p className="text-xs font-semibold text-indigo-600 dark:text-indigo-400 mt-1 flex items-center gap-1.5">
                           <svg
                             className="w-3.5 h-3.5"
                             fill="none"
@@ -1563,12 +1583,12 @@ const Home = () => {
                         </p>
                       )}
 
-                      <p className="text-slate-400 text-sm mt-2 line-clamp-3 leading-relaxed">
+                      <p className="text-slate-600 dark:text-slate-400 text-sm mt-2 line-clamp-3 leading-relaxed">
                         {cert.description || "Course certificate completed."}
                       </p>
                     </div>
 
-                    <div className="pt-3 border-t border-slate-800/80 flex items-center justify-between text-xs text-slate-400">
+                    <div className="pt-3 border-t border-slate-100 dark:border-slate-800/80 flex items-center justify-between text-xs text-slate-500 dark:text-slate-400">
                       {cert.issued_on ? (
                         <span>Issued: {formatDisplayDate(cert.issued_on)}</span>
                       ) : (
@@ -1577,7 +1597,7 @@ const Home = () => {
 
                       <button
                         onClick={() => setSelectedCertificate(cert)}
-                        className="text-indigo-400 hover:text-indigo-300 font-medium"
+                        className="text-indigo-600 dark:text-indigo-400 hover:text-indigo-500 font-medium"
                       >
                         View Full &rarr;
                       </button>
@@ -1595,22 +1615,22 @@ const Home = () => {
           ref={revealContact.ref}
           className={`scroll-mt-24 sm:scroll-mt-28 reveal reveal-scale-up section-deferred ${revealContact.isVisible ? "visible" : ""}`}
         >
-          <div className="rounded-2xl sm:rounded-3xl bg-gradient-to-br from-slate-900 via-slate-900/90 to-slate-800/80 border border-slate-800 p-5 sm:p-8 lg:p-12 relative overflow-hidden shadow-2xl">
-            <div className="absolute top-0 right-0 w-48 sm:w-96 h-48 sm:h-96 bg-blue-600/10 rounded-full ambient-glow" />
-            <div className="absolute bottom-0 left-0 w-48 sm:w-96 h-48 sm:h-96 bg-purple-600/10 rounded-full ambient-glow" />
+          <div className="rounded-2xl sm:rounded-3xl bg-slate-100/90 dark:bg-gradient-to-br dark:from-slate-900 dark:via-slate-900/90 dark:to-slate-800/80 border border-slate-200 dark:border-slate-800 p-5 sm:p-8 lg:p-12 relative overflow-hidden shadow-sm dark:shadow-2xl">
+            <div className="absolute top-0 right-0 w-48 sm:w-96 h-48 sm:h-96 bg-blue-600/10 rounded-full ambient-glow pointer-events-none" />
+            <div className="absolute bottom-0 left-0 w-48 sm:w-96 h-48 sm:h-96 bg-purple-600/10 rounded-full ambient-glow pointer-events-none" />
 
             <div className="relative z-10 grid md:grid-cols-2 lg:grid-cols-12 gap-8 md:gap-10 lg:gap-14">
               {/* Left Column: Direct Info & Quick Copy */}
               <div className="md:col-span-1 lg:col-span-5 space-y-5 sm:space-y-6">
-                <div className="inline-flex items-center gap-1.5 px-3.5 py-1.5 rounded-full bg-blue-500/10 text-blue-400 text-xs font-semibold">
+                <div className="inline-flex items-center gap-1.5 px-3.5 py-1.5 rounded-full bg-blue-500/10 text-blue-600 dark:text-blue-400 text-xs font-semibold">
                   Get In Touch
                 </div>
 
-                <h2 className="text-2xl sm:text-3xl lg:text-4xl font-extrabold text-white tracking-tight leading-tight">
+                <h2 className="text-2xl sm:text-3xl lg:text-4xl font-extrabold text-slate-900 dark:text-white tracking-tight leading-tight">
                   Let's Build Something Great Together
                 </h2>
 
-                <p className="text-slate-300 text-sm sm:text-base leading-relaxed">
+                <p className="text-slate-600 dark:text-slate-300 text-sm sm:text-base leading-relaxed">
                   Have a project inquiry, job opportunity, or question? Send a
                   message directly or connect through email and phone.
                 </p>
@@ -1618,9 +1638,9 @@ const Home = () => {
                 {/* Direct Contact Cards */}
                 <div className="grid sm:grid-cols-2 md:grid-cols-1 gap-3 pt-1 sm:pt-2">
                   {displayUser?.email && (
-                    <div className="p-4 rounded-2xl bg-slate-950/60 border border-slate-800 hover:border-slate-700 flex items-center justify-between gap-3 group transition-all">
+                    <div className="p-4 rounded-2xl bg-white dark:bg-slate-950/60 border border-slate-200 dark:border-slate-800 hover:border-slate-300 dark:hover:border-slate-700 flex items-center justify-between gap-3 group transition-all shadow-sm">
                       <div className="flex items-center gap-3 min-w-0">
-                        <div className="w-10 h-10 rounded-xl bg-blue-500/10 text-blue-400 flex items-center justify-center flex-shrink-0">
+                        <div className="w-10 h-10 rounded-xl bg-blue-500/10 text-blue-600 dark:text-blue-400 flex items-center justify-center flex-shrink-0">
                           <svg
                             className="w-5 h-5"
                             fill="none"
@@ -1636,10 +1656,10 @@ const Home = () => {
                           </svg>
                         </div>
                         <div className="min-w-0">
-                          <p className="text-[11px] font-semibold text-slate-400 uppercase tracking-wider">
+                          <p className="text-[11px] font-semibold text-slate-500 dark:text-slate-400 uppercase tracking-wider">
                             Email Address
                           </p>
-                          <p className="text-sm font-bold text-white truncate">
+                          <p className="text-sm font-bold text-slate-900 dark:text-white truncate">
                             {displayUser.email}
                           </p>
                         </div>
@@ -1648,7 +1668,7 @@ const Home = () => {
                       <button
                         type="button"
                         onClick={() => handleCopy(displayUser.email, "email")}
-                        className="px-3 py-1.5 rounded-lg bg-slate-800 text-slate-300 hover:text-white text-xs font-semibold flex-shrink-0 transition-colors"
+                        className="px-3 py-1.5 rounded-lg bg-slate-100 dark:bg-slate-800 text-slate-700 dark:text-slate-300 hover:text-black dark:hover:text-white text-xs font-semibold flex-shrink-0 transition-colors border border-slate-200 dark:border-slate-700"
                       >
                         {copiedField === "email" ? "✓ Copied!" : "Copy"}
                       </button>
@@ -1656,9 +1676,9 @@ const Home = () => {
                   )}
 
                   {displayUser?.phone && (
-                    <div className="p-4 rounded-2xl bg-slate-950/60 border border-slate-800 hover:border-slate-700 flex items-center justify-between gap-3 group transition-all">
+                    <div className="p-4 rounded-2xl bg-white dark:bg-slate-950/60 border border-slate-200 dark:border-slate-800 hover:border-slate-300 dark:hover:border-slate-700 flex items-center justify-between gap-3 group transition-all shadow-sm">
                       <div className="flex items-center gap-3 min-w-0">
-                        <div className="w-10 h-10 rounded-xl bg-green-500/10 text-green-400 flex items-center justify-center flex-shrink-0">
+                        <div className="w-10 h-10 rounded-xl bg-emerald-500/10 text-emerald-600 dark:text-green-400 flex items-center justify-center flex-shrink-0">
                           <svg
                             className="w-5 h-5"
                             fill="none"
@@ -1674,10 +1694,10 @@ const Home = () => {
                           </svg>
                         </div>
                         <div className="min-w-0">
-                          <p className="text-[11px] font-semibold text-slate-400 uppercase tracking-wider">
+                          <p className="text-[11px] font-semibold text-slate-500 dark:text-slate-400 uppercase tracking-wider">
                             Phone / Telegram
                           </p>
-                          <p className="text-sm font-bold text-white truncate">
+                          <p className="text-sm font-bold text-slate-900 dark:text-white truncate">
                             {displayUser.phone}
                           </p>
                         </div>
@@ -1686,7 +1706,7 @@ const Home = () => {
                       <button
                         type="button"
                         onClick={() => handleCopy(displayUser.phone, "phone")}
-                        className="px-3 py-1.5 rounded-lg bg-slate-800 text-slate-300 hover:text-white text-xs font-semibold flex-shrink-0 transition-colors"
+                        className="px-3 py-1.5 rounded-lg bg-slate-100 dark:bg-slate-800 text-slate-700 dark:text-slate-300 hover:text-black dark:hover:text-white text-xs font-semibold flex-shrink-0 transition-colors border border-slate-200 dark:border-slate-700"
                       >
                         {copiedField === "phone" ? "✓ Copied!" : "Copy"}
                       </button>
@@ -1696,10 +1716,10 @@ const Home = () => {
               </div>
 
               {/* Right Column: Interactive Send Message Form */}
-              <div className="md:col-span-1 lg:col-span-7 glass-panel border border-slate-800/80 rounded-2xl sm:rounded-3xl p-5 sm:p-6 lg:p-8 shadow-xl gpu-smooth">
+              <div className="md:col-span-1 lg:col-span-7 bg-white dark:bg-slate-950/70 border border-slate-200 dark:border-slate-800/80 rounded-2xl sm:rounded-3xl p-5 sm:p-6 lg:p-8 shadow-md dark:shadow-xl gpu-smooth">
                 {contactSubmitted ? (
                   <div className="text-center py-10 space-y-4 animate-in zoom-in-95 duration-300">
-                    <div className="w-16 h-16 mx-auto rounded-2xl bg-emerald-500/10 border border-emerald-500/30 text-emerald-400 flex items-center justify-center shadow-lg shadow-emerald-500/20">
+                    <div className="w-16 h-16 mx-auto rounded-2xl bg-emerald-500/10 border border-emerald-500/30 text-emerald-600 dark:text-emerald-400 flex items-center justify-center shadow-lg shadow-emerald-500/20">
                       <svg
                         className="w-8 h-8"
                         fill="none"
@@ -1714,10 +1734,10 @@ const Home = () => {
                         />
                       </svg>
                     </div>
-                    <h3 className="text-2xl font-bold text-white">
+                    <h3 className="text-2xl font-bold text-slate-900 dark:text-white">
                       Message Sent Successfully!
                     </h3>
-                    <p className="text-slate-400 text-sm max-w-sm mx-auto leading-relaxed">
+                    <p className="text-slate-600 dark:text-slate-400 text-sm max-w-sm mx-auto leading-relaxed">
                       Thank you for reaching out. Your message has been recorded
                       and I will respond to your email shortly!
                     </p>
@@ -1727,20 +1747,20 @@ const Home = () => {
                         setContactSubmitted(false);
                         setContactApiError("");
                       }}
-                      className="px-6 py-2.5 rounded-xl bg-slate-800 hover:bg-slate-700 text-slate-200 text-xs font-semibold transition-all mt-4"
+                      className="px-6 py-2.5 rounded-xl bg-slate-100 dark:bg-slate-800 hover:bg-slate-200 dark:hover:bg-slate-700 text-slate-800 dark:text-slate-200 text-xs font-semibold transition-all mt-4 border border-slate-200 dark:border-slate-700"
                     >
                       Send Another Message
                     </button>
                   </div>
                 ) : (
                   <form onSubmit={handleContactSubmit} className="space-y-4 sm:space-y-5">
-                    <h3 className="text-lg sm:text-xl font-bold text-white mb-1 sm:mb-2">
+                    <h3 className="text-lg sm:text-xl font-bold text-slate-900 dark:text-white mb-1 sm:mb-2">
                       Send a Message
                     </h3>
 
                     <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
                       <div>
-                        <label className="block text-xs font-semibold uppercase tracking-wider text-slate-300 mb-1.5">
+                        <label className="block text-xs font-semibold uppercase tracking-wider text-slate-700 dark:text-slate-300 mb-1.5">
                           Your Name
                         </label>
                         <input
@@ -1755,21 +1775,21 @@ const Home = () => {
                               setContactErrors({ ...contactErrors, name: "" });
                           }}
                           placeholder="John Doe"
-                          className={`form-input ${
+                          className={`form-input bg-slate-50 dark:bg-slate-900 text-slate-900 dark:text-white ${
                             contactErrors.name
                               ? "border-red-500 focus:ring-red-500 bg-red-500/5"
-                              : "border-slate-800 focus:ring-blue-500 focus:border-transparent"
+                              : "border-slate-200 dark:border-slate-800 focus:ring-blue-500 focus:border-transparent"
                           }`}
                         />
                         {contactErrors.name && (
-                          <p className="text-red-400 text-xs mt-1 font-medium">
+                          <p className="text-red-500 text-xs mt-1 font-medium">
                             ⚠ {contactErrors.name}
                           </p>
                         )}
                       </div>
 
                       <div>
-                        <label className="block text-xs font-semibold uppercase tracking-wider text-slate-300 mb-1.5">
+                        <label className="block text-xs font-semibold uppercase tracking-wider text-slate-700 dark:text-slate-300 mb-1.5">
                           Your Email
                         </label>
                         <input
@@ -1784,14 +1804,14 @@ const Home = () => {
                               setContactErrors({ ...contactErrors, email: "" });
                           }}
                           placeholder="john@example.com"
-                          className={`form-input ${
+                          className={`form-input bg-slate-50 dark:bg-slate-900 text-slate-900 dark:text-white ${
                             contactErrors.email
                               ? "border-red-500 focus:ring-red-500 bg-red-500/5"
-                              : "border-slate-800 focus:ring-blue-500 focus:border-transparent"
+                              : "border-slate-200 dark:border-slate-800 focus:ring-blue-500 focus:border-transparent"
                           }`}
                         />
                         {contactErrors.email && (
-                          <p className="text-red-400 text-xs mt-1 font-medium">
+                          <p className="text-red-500 text-xs mt-1 font-medium">
                             ⚠ {contactErrors.email}
                           </p>
                         )}
@@ -1799,7 +1819,7 @@ const Home = () => {
                     </div>
 
                     <div>
-                      <label className="block text-xs font-semibold uppercase tracking-wider text-slate-300 mb-1.5">
+                      <label className="block text-xs font-semibold uppercase tracking-wider text-slate-700 dark:text-slate-300 mb-1.5">
                         Subject
                       </label>
                       <input
@@ -1814,21 +1834,21 @@ const Home = () => {
                             setContactErrors({ ...contactErrors, subject: "" });
                         }}
                         placeholder="Project Discussion / Collaboration"
-                        className={`form-input ${
+                        className={`form-input bg-slate-50 dark:bg-slate-900 text-slate-900 dark:text-white ${
                           contactErrors.subject
                             ? "border-red-500 focus:ring-red-500 bg-red-500/5"
-                            : "border-slate-800 focus:ring-blue-500 focus:border-transparent"
+                            : "border-slate-200 dark:border-slate-800 focus:ring-blue-500 focus:border-transparent"
                         }`}
                       />
                       {contactErrors.subject && (
-                        <p className="text-red-400 text-xs mt-1 font-medium">
+                        <p className="text-red-500 text-xs mt-1 font-medium">
                           ⚠ {contactErrors.subject}
                         </p>
                       )}
                     </div>
 
                     <div>
-                      <label className="block text-xs font-semibold uppercase tracking-wider text-slate-300 mb-1.5">
+                      <label className="block text-xs font-semibold uppercase tracking-wider text-slate-700 dark:text-slate-300 mb-1.5">
                         Your Message
                       </label>
                       <textarea
@@ -1843,21 +1863,21 @@ const Home = () => {
                             setContactErrors({ ...contactErrors, message: "" });
                         }}
                         placeholder="Hi, I would like to discuss a project..."
-                        className={`form-textarea ${
+                        className={`form-textarea bg-slate-50 dark:bg-slate-900 text-slate-900 dark:text-white ${
                           contactErrors.message
                             ? "border-red-500 focus:ring-red-500 bg-red-500/5"
-                            : "border-slate-800 focus:ring-blue-500 focus:border-transparent"
+                            : "border-slate-200 dark:border-slate-800 focus:ring-blue-500 focus:border-transparent"
                         }`}
                       />
                       {contactErrors.message && (
-                        <p className="text-red-400 text-xs mt-1 font-medium">
+                        <p className="text-red-500 text-xs mt-1 font-medium">
                           ⚠ {contactErrors.message}
                         </p>
                       )}
                     </div>
 
                     {contactApiError && (
-                      <div className="flex items-start gap-2 p-3 rounded-xl bg-red-500/10 border border-red-500/30 text-red-400 text-xs font-medium">
+                      <div className="flex items-start gap-2 p-3 rounded-xl bg-red-500/10 border border-red-500/30 text-red-500 text-xs font-medium">
                         <span className="flex-shrink-0 mt-0.5">⚠</span>
                         <span>{contactApiError}</span>
                       </div>
@@ -1886,14 +1906,14 @@ const Home = () => {
       </main>
 
       {/* FOOTER */}
-      <footer className="border-t border-slate-800 bg-slate-950/60 py-8 pb-safe-bottom text-center text-slate-500 text-sm">
+      <footer className="border-t border-slate-200 dark:border-slate-800 bg-white dark:bg-slate-950/60 py-8 pb-safe-bottom text-center text-slate-500 dark:text-slate-400 text-sm transition-colors duration-300">
         <div className="max-w-7xl mx-auto px-4 flex flex-col sm:flex-row items-center justify-between gap-4">
           <p className="flex items-center justify-center sm:justify-start gap-1.5 flex-wrap">
             <span>&copy; {new Date().getFullYear()}</span>
             <VerifiedName
               name={displayUser?.name || "Yorn Pheareak"}
               badgeSize="xs"
-              nameClassName="font-semibold text-slate-300"
+              nameClassName="font-semibold text-slate-700 dark:text-slate-300"
             />
             <span>. All rights reserved.</span>
           </p>
@@ -1901,15 +1921,15 @@ const Home = () => {
             <button
               type="button"
               onClick={() => setCvModalOpen(true)}
-              className="text-blue-400 hover:text-blue-300 font-medium"
+              className="text-blue-600 dark:text-blue-400 hover:text-blue-500 font-medium"
             >
               Look CV
             </button>
-            <a href="#hero" className="hover:text-slate-300">
+            <a href="#hero" className="hover:text-slate-900 dark:hover:text-slate-300">
               Back to top &uarr;
             </a>
             {!isAuthenticated && (
-              <Link to="/login" className="hover:text-blue-400">
+              <Link to="/login" className="hover:text-blue-600 dark:hover:text-blue-400">
                 Admin Sign In
               </Link>
             )}
@@ -1920,10 +1940,10 @@ const Home = () => {
       {/* PROJECT DETAILS MODAL (READ-ONLY) */}
       {selectedProject && (
         <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/80 backdrop-blur-sm">
-          <div className="bg-slate-900 border border-slate-800 rounded-2xl max-w-2xl w-full max-h-[90vh] overflow-y-auto p-6 sm:p-8 space-y-6 shadow-2xl relative">
+          <div className="bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 rounded-2xl max-w-2xl w-full max-h-[90vh] overflow-y-auto p-6 sm:p-8 space-y-6 shadow-2xl relative">
             <button
               onClick={() => setSelectedProject(null)}
-              className="absolute top-5 right-5 p-2 rounded-full bg-slate-800 text-slate-400 hover:text-white hover:bg-slate-700 transition-colors"
+              className="absolute top-5 right-5 p-2 rounded-full bg-slate-100 dark:bg-slate-800 text-slate-500 dark:text-slate-400 hover:text-black dark:hover:text-white hover:bg-slate-200 dark:hover:bg-slate-700 transition-colors"
             >
               <svg
                 className="w-5 h-5"
@@ -1947,7 +1967,7 @@ const Home = () => {
                     src={getProjectValidImages(selectedProject)[0]}
                     alt={selectedProject.title}
                     variant="project"
-                    className="w-full max-h-72 object-cover rounded-xl border border-slate-800"
+                    className="w-full max-h-72 object-cover rounded-xl border border-slate-200 dark:border-slate-800"
                   />
                   {getProjectValidImages(selectedProject).length > 1 && (
                     <div className="grid grid-cols-3 gap-2">
@@ -1959,7 +1979,7 @@ const Home = () => {
                             src={imgUrl}
                             alt=""
                             variant="project"
-                            className="w-full h-20 object-cover rounded-lg border border-slate-800"
+                            className="w-full h-20 object-cover rounded-lg border border-slate-200 dark:border-slate-800"
                           />
                         ))}
                     </div>
@@ -1969,7 +1989,7 @@ const Home = () => {
 
             <div>
               <div className="flex items-center gap-2">
-                <h3 className="text-2xl font-bold text-white">
+                <h3 className="text-2xl font-bold text-slate-900 dark:text-white">
                   {selectedProject.title}
                 </h3>
                 {selectedProject.is_featured && (
@@ -1978,7 +1998,7 @@ const Home = () => {
                   </span>
                 )}
               </div>
-              <p className="text-slate-300 text-sm mt-3 whitespace-pre-line leading-relaxed">
+              <p className="text-slate-600 dark:text-slate-300 text-sm mt-3 whitespace-pre-line leading-relaxed">
                 {selectedProject.description}
               </p>
             </div>
@@ -1986,14 +2006,14 @@ const Home = () => {
             {selectedProject.tech_stack &&
               selectedProject.tech_stack.length > 0 && (
                 <div>
-                  <h4 className="text-xs uppercase tracking-wider font-semibold text-slate-400 mb-2">
+                  <h4 className="text-xs uppercase tracking-wider font-semibold text-slate-500 dark:text-slate-400 mb-2">
                     Technologies Used
                   </h4>
                   <div className="flex flex-wrap gap-2">
                     {selectedProject.tech_stack.map((tech) => (
                       <span
                         key={tech}
-                        className="px-3 py-1 rounded-lg bg-slate-800 text-blue-400 text-xs font-medium border border-slate-700"
+                        className="px-3 py-1 rounded-lg bg-slate-100 dark:bg-slate-800 text-blue-600 dark:text-blue-400 text-xs font-medium border border-slate-200 dark:border-slate-700"
                       >
                         {tech}
                       </span>
@@ -2003,8 +2023,8 @@ const Home = () => {
               )}
 
             {selectedProject.links && selectedProject.links.length > 0 && (
-              <div className="pt-4 border-t border-slate-800">
-                <h4 className="text-xs uppercase tracking-wider font-semibold text-slate-400 mb-3">
+              <div className="pt-4 border-t border-slate-100 dark:border-slate-800">
+                <h4 className="text-xs uppercase tracking-wider font-semibold text-slate-500 dark:text-slate-400 mb-3">
                   Links & Live Demos
                 </h4>
                 <div className="flex flex-wrap gap-3">
@@ -2042,10 +2062,10 @@ const Home = () => {
       {/* CERTIFICATE LIGHTBOX / ZOOM MODAL (READ-ONLY) */}
       {selectedCertificate && (
         <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/85 backdrop-blur-sm">
-          <div className="bg-slate-900 border border-slate-800 rounded-2xl max-w-2xl w-full max-h-[90vh] overflow-y-auto p-6 sm:p-8 space-y-6 shadow-2xl relative">
+          <div className="bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 rounded-2xl max-w-2xl w-full max-h-[90vh] overflow-y-auto p-6 sm:p-8 space-y-6 shadow-2xl relative">
             <button
               onClick={() => setSelectedCertificate(null)}
-              className="absolute top-5 right-5 p-2 rounded-full bg-slate-800 text-slate-400 hover:text-white hover:bg-slate-700 transition-colors"
+              className="absolute top-5 right-5 p-2 rounded-full bg-slate-100 dark:bg-slate-800 text-slate-500 dark:text-slate-400 hover:text-black dark:hover:text-white hover:bg-slate-200 dark:hover:bg-slate-700 transition-colors"
             >
               <svg
                 className="w-5 h-5"
@@ -2063,7 +2083,7 @@ const Home = () => {
             </button>
 
             {selectedCertificate.image && (
-              <div className="rounded-xl overflow-hidden border border-slate-800 bg-black">
+              <div className="rounded-xl overflow-hidden border border-slate-200 dark:border-slate-800 bg-slate-100 dark:bg-black">
                 <PortfolioImage
                   src={selectedCertificate.image}
                   alt={selectedCertificate.course}
@@ -2074,20 +2094,20 @@ const Home = () => {
             )}
 
             <div>
-              <h3 className="text-2xl font-bold text-white">
+              <h3 className="text-2xl font-bold text-slate-900 dark:text-white">
                 {selectedCertificate.course}
               </h3>
               {selectedCertificate.instructor && (
-                <p className="text-sm font-semibold text-indigo-400 mt-1">
+                <p className="text-sm font-semibold text-indigo-600 dark:text-indigo-400 mt-1">
                   Issued by / Instructor: {selectedCertificate.instructor}
                 </p>
               )}
               {selectedCertificate.issued_on && (
-                <p className="text-xs text-slate-400 mt-1">
+                <p className="text-xs text-slate-500 dark:text-slate-400 mt-1">
                   Date: {formatDisplayDate(selectedCertificate.issued_on)}
                 </p>
               )}
-              <p className="text-slate-300 text-sm mt-4 whitespace-pre-line leading-relaxed">
+              <p className="text-slate-600 dark:text-slate-300 text-sm mt-4 whitespace-pre-line leading-relaxed">
                 {selectedCertificate.description ||
                   "Certificate of completion."}
               </p>
