@@ -8,6 +8,7 @@ import PortfolioImage from "../components/PortfolioImage";
 import ProjectCardImage from "../components/ProjectCardImage";
 import VerifiedBadge, { VerifiedName } from "../components/VerifiedBadge";
 import AnimatedBackground from "../components/AnimatedBackground";
+import HeroBanner3D from "../components/HeroBanner3D";
 import {
   fetchPublicPortfolioData,
   hydrateFromCache,
@@ -541,8 +542,10 @@ const Home = () => {
         {/* HERO / PROFILE SECTION */}
         <section
           id="hero"
-          className="relative pt-6 pb-12 flex flex-col lg:flex-row items-center justify-between gap-12 lg:gap-16"
+          className="relative pt-6 pb-12 flex flex-col lg:flex-row items-center justify-between gap-12 lg:gap-16 overflow-hidden rounded-3xl"
         >
+          {/* 3D Live Hero Banner Animation */}
+          <HeroBanner3D />
           {/* Ambient Glows */}
           <div className="absolute top-1/4 -left-20 w-48 sm:w-72 h-48 sm:h-72 bg-blue-600/15 rounded-full ambient-glow" />
           <div className="absolute bottom-0 right-0 w-64 sm:w-96 h-64 sm:h-96 bg-indigo-600/10 rounded-full ambient-glow" />
