@@ -622,7 +622,7 @@ const Home = () => {
         {/* HERO / PROFILE SECTION */}
         <section
           id="hero"
-          className="relative pt-6 pb-12 flex flex-col lg:flex-row items-center justify-between gap-12 lg:gap-14 overflow-hidden rounded-3xl"
+          className="relative pt-6 pb-12 flex flex-col lg:flex-row items-center justify-between gap-12 lg:gap-14 rounded-3xl"
         >
           {/* Left Text Column */}
           <div className="flex-1 space-y-6 text-center lg:text-left z-10 w-full">
