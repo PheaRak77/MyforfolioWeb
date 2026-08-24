@@ -781,6 +781,195 @@ const Home = () => {
           </div>
         </section>
 
+        {/* CV / RESUME TIMELINE SECTION (Directly after Banner UI) */}
+        <section id="experience" className="relative pt-4 pb-8 space-y-10">
+          <div className="border-b border-black/[0.08] dark:border-white/[0.08] pb-4 flex items-center justify-between">
+            <div>
+              <div className="inline-flex items-center gap-1.5 px-3.5 py-1 rounded-full bg-amber-500/10 text-amber-600 dark:text-amber-300 text-xs font-bold mb-2">
+                Resume & Profile
+              </div>
+              <h2 className="text-2xl sm:text-3xl font-extrabold text-neutral-900 dark:text-white tracking-tight">
+                Work Experience, Skills & Education
+              </h2>
+              <p className="text-neutral-500 dark:text-neutral-400 text-sm mt-1">
+                Detailed breakdown from my official curriculum vitae
+              </p>
+            </div>
+          </div>
+
+          {/* Timeline Container */}
+          <div className="relative border-l-2 border-amber-400/40 dark:border-amber-400/30 ml-4 sm:ml-6 pl-6 sm:pl-8 space-y-12">
+            
+            {/* 1. WORK EXPERIENCE */}
+            <div className="relative group">
+              {/* Timeline Icon Badge */}
+              <div className="absolute -left-[43px] sm:-left-[51px] top-0 w-10 h-10 sm:w-11 sm:h-11 rounded-2xl bg-amber-400 text-neutral-950 font-bold flex items-center justify-center shadow-lg shadow-amber-400/25 ring-4 ring-white dark:ring-[#070b14] group-hover:scale-110 transition-transform">
+                <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M21 13.255A23.931 23.931 0 0112 15c-3.183 0-6.22-.62-9-1.745M16 6V4a2 2 0 00-2-2h-4a2 2 0 00-2 2v2m4 6h.01M5 20h14a2 2 0 002-2V8a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z" />
+                </svg>
+              </div>
+
+              <div className="p-6 sm:p-7 rounded-3xl bg-white/80 dark:bg-white/[0.04] backdrop-blur-xl border border-black/[0.06] dark:border-white/[0.08] shadow-sm hover:border-amber-400/50 transition-all duration-300">
+                <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-2 border-b border-black/5 dark:border-white/10 pb-4 mb-4">
+                  <div>
+                    <span className="text-xs uppercase font-extrabold tracking-wider text-amber-500 dark:text-amber-300">
+                      Work Experience
+                    </span>
+                    <h3 className="text-xl sm:text-2xl font-bold text-neutral-900 dark:text-white mt-0.5">
+                      Technical Support & Sales Specialist
+                    </h3>
+                    <p className="text-sm font-semibold text-neutral-600 dark:text-neutral-300">
+                      Pov Thyda Phone Shop | Phnom Penh
+                    </p>
+                  </div>
+                  <div className="inline-flex items-center px-3 py-1 rounded-full bg-amber-500/10 text-amber-600 dark:text-amber-300 text-xs font-bold self-start sm:self-center border border-amber-500/20">
+                    Feb 2024 – Present
+                  </div>
+                </div>
+
+                <ul className="space-y-3 text-sm text-neutral-600 dark:text-neutral-300">
+                  <li className="flex items-start gap-2.5">
+                    <span className="text-amber-500 font-bold mt-0.5">•</span>
+                    <span>
+                      Manage device diagnostics, cross-platform data migration, and mobile operating system troubleshooting for diverse client devices.
+                    </span>
+                  </li>
+                  <li className="flex items-start gap-2.5">
+                    <span className="text-amber-500 font-bold mt-0.5">•</span>
+                    <span>
+                      Provide direct technical support to users, resolving application configuration, network connectivity, and hardware issues.
+                    </span>
+                  </li>
+                </ul>
+              </div>
+            </div>
+
+            {/* 2. TECHNICAL SKILLS & PROFICIENCY */}
+            <div className="relative group">
+              {/* Timeline Icon Badge */}
+              <div className="absolute -left-[43px] sm:-left-[51px] top-0 w-10 h-10 sm:w-11 sm:h-11 rounded-2xl bg-amber-400 text-neutral-950 font-bold flex items-center justify-center shadow-lg shadow-amber-400/25 ring-4 ring-white dark:ring-[#070b14] group-hover:scale-110 transition-transform">
+                <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M10 20l4-16m4 4l4 4-4 4M6 16l-4-4 4-4" />
+                </svg>
+              </div>
+
+              <div className="p-6 sm:p-7 rounded-3xl bg-white/80 dark:bg-white/[0.04] backdrop-blur-xl border border-black/[0.06] dark:border-white/[0.08] shadow-sm hover:border-amber-400/50 transition-all duration-300 space-y-6">
+                <div className="border-b border-black/5 dark:border-white/10 pb-4">
+                  <span className="text-xs uppercase font-extrabold tracking-wider text-amber-500 dark:text-amber-300">
+                    Core Competencies
+                  </span>
+                  <h3 className="text-xl sm:text-2xl font-bold text-neutral-900 dark:text-white mt-0.5">
+                    Technical Skills Overview
+                  </h3>
+                </div>
+
+                {/* Categorized Skills Grid */}
+                <div className="grid sm:grid-cols-2 gap-4">
+                  <div className="p-4 rounded-2xl bg-black/5 dark:bg-white/5 border border-black/5 dark:border-white/10">
+                    <h4 className="font-bold text-xs uppercase text-amber-600 dark:text-amber-300 tracking-wide mb-1.5">
+                      Frontend
+                    </h4>
+                    <p className="text-xs sm:text-sm font-medium text-neutral-800 dark:text-neutral-200">
+                      Vue.js, React.js, JavaScript, HTML, CSS, Tailwind CSS, Bootstrap.
+                    </p>
+                  </div>
+
+                  <div className="p-4 rounded-2xl bg-black/5 dark:bg-white/5 border border-black/5 dark:border-white/10">
+                    <h4 className="font-bold text-xs uppercase text-amber-600 dark:text-amber-300 tracking-wide mb-1.5">
+                      Backend & APIs
+                    </h4>
+                    <p className="text-xs sm:text-sm font-medium text-neutral-800 dark:text-neutral-200">
+                      Node.js (In Progress), Express.js (In Progress), PHP, RESTful APIs
+                    </p>
+                  </div>
+
+                  <div className="p-4 rounded-2xl bg-black/5 dark:bg-white/5 border border-black/5 dark:border-white/10">
+                    <h4 className="font-bold text-xs uppercase text-amber-600 dark:text-amber-300 tracking-wide mb-1.5">
+                      Databases
+                    </h4>
+                    <p className="text-xs sm:text-sm font-medium text-neutral-800 dark:text-neutral-200">
+                      MySQL, PostgreSQL.
+                    </p>
+                  </div>
+
+                  <div className="p-4 rounded-2xl bg-black/5 dark:bg-white/5 border border-black/5 dark:border-white/10">
+                    <h4 className="font-bold text-xs uppercase text-amber-600 dark:text-amber-300 tracking-wide mb-1.5">
+                      Tools & Technologies
+                    </h4>
+                    <p className="text-xs sm:text-sm font-medium text-neutral-800 dark:text-neutral-200">
+                      Git, GitHub, Vercel, C / C++ / OOP.
+                    </p>
+                  </div>
+                </div>
+
+                {/* Technical Proficiency Breakdown */}
+                <div className="pt-2">
+                  <h4 className="font-bold text-base text-neutral-900 dark:text-white mb-3">
+                    Technical Proficiency & Focus Areas
+                  </h4>
+                  <div className="space-y-3 text-sm text-neutral-600 dark:text-neutral-300">
+                    <div className="p-3.5 rounded-2xl bg-white/50 dark:bg-white/[0.02] border border-black/5 dark:border-white/5">
+                      <strong className="text-neutral-900 dark:text-white font-semibold">Clean & Beautiful User Interfaces:</strong>{" "}
+                      Passionate about crafting visually appealing, modern, and intuitive user interfaces that deliver exceptional user experiences across all digital touchpoints.
+                    </div>
+                    <div className="p-3.5 rounded-2xl bg-white/50 dark:bg-white/[0.02] border border-black/5 dark:border-white/5">
+                      <strong className="text-neutral-900 dark:text-white font-semibold">Fully Responsive Web Development:</strong>{" "}
+                      Expert in designing and building fully responsive websites that adapt seamlessly to any screen size—from mobile phones and tablets to desktop monitors—ensuring optimal layout consistency and accessibility.
+                    </div>
+                    <div className="p-3.5 rounded-2xl bg-white/50 dark:bg-white/[0.02] border border-black/5 dark:border-white/5">
+                      <strong className="text-neutral-900 dark:text-white font-semibold">Modern Styling Frameworks:</strong>{" "}
+                      Proficient in leveraging Tailwind CSS and Bootstrap to create fast-loading, clean, and pixel-perfect layouts with custom styling and animations.
+                    </div>
+                    <div className="p-3.5 rounded-2xl bg-white/50 dark:bg-white/[0.02] border border-black/5 dark:border-white/5">
+                      <strong className="text-neutral-900 dark:text-white font-semibold">Framework Mastery:</strong>{" "}
+                      Strong hands-on experience building dynamic, component-driven single-page applications (SPAs) using Vue.js and React.js.
+                    </div>
+                    <div className="p-3.5 rounded-2xl bg-white/50 dark:bg-white/[0.02] border border-black/5 dark:border-white/5">
+                      <strong className="text-neutral-900 dark:text-white font-semibold">Server-Side Development:</strong>{" "}
+                      Actively expanding backend engineering expertise in building scalable server-side applications using Node.js PHP and Express.js (In Progress).
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            {/* 3. EDUCATION */}
+            <div className="relative group">
+              {/* Timeline Icon Badge */}
+              <div className="absolute -left-[43px] sm:-left-[51px] top-0 w-10 h-10 sm:w-11 sm:h-11 rounded-2xl bg-amber-400 text-neutral-950 font-bold flex items-center justify-center shadow-lg shadow-amber-400/25 ring-4 ring-white dark:ring-[#070b14] group-hover:scale-110 transition-transform">
+                <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 14l9-5-9-5-9 5 9 5z" />
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 14l6.16-3.422a12.083 12.083 0 01.665 6.479A11.952 11.952 0 0112 20.055a11.952 11.952 0 01-6.824-2.998 12.078 12.078 0 01.665-6.479L12 14z" />
+                </svg>
+              </div>
+
+              <div className="p-6 sm:p-7 rounded-3xl bg-white/80 dark:bg-white/[0.04] backdrop-blur-xl border border-black/[0.06] dark:border-white/[0.08] shadow-sm hover:border-amber-400/50 transition-all duration-300">
+                <div className="border-b border-black/5 dark:border-white/10 pb-4 mb-4">
+                  <span className="text-xs uppercase font-extrabold tracking-wider text-amber-500 dark:text-amber-300">
+                    Education
+                  </span>
+                  <h3 className="text-xl sm:text-2xl font-bold text-neutral-900 dark:text-white mt-0.5">
+                    National University of Management (NUM)
+                  </h3>
+                  <p className="text-sm font-semibold text-neutral-600 dark:text-neutral-300">
+                    Phnom Penh, Cambodia
+                  </p>
+                </div>
+
+                <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-2">
+                  <p className="text-sm sm:text-base font-semibold text-neutral-800 dark:text-neutral-200">
+                    Bachelor's Degree in Information Technology
+                  </p>
+                  <span className="inline-flex items-center px-3 py-1 rounded-full bg-amber-500/10 text-amber-600 dark:text-amber-300 text-xs font-bold self-start sm:self-center border border-amber-500/20">
+                    Current (4th-Year Student)
+                  </span>
+                </div>
+              </div>
+            </div>
+
+          </div>
+        </section>
+
         {/* ABOUT & SKILLS SUMMARY */}
         <section
           id="about"
