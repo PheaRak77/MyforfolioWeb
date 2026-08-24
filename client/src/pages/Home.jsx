@@ -1257,11 +1257,11 @@ const Home = () => {
               </p>
             </div>
           ) : (
-            <div className="grid sm:grid-cols-2 lg:grid-cols-4 gap-5">
+            <div className="grid grid-cols-2 sm:grid-cols-2 lg:grid-cols-4 gap-3 sm:gap-5">
               {filteredSkills.map((skill, index) => (
                 <div
                   key={skill.id}
-                  className="p-5 sm:p-6 rounded-3xl bg-white/80 dark:bg-white/[0.04] backdrop-blur-xl border border-black/[0.06] dark:border-white/[0.08] hover:border-amber-400/60 dark:hover:border-amber-400/50 hover:shadow-2xl hover:shadow-amber-500/10 transition-all duration-300 group flex flex-col justify-between hover:-translate-y-1.5"
+                  className="p-3.5 sm:p-5 rounded-2xl sm:rounded-3xl bg-white/80 dark:bg-white/[0.04] backdrop-blur-xl border border-black/[0.06] dark:border-white/[0.08] hover:border-amber-400/60 dark:hover:border-amber-400/50 hover:shadow-2xl hover:shadow-amber-500/10 transition-all duration-300 group flex flex-col justify-between hover:-translate-y-1"
                   style={{
                     opacity: revealSkills.isVisible ? 1 : 0,
                     transform: revealSkills.isVisible
@@ -1273,57 +1273,55 @@ const Home = () => {
                     transitionDelay: `${Math.min(index * 70, 420)}ms`,
                   }}
                 >
-                  <div>
-                    <div className="flex items-start justify-between gap-3 mb-3">
-                      <div className="flex items-center gap-3">
-                        {skill.icon ? (
-                          <div className="w-13 h-13 sm:w-14 sm:h-14 rounded-2xl bg-amber-500/10 dark:bg-white/10 border border-amber-500/20 dark:border-white/10 p-3 flex items-center justify-center shadow-sm flex-shrink-0 group-hover:scale-110 group-hover:border-amber-400/60 group-hover:shadow-lg group-hover:shadow-amber-500/20 transition-all duration-300">
-                            <PortfolioImage
-                              src={skill.icon}
-                              alt={skill.name}
-                              className="w-full h-full object-contain"
-                              fallback={
-                                <span className="text-amber-500 font-bold text-base">
-                                  {skill.name?.charAt(0)}
-                                </span>
-                              }
-                            />
-                          </div>
-                        ) : (
-                          <div className="w-13 h-13 sm:w-14 sm:h-14 rounded-2xl bg-amber-500/10 dark:bg-white/10 border border-amber-500/20 dark:border-white/10 text-amber-500 flex items-center justify-center font-bold text-base shadow-sm flex-shrink-0">
-                            {skill.name?.charAt(0)}
-                          </div>
-                        )}
-
-                        <div>
-                          <div className="flex items-center gap-1.5 flex-wrap">
-                            <span className="text-[10px] uppercase font-bold tracking-wider px-2 py-0.5 rounded-full bg-black/5 dark:bg-white/10 text-neutral-600 dark:text-neutral-300">
-                              {skill.category}
-                            </span>
-                            {skill.is_featured && (
-                              <span className="text-[10px] font-bold px-1.5 py-0.5 rounded-full bg-amber-500/20 text-amber-600 dark:text-amber-300">
-                                ★
+                  <div className="min-w-0">
+                    <div className="flex items-center gap-2.5 sm:gap-3 mb-2 sm:mb-3 min-w-0">
+                      {skill.icon ? (
+                        <div className="w-9 h-9 sm:w-11 sm:h-11 rounded-xl sm:rounded-2xl bg-amber-500/10 dark:bg-white/10 border border-amber-500/20 dark:border-white/10 p-1.5 sm:p-2 flex items-center justify-center shadow-sm flex-shrink-0 group-hover:scale-105 group-hover:border-amber-400/60 transition-all duration-300">
+                          <PortfolioImage
+                            src={skill.icon}
+                            alt={skill.name}
+                            className="w-full h-full max-w-[24px] max-h-[24px] sm:max-w-[28px] sm:max-h-[28px] object-contain"
+                            fallback={
+                              <span className="text-amber-500 font-bold text-xs sm:text-sm">
+                                {skill.name?.charAt(0)}
                               </span>
-                            )}
-                          </div>
-                          <h3 className="font-bold text-neutral-900 dark:text-white text-base mt-1.5 group-hover:text-amber-500 dark:group-hover:text-amber-300 transition-colors">
-                            {skill.name}
-                          </h3>
+                            }
+                          />
                         </div>
+                      ) : (
+                        <div className="w-9 h-9 sm:w-11 sm:h-11 rounded-xl sm:rounded-2xl bg-amber-500/10 dark:bg-white/10 border border-amber-500/20 dark:border-white/10 text-amber-500 flex items-center justify-center font-bold text-xs sm:text-sm shadow-sm flex-shrink-0">
+                          {skill.name?.charAt(0)}
+                        </div>
+                      )}
+
+                      <div className="min-w-0 flex-1">
+                        <div className="flex items-center gap-1 flex-wrap">
+                          <span className="text-[9px] sm:text-[10px] uppercase font-bold tracking-wider px-1.5 sm:px-2 py-0.5 rounded-full bg-black/5 dark:bg-white/10 text-neutral-600 dark:text-neutral-300 truncate max-w-full">
+                            {skill.category}
+                          </span>
+                          {skill.is_featured && (
+                            <span className="text-[9px] sm:text-[10px] font-bold px-1 py-0.5 rounded-full bg-amber-500/20 text-amber-600 dark:text-amber-300 flex-shrink-0">
+                              ★
+                            </span>
+                          )}
+                        </div>
+                        <h3 className="font-bold text-neutral-900 dark:text-white text-xs sm:text-sm mt-0.5 group-hover:text-amber-500 dark:group-hover:text-amber-300 transition-colors truncate">
+                          {skill.name}
+                        </h3>
                       </div>
                     </div>
                   </div>
 
-                  <div className="mt-4 pt-3 border-t border-black/5 dark:border-white/10">
-                    <div className="flex items-center justify-between text-xs mb-2">
-                      <span className="text-neutral-500 dark:text-neutral-400 font-medium text-[11px]">
+                  <div className="mt-2 sm:mt-3 pt-2.5 sm:pt-3 border-t border-black/5 dark:border-white/10">
+                    <div className="flex items-center justify-between text-[11px] sm:text-xs mb-1.5">
+                      <span className="text-neutral-500 dark:text-neutral-400 font-medium">
                         Proficiency
                       </span>
                       <span className="font-extrabold text-amber-500 dark:text-yellow-300 font-mono">
                         {skill.percentage || 80}%
                       </span>
                     </div>
-                    <div className="w-full h-2 bg-black/5 dark:bg-white/10 rounded-full overflow-hidden p-0.5">
+                    <div className="w-full h-1.5 sm:h-2 bg-black/5 dark:bg-white/10 rounded-full overflow-hidden p-0.5">
                       <div
                         className="h-full bg-gradient-to-r from-amber-400 via-yellow-400 to-amber-500 rounded-full transition-all duration-1000 ease-out shadow-sm"
                         style={{
@@ -1764,40 +1762,40 @@ const Home = () => {
           )}
         </section>
 
-        {/* CONTACT SECTION */}
+        {/* CONTACT SECTION (100% Smartphone Responsive) */}
         <section
           id="contact"
           ref={revealContact.ref}
           className={`scroll-mt-24 sm:scroll-mt-28 reveal reveal-scale-up section-deferred ${revealContact.isVisible ? "visible" : ""}`}
         >
-          <div className="rounded-3xl bg-gradient-to-br from-white/90 via-slate-50/80 to-blue-50/70 dark:from-[#0b1120]/90 dark:via-[#111827]/85 dark:to-[#1e1b4b]/80 border border-slate-200/80 dark:border-slate-800/80 p-6 sm:p-10 lg:p-12 relative overflow-hidden shadow-2xl backdrop-blur-xl">
-            <div className="absolute top-0 right-0 w-72 sm:w-96 h-72 sm:h-96 bg-blue-600/15 rounded-full blur-3xl pointer-events-none" />
+          <div className="rounded-2xl sm:rounded-3xl bg-gradient-to-br from-white/90 via-slate-50/80 to-amber-50/30 dark:from-[#0b1120]/90 dark:via-[#111827]/85 dark:to-[#1e1b4b]/80 border border-black/[0.06] dark:border-white/[0.08] p-4 sm:p-8 lg:p-12 relative overflow-hidden shadow-2xl backdrop-blur-xl">
+            <div className="absolute top-0 right-0 w-72 sm:w-96 h-72 sm:h-96 bg-amber-400/15 rounded-full blur-3xl pointer-events-none" />
             <div className="absolute bottom-0 left-0 w-72 sm:w-96 h-72 sm:h-96 bg-purple-600/15 rounded-full blur-3xl pointer-events-none" />
 
-            <div className="relative z-10 grid md:grid-cols-2 lg:grid-cols-12 gap-8 md:gap-10 lg:gap-14">
+            <div className="relative z-10 grid md:grid-cols-2 lg:grid-cols-12 gap-6 sm:gap-8 lg:gap-12">
               {/* Left Column: Direct Info & Quick Copy */}
-              <div className="md:col-span-1 lg:col-span-5 space-y-6">
-                <div className="inline-flex items-center gap-1.5 px-3.5 py-1.5 rounded-full bg-blue-500/10 text-blue-600 dark:text-blue-400 text-xs font-bold">
+              <div className="md:col-span-1 lg:col-span-5 space-y-4 sm:space-y-6">
+                <div className="inline-flex items-center gap-1.5 px-3.5 py-1 rounded-full bg-amber-500/10 text-amber-600 dark:text-amber-300 text-xs font-bold">
                   Get In Touch
                 </div>
 
-                <h2 className="text-3xl sm:text-4xl lg:text-5xl font-black text-slate-900 dark:text-white tracking-tight leading-tight">
+                <h2 className="text-2xl sm:text-4xl lg:text-5xl font-black text-neutral-900 dark:text-white tracking-tight leading-tight">
                   Let's Build Something Great Together
                 </h2>
 
-                <p className="text-slate-600 dark:text-slate-300 text-sm sm:text-base leading-relaxed">
+                <p className="text-neutral-600 dark:text-neutral-300 text-xs sm:text-base leading-relaxed">
                   Have a project inquiry, job opportunity, or question? Send a
                   message directly or connect through email and phone.
                 </p>
 
                 {/* Direct Contact Cards */}
-                <div className="grid sm:grid-cols-2 md:grid-cols-1 gap-3.5 pt-2">
+                <div className="space-y-3 pt-1">
                   {displayUser?.email && (
-                    <div className="p-4 rounded-2xl bg-white/80 dark:bg-slate-900/80 border border-slate-200/80 dark:border-slate-800/80 hover:border-blue-500/50 flex items-center justify-between gap-3 group transition-all shadow-sm backdrop-blur-md">
-                      <div className="flex items-center gap-3.5 min-w-0">
-                        <div className="w-11 h-11 rounded-xl bg-blue-500/10 text-blue-600 dark:text-blue-400 flex items-center justify-center flex-shrink-0 group-hover:scale-110 transition-transform">
+                    <div className="p-3.5 sm:p-4 rounded-2xl bg-white/80 dark:bg-white/[0.04] border border-black/5 dark:border-white/10 hover:border-amber-400/50 flex items-center justify-between gap-2.5 group transition-all shadow-sm backdrop-blur-md min-w-0">
+                      <div className="flex items-center gap-3 min-w-0 flex-1">
+                        <div className="w-9 h-9 sm:w-11 sm:h-11 rounded-xl bg-amber-500/10 text-amber-600 dark:text-amber-300 flex items-center justify-center flex-shrink-0 group-hover:scale-105 transition-transform">
                           <svg
-                            className="w-5 h-5"
+                            className="w-4 h-4 sm:w-5 sm:h-5"
                             fill="none"
                             stroke="currentColor"
                             viewBox="0 0 24 24"
@@ -1810,11 +1808,11 @@ const Home = () => {
                             />
                           </svg>
                         </div>
-                        <div className="min-w-0">
-                          <p className="text-[11px] font-bold text-slate-500 dark:text-slate-400 uppercase tracking-wider">
+                        <div className="min-w-0 flex-1">
+                          <p className="text-[10px] font-bold text-neutral-400 uppercase tracking-wider">
                             Email Address
                           </p>
-                          <p className="text-sm font-bold text-slate-900 dark:text-white truncate">
+                          <p className="text-xs sm:text-sm font-bold text-neutral-900 dark:text-white truncate">
                             {displayUser.email}
                           </p>
                         </div>
@@ -1823,7 +1821,7 @@ const Home = () => {
                       <button
                         type="button"
                         onClick={() => handleCopy(displayUser.email, "email")}
-                        className="px-3.5 py-1.5 rounded-xl bg-slate-100 dark:bg-slate-800 text-slate-700 dark:text-slate-300 hover:text-black dark:hover:text-white text-xs font-bold flex-shrink-0 transition-colors border border-slate-200 dark:border-slate-700"
+                        className="px-3 py-1.5 rounded-xl bg-black/5 dark:bg-white/10 hover:bg-black/10 dark:hover:bg-white/15 text-neutral-800 dark:text-neutral-200 text-[11px] font-bold flex-shrink-0 transition-colors border border-black/5 dark:border-white/10"
                       >
                         {copiedField === "email" ? "✓ Copied!" : "Copy"}
                       </button>
@@ -1831,11 +1829,11 @@ const Home = () => {
                   )}
 
                   {displayUser?.phone && (
-                    <div className="p-4 rounded-2xl bg-white/80 dark:bg-slate-900/80 border border-slate-200/80 dark:border-slate-800/80 hover:border-emerald-500/50 flex items-center justify-between gap-3 group transition-all shadow-sm backdrop-blur-md">
-                      <div className="flex items-center gap-3.5 min-w-0">
-                        <div className="w-11 h-11 rounded-xl bg-emerald-500/10 text-emerald-600 dark:text-green-400 flex items-center justify-center flex-shrink-0 group-hover:scale-110 transition-transform">
+                    <div className="p-3.5 sm:p-4 rounded-2xl bg-white/80 dark:bg-white/[0.04] border border-black/5 dark:border-white/10 hover:border-emerald-500/50 flex items-center justify-between gap-2.5 group transition-all shadow-sm backdrop-blur-md min-w-0">
+                      <div className="flex items-center gap-3 min-w-0 flex-1">
+                        <div className="w-9 h-9 sm:w-11 sm:h-11 rounded-xl bg-emerald-500/10 text-emerald-600 dark:text-emerald-300 flex items-center justify-center flex-shrink-0 group-hover:scale-105 transition-transform">
                           <svg
-                            className="w-5 h-5"
+                            className="w-4 h-4 sm:w-5 sm:h-5"
                             fill="none"
                             stroke="currentColor"
                             viewBox="0 0 24 24"
@@ -1848,11 +1846,11 @@ const Home = () => {
                             />
                           </svg>
                         </div>
-                        <div className="min-w-0">
-                          <p className="text-[11px] font-bold text-slate-500 dark:text-slate-400 uppercase tracking-wider">
+                        <div className="min-w-0 flex-1">
+                          <p className="text-[10px] font-bold text-neutral-400 uppercase tracking-wider">
                             Phone / Telegram
                           </p>
-                          <p className="text-sm font-bold text-slate-900 dark:text-white truncate">
+                          <p className="text-xs sm:text-sm font-bold text-neutral-900 dark:text-white truncate">
                             {displayUser.phone}
                           </p>
                         </div>
@@ -1861,7 +1859,7 @@ const Home = () => {
                       <button
                         type="button"
                         onClick={() => handleCopy(displayUser.phone, "phone")}
-                        className="px-3.5 py-1.5 rounded-xl bg-slate-100 dark:bg-slate-800 text-slate-700 dark:text-slate-300 hover:text-black dark:hover:text-white text-xs font-bold flex-shrink-0 transition-colors border border-slate-200 dark:border-slate-700"
+                        className="px-3 py-1.5 rounded-xl bg-black/5 dark:bg-white/10 hover:bg-black/10 dark:hover:bg-white/15 text-neutral-800 dark:text-neutral-200 text-[11px] font-bold flex-shrink-0 transition-colors border border-black/5 dark:border-white/10"
                       >
                         {copiedField === "phone" ? "✓ Copied!" : "Copy"}
                       </button>
@@ -1871,12 +1869,12 @@ const Home = () => {
               </div>
 
               {/* Right Column: Interactive Send Message Form */}
-              <div className="md:col-span-1 lg:col-span-7 bg-white/90 dark:bg-slate-900/90 border border-slate-200/80 dark:border-slate-800/80 rounded-3xl p-6 sm:p-8 shadow-xl backdrop-blur-xl gpu-smooth">
+              <div className="md:col-span-1 lg:col-span-7 bg-white/90 dark:bg-white/[0.04] border border-black/[0.06] dark:border-white/[0.08] rounded-2xl sm:rounded-3xl p-4 sm:p-8 shadow-xl backdrop-blur-xl min-w-0">
                 {contactSubmitted ? (
-                  <div className="text-center py-10 space-y-4 animate-in zoom-in-95 duration-300">
-                    <div className="w-16 h-16 mx-auto rounded-2xl bg-emerald-500/10 border border-emerald-500/30 text-emerald-600 dark:text-emerald-400 flex items-center justify-center shadow-lg shadow-emerald-500/20">
+                  <div className="text-center py-8 space-y-4 animate-in zoom-in-95 duration-300">
+                    <div className="w-14 h-14 mx-auto rounded-2xl bg-emerald-500/10 border border-emerald-500/30 text-emerald-600 dark:text-emerald-400 flex items-center justify-center shadow-lg shadow-emerald-500/20">
                       <svg
-                        className="w-8 h-8"
+                        className="w-7 h-7"
                         fill="none"
                         stroke="currentColor"
                         viewBox="0 0 24 24"
@@ -1889,10 +1887,10 @@ const Home = () => {
                         />
                       </svg>
                     </div>
-                    <h3 className="text-2xl font-bold text-slate-900 dark:text-white">
+                    <h3 className="text-xl sm:text-2xl font-bold text-neutral-900 dark:text-white">
                       Message Sent Successfully!
                     </h3>
-                    <p className="text-slate-600 dark:text-slate-400 text-sm max-w-sm mx-auto leading-relaxed">
+                    <p className="text-neutral-600 dark:text-neutral-400 text-xs sm:text-sm max-w-sm mx-auto leading-relaxed">
                       Thank you for reaching out. Your message has been recorded
                       and I will respond to your email shortly!
                     </p>
@@ -1902,20 +1900,20 @@ const Home = () => {
                         setContactSubmitted(false);
                         setContactApiError("");
                       }}
-                      className="px-6 py-2.5 rounded-xl bg-slate-100 dark:bg-slate-800 hover:bg-slate-200 dark:hover:bg-slate-700 text-slate-800 dark:text-slate-200 text-xs font-bold transition-all mt-4 border border-slate-200 dark:border-slate-700"
+                      className="px-5 py-2.5 rounded-full bg-black/5 dark:bg-white/10 hover:bg-black/10 dark:hover:bg-white/15 text-neutral-800 dark:text-neutral-200 text-xs font-bold transition-all mt-4 border border-black/5 dark:border-white/10"
                     >
                       Send Another Message
                     </button>
                   </div>
                 ) : (
-                  <form onSubmit={handleContactSubmit} className="space-y-5">
-                    <h3 className="text-xl font-bold text-slate-900 dark:text-white mb-2">
+                  <form onSubmit={handleContactSubmit} className="space-y-4 sm:space-y-5">
+                    <h3 className="text-lg sm:text-xl font-bold text-neutral-900 dark:text-white mb-2">
                       Send a Message
                     </h3>
 
-                    <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                    <div className="grid grid-cols-1 sm:grid-cols-2 gap-3.5">
                       <div>
-                        <label className="block text-xs font-bold uppercase tracking-wider text-slate-700 dark:text-slate-300 mb-2">
+                        <label className="block text-[11px] font-bold uppercase tracking-wider text-neutral-700 dark:text-neutral-300 mb-1.5">
                           Your Name
                         </label>
                         <input
@@ -1930,21 +1928,21 @@ const Home = () => {
                               setContactErrors({ ...contactErrors, name: "" });
                           }}
                           placeholder="John Doe"
-                          className={`form-input bg-slate-50/80 dark:bg-slate-950/80 text-slate-900 dark:text-white rounded-2xl ${
+                          className={`w-full text-xs sm:text-sm px-3.5 py-2.5 rounded-xl sm:rounded-2xl bg-black/5 dark:bg-white/5 text-neutral-900 dark:text-white border focus:outline-none ${
                             contactErrors.name
                               ? "border-red-500 focus:ring-red-500 bg-red-500/5"
-                              : "border-slate-200 dark:border-slate-800 focus:ring-indigo-500 focus:border-transparent"
+                              : "border-black/10 dark:border-white/10 focus:border-amber-400"
                           }`}
                         />
                         {contactErrors.name && (
-                          <p className="text-red-500 text-xs mt-1 font-medium">
+                          <p className="text-red-500 text-[11px] mt-1 font-medium">
                             ⚠ {contactErrors.name}
                           </p>
                         )}
                       </div>
 
                       <div>
-                        <label className="block text-xs font-bold uppercase tracking-wider text-slate-700 dark:text-slate-300 mb-2">
+                        <label className="block text-[11px] font-bold uppercase tracking-wider text-neutral-700 dark:text-neutral-300 mb-1.5">
                           Your Email
                         </label>
                         <input
@@ -1959,14 +1957,14 @@ const Home = () => {
                               setContactErrors({ ...contactErrors, email: "" });
                           }}
                           placeholder="john@example.com"
-                          className={`form-input bg-slate-50/80 dark:bg-slate-950/80 text-slate-900 dark:text-white rounded-2xl ${
+                          className={`w-full text-xs sm:text-sm px-3.5 py-2.5 rounded-xl sm:rounded-2xl bg-black/5 dark:bg-white/5 text-neutral-900 dark:text-white border focus:outline-none ${
                             contactErrors.email
                               ? "border-red-500 focus:ring-red-500 bg-red-500/5"
-                              : "border-slate-200 dark:border-slate-800 focus:ring-indigo-500 focus:border-transparent"
+                              : "border-black/10 dark:border-white/10 focus:border-amber-400"
                           }`}
                         />
                         {contactErrors.email && (
-                          <p className="text-red-500 text-xs mt-1 font-medium">
+                          <p className="text-red-500 text-[11px] mt-1 font-medium">
                             ⚠ {contactErrors.email}
                           </p>
                         )}
@@ -1974,7 +1972,7 @@ const Home = () => {
                     </div>
 
                     <div>
-                      <label className="block text-xs font-bold uppercase tracking-wider text-slate-700 dark:text-slate-300 mb-2">
+                      <label className="block text-[11px] font-bold uppercase tracking-wider text-neutral-700 dark:text-neutral-300 mb-1.5">
                         Subject
                       </label>
                       <input
@@ -1989,25 +1987,25 @@ const Home = () => {
                             setContactErrors({ ...contactErrors, subject: "" });
                         }}
                         placeholder="Project Discussion / Collaboration"
-                        className={`form-input bg-slate-50/80 dark:bg-slate-950/80 text-slate-900 dark:text-white rounded-2xl ${
+                        className={`w-full text-xs sm:text-sm px-3.5 py-2.5 rounded-xl sm:rounded-2xl bg-black/5 dark:bg-white/5 text-neutral-900 dark:text-white border focus:outline-none ${
                           contactErrors.subject
                             ? "border-red-500 focus:ring-red-500 bg-red-500/5"
-                            : "border-slate-200 dark:border-slate-800 focus:ring-indigo-500 focus:border-transparent"
+                            : "border-black/10 dark:border-white/10 focus:border-amber-400"
                         }`}
                       />
                       {contactErrors.subject && (
-                        <p className="text-red-500 text-xs mt-1 font-medium">
+                        <p className="text-red-500 text-[11px] mt-1 font-medium">
                           ⚠ {contactErrors.subject}
                         </p>
                       )}
                     </div>
 
                     <div>
-                      <label className="block text-xs font-bold uppercase tracking-wider text-slate-700 dark:text-slate-300 mb-2">
+                      <label className="block text-[11px] font-bold uppercase tracking-wider text-neutral-700 dark:text-neutral-300 mb-1.5">
                         Your Message
                       </label>
                       <textarea
-                        rows={4}
+                        rows={3}
                         value={contactForm.message}
                         onChange={(e) => {
                           setContactForm({
@@ -2018,21 +2016,21 @@ const Home = () => {
                             setContactErrors({ ...contactErrors, message: "" });
                         }}
                         placeholder="Hi, I would like to discuss a project..."
-                        className={`form-textarea bg-slate-50/80 dark:bg-slate-950/80 text-slate-900 dark:text-white rounded-2xl ${
+                        className={`w-full text-xs sm:text-sm px-3.5 py-2.5 rounded-xl sm:rounded-2xl bg-black/5 dark:bg-white/5 text-neutral-900 dark:text-white border focus:outline-none ${
                           contactErrors.message
                             ? "border-red-500 focus:ring-red-500 bg-red-500/5"
-                            : "border-slate-200 dark:border-slate-800 focus:ring-indigo-500 focus:border-transparent"
+                            : "border-black/10 dark:border-white/10 focus:border-amber-400"
                         }`}
                       />
                       {contactErrors.message && (
-                        <p className="text-red-500 text-xs mt-1 font-medium">
+                        <p className="text-red-500 text-[11px] mt-1 font-medium">
                           ⚠ {contactErrors.message}
                         </p>
                       )}
                     </div>
 
                     {contactApiError && (
-                      <div className="flex items-start gap-2 p-3.5 rounded-2xl bg-red-500/10 border border-red-500/30 text-red-500 text-xs font-medium">
+                      <div className="flex items-start gap-2 p-3 rounded-xl bg-red-500/10 border border-red-500/30 text-red-500 text-xs font-medium">
                         <span className="flex-shrink-0 mt-0.5">⚠</span>
                         <span>{contactApiError}</span>
                       </div>
@@ -2041,11 +2039,11 @@ const Home = () => {
                     <button
                       type="submit"
                       disabled={sendingMessage}
-                      className="w-full min-h-touch py-4 px-6 rounded-2xl bg-gradient-to-r from-blue-600 via-indigo-600 to-purple-600 hover:from-blue-500 hover:to-fuchsia-500 text-white font-bold shadow-xl shadow-indigo-500/25 hover:shadow-indigo-500/40 hover:-translate-y-0.5 active:translate-y-0 disabled:opacity-60 transition-all text-sm sm:text-base flex items-center justify-center gap-2.5 gpu-smooth"
+                      className="w-full min-h-touch py-3.5 px-6 rounded-full bg-gradient-to-r from-amber-400 via-yellow-400 to-amber-500 hover:from-amber-300 hover:to-amber-400 text-neutral-950 font-bold shadow-xl shadow-amber-500/25 hover:-translate-y-0.5 active:translate-y-0 disabled:opacity-60 transition-all text-xs sm:text-sm flex items-center justify-center gap-2"
                     >
                       {sendingMessage ? (
                         <>
-                          <div className="w-4 h-4 border-2 border-white border-t-transparent rounded-full animate-spin" />
+                          <div className="w-4 h-4 border-2 border-neutral-950 border-t-transparent rounded-full animate-spin" />
                           <span>Sending Message...</span>
                         </>
                       ) : (
