@@ -364,16 +364,16 @@ const Home = () => {
             <button
               type="button"
               onClick={toggleTheme}
-              className="w-9 h-9 sm:w-10 sm:h-10 rounded-full bg-black/5 hover:bg-black/10 dark:bg-white/10 dark:hover:bg-white/15 text-neutral-700 dark:text-amber-300 border border-black/5 dark:border-white/10 transition-all flex items-center justify-center shadow-sm"
+              className="w-9 h-9 sm:w-10 sm:h-10 rounded-full bg-black/5 hover:bg-black/10 dark:bg-white/10 dark:hover:bg-white/15 text-neutral-700 dark:text-amber-300 border border-black/5 dark:border-white/10 transition-all flex items-center justify-center shadow-sm active:scale-85 hover:scale-105"
               title={isDark ? "Switch to Light Mode" : "Switch to Dark Mode"}
               aria-label="Toggle Theme Mode"
             >
               {isDark ? (
-                <svg className="w-4 h-4 text-amber-300 drop-shadow-[0_0_8px_rgba(252,211,77,0.6)]" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <svg key="sun-icon" className="w-4 h-4 text-amber-300 drop-shadow-[0_0_8px_rgba(252,211,77,0.6)] animate-theme-pop" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                   <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 3v1m0 16v1m9-9h-1M4 12H3m15.364 6.364l-.707-.707M6.343 6.343l-.707-.707m12.728 0l-.707.707M6.343 17.657l-.707.707M16 12a4 4 0 11-8 0 4 4 0 018 0z" />
                 </svg>
               ) : (
-                <svg className="w-4 h-4 text-neutral-800" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <svg key="moon-icon" className="w-4 h-4 text-neutral-800 animate-theme-pop" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                   <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M20.354 15.354A9 9 0 018.646 3.646 9.003 9.003 0 0012 21a9.003 9.003 0 008.354-5.646z" />
                 </svg>
               )}
@@ -413,7 +413,7 @@ const Home = () => {
             <button
               type="button"
               onClick={() => setMobileMenuOpen(!mobileMenuOpen)}
-              className="lg:hidden w-10 h-10 rounded-full bg-black/5 dark:bg-white/10 border border-black/5 dark:border-white/10 flex flex-col items-center justify-center gap-1.5 focus:outline-none transition-all active:scale-95"
+              className="lg:hidden w-10 h-10 rounded-full bg-black/5 dark:bg-white/10 border border-black/5 dark:border-white/10 flex flex-col items-center justify-center gap-1.5 focus:outline-none transition-all active:scale-90"
               aria-label="Toggle Navigation Menu"
             >
               <span
@@ -437,7 +437,7 @@ const Home = () => {
 
         {/* Apple-Style Animated Mobile Drawer Menu */}
         {mobileMenuOpen && (
-          <div className="lg:hidden apple-nav-blur bg-white/95 dark:bg-[#070b14]/95 border-b border-black/[0.08] dark:border-white/[0.08] px-5 pt-4 pb-7 pb-safe-bottom space-y-4 shadow-2xl">
+          <div className="lg:hidden apple-nav-blur bg-white/95 dark:bg-[#070b14]/95 border-b border-black/[0.08] dark:border-white/[0.08] px-5 pt-4 pb-7 pb-safe-bottom space-y-4 shadow-2xl animate-mobile-drawer origin-top">
             <nav className="flex flex-col space-y-2 text-sm font-semibold">
               <a
                 href="#about"
@@ -522,10 +522,10 @@ const Home = () => {
               <button
                 type="button"
                 onClick={toggleTheme}
-                className="w-full py-2.5 px-4 rounded-xl bg-black/5 dark:bg-white/10 text-neutral-800 dark:text-neutral-200 text-xs font-semibold flex items-center justify-between border border-black/5 dark:border-white/10"
+                className="w-full py-2.5 px-4 rounded-xl bg-black/5 dark:bg-white/10 text-neutral-800 dark:text-neutral-200 text-xs font-semibold flex items-center justify-between border border-black/5 dark:border-white/10 active:scale-98 transition-transform"
               >
                 <span>Theme: {isDark ? "Dark Mode" : "Light Mode"}</span>
-                <span>{isDark ? "🌙" : "☀️"}</span>
+                <span key={isDark ? "dark-m" : "light-m"} className="animate-theme-pop">{isDark ? "🌙" : "☀️"}</span>
               </button>
 
               {isAuthenticated ? (
