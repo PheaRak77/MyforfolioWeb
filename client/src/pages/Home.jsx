@@ -7,6 +7,7 @@ import useScrollReveal from "../hooks/useScrollReveal";
 import PortfolioImage from "../components/PortfolioImage";
 import ProjectCardImage from "../components/ProjectCardImage";
 import VerifiedBadge, { VerifiedName } from "../components/VerifiedBadge";
+import AnimatedBackground from "../components/AnimatedBackground";
 import {
   fetchPublicPortfolioData,
   hydrateFromCache,
@@ -249,7 +250,11 @@ const Home = () => {
   };
 
   return (
-    <div className="min-h-screen bg-slate-900 text-slate-100 selection:bg-blue-600 selection:text-white font-sans antialiased">
+    <div className="relative min-h-screen bg-slate-900 text-slate-100 selection:bg-blue-600 selection:text-white font-sans antialiased overflow-x-hidden">
+      {/* 3D Animated Canvas Background */}
+      <div className="fixed inset-0 z-0 pointer-events-none" aria-hidden="true">
+        <AnimatedBackground />
+      </div>
       {/* Top Navigation Bar */}
       <header className="sticky top-0 z-40 backdrop-blur-sm md:backdrop-blur-md bg-slate-900/95 border-b border-slate-800/80 pt-safe-top">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 h-16 sm:h-20 flex items-center justify-between gap-3 sm:gap-4">
