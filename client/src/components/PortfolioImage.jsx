@@ -6,7 +6,10 @@ import {
 import { getImagePlaceholder } from "../utils/imagePlaceholder";
 
 /**
- * Resilient image — skips dead Render /uploads/ URLs and shows fallback or SVG placeholder.
+ * High-performance, resilient image component:
+ * - Smart WebP / AVIF CDN optimization
+ * - Smooth skeleton loading & fade-in (no layout shifts)
+ * - Skips legacy broken URLs gracefully with beautiful SVG fallback
  */
 export default function PortfolioImage({
   src,
@@ -16,20 +19,25 @@ export default function PortfolioImage({
   variant = "default",
   loading = "lazy",
   decoding = "async",
+  fetchPriority,
+  priority = false,
   onError: externalOnError,
+  onLoad: externalOnLoad,
   ...props
 }) {
   const [failed, setFailed] = useState(false);
+  const [loaded, setLoaded] = useState(false);
 
   useEffect(() => {
     setFailed(false);
+    setLoaded(false);
   }, [src]);
 
   if (!src || typeof src !== "string" || !src.trim()) {
     return fallback;
   }
 
-  // Legacy disk URLs on production — show placeholder image (fills card reliably)
+  // Legacy disk URLs on production — show placeholder image
   if (isBrokenImageUrl(src)) {
     if (fallback) return fallback;
     return (
@@ -50,14 +58,25 @@ export default function PortfolioImage({
     return fallback;
   }
 
+  const effectiveLoading = priority ? "eager" : loading;
+  const effectiveDecoding = priority ? "sync" : decoding;
+  const effectiveFetchPriority = priority ? "high" : fetchPriority;
+
   return (
     <img
       src={resolvedSrc}
       alt={alt}
-      loading={loading}
-      decoding={decoding}
+      loading={effectiveLoading}
+      decoding={effectiveDecoding}
+      fetchPriority={effectiveFetchPriority}
       referrerPolicy="no-referrer"
-      className={className}
+      className={`${className} transition-opacity duration-300 ${
+        loaded ? "opacity-100" : "opacity-90"
+      }`}
+      onLoad={(event) => {
+        setLoaded(true);
+        externalOnLoad?.(event);
+      }}
       onError={(event) => {
         setFailed(true);
         externalOnError?.(event);
@@ -66,3 +85,4 @@ export default function PortfolioImage({
     />
   );
 }
+

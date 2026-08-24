@@ -680,6 +680,7 @@ const Home = () => {
                       src={displayUser.profile_image}
                       alt={displayUser.name || "Profile"}
                       variant="profile"
+                      priority={true}
                       onError={() => setProfileImgError(true)}
                       className="w-full h-full object-cover transition-transform duration-500 group-hover:scale-105"
                     />

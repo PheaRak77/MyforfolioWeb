@@ -50,6 +50,9 @@ const uploadToCloudinary = async (input, options = {}) => {
   const uploadOptions = {
     folder: `portfolio/${folder}`,
     resource_type: "image",
+    transformation: [
+      { quality: "auto:good", fetch_format: "auto", flags: "lossy" },
+    ],
   };
 
   if (publicId) {

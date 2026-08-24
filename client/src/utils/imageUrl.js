@@ -1,8 +1,11 @@
 import { getImagePlaceholder } from "./imagePlaceholder";
 
 /**
- * Formats image URLs for deployed environments.
- * Legacy Render /uploads/ files are gone after redeploy — returns SVG placeholder instead.
+ * Formats image URLs for deployed environments with automatic performance optimizations:
+ * - On-the-fly Cloudinary WebP/AVIF conversion (`f_auto`)
+ * - Smart perceptual compression (`q_auto:good`)
+ * - Auto device-pixel-ratio (`dpr_auto`)
+ * - Responsive dimensional limits per variant
  */
 
 const getApiBaseUrl = () =>
@@ -34,13 +37,55 @@ export const isBrokenImageUrl = (imagePath) => {
   return false;
 };
 
+/**
+ * Injects responsive Cloudinary transformation parameters for instant loading.
+ */
+export const optimizeCloudinaryUrl = (url, options = {}) => {
+  if (!url || typeof url !== "string") return url;
+  if (!url.includes("cloudinary.com") || !url.includes("/image/upload/")) return url;
+
+  // Don't duplicate if transformations already present in URL
+  if (/\/image\/upload\/[a-z0-9_,:]+\/v[0-9]+/i.test(url)) {
+    return url;
+  }
+
+  const {
+    width,
+    height,
+    crop = "limit",
+    gravity,
+    quality = "auto:good",
+    format = "auto",
+  } = options;
+
+  const transforms = [`f_${format}`, `q_${quality}`, "dpr_auto"];
+
+  if (width) transforms.push(`w_${width}`);
+  if (height) transforms.push(`h_${height}`);
+  if (crop && (width || height)) transforms.push(`c_${crop}`);
+  if (gravity) transforms.push(`g_${gravity}`);
+
+  const transformString = transforms.join(",");
+  return url.replace("/image/upload/", `/image/upload/${transformString}/`);
+};
+
+const VARIANT_SIZES = {
+  profile: { width: 600, height: 600, crop: "fill", gravity: "face" },
+  avatar: { width: 160, height: 160, crop: "fill", gravity: "face" },
+  project: { width: 900, crop: "limit" },
+  certificate: { width: 900, crop: "limit" },
+  "certificate-modal": { width: 1600, crop: "limit" },
+  hero: { width: 800, crop: "limit" },
+  default: { width: 1200, crop: "limit" },
+};
+
 export const getFullImageUrl = (imagePath, options = {}) => {
   if (!imagePath || typeof imagePath !== "string") return null;
 
   const cleanPath = imagePath.trim();
   if (!cleanPath) return null;
 
-  const { label = "Image", variant = "default", allowLegacy = false } = options;
+  const { label = "Image", variant = "default", allowLegacy = false, customSize } = options;
 
   if (cleanPath.startsWith("data:") || cleanPath.startsWith("blob:")) {
     return cleanPath;
@@ -73,5 +118,12 @@ export const getFullImageUrl = (imagePath, options = {}) => {
     resolved = resolved.replace(/^http:\/\//i, "https://");
   }
 
+  // Apply Cloudinary speed & size optimization
+  if (resolved.includes("cloudinary.com")) {
+    const sizing = customSize || VARIANT_SIZES[variant] || VARIANT_SIZES.default;
+    resolved = optimizeCloudinaryUrl(resolved, sizing);
+  }
+
   return resolved;
 };
+

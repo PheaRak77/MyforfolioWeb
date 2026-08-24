@@ -97,11 +97,13 @@ app.use(
   (req, res, next) => {
     res.setHeader("Access-Control-Allow-Origin", "*");
     res.setHeader("Cross-Origin-Resource-Policy", "cross-origin");
+    res.setHeader("Cache-Control", "public, max-age=31536000, immutable");
     next();
   },
   express.static(path.join(__dirname, "uploads"), {
-    maxAge: "7d",
+    maxAge: "30d",
     etag: true,
+    immutable: true,
   }),
 );
 

@@ -1,9 +1,10 @@
 import api from "../api/axios";
-import { compressImageFile } from "./imageCompressor";
+import { compressImageFile, compressImageFileToBlob } from "./imageCompressor";
 
 /**
  * Uploads an image file to Cloudinary via backend upload API.
- * Automatically falls back to compressed Base64 data URL if upload fails.
+ * Automatically pre-compresses large files for instant network transfer.
+ * Falls back to compressed Base64 data URL if network/server is unavailable.
  * 
  * @param {File} file - Selected image file
  * @param {string} endpoint - Backend upload route (e.g. "/uploads/certificate-image")
@@ -13,16 +14,29 @@ import { compressImageFile } from "./imageCompressor";
 export const uploadMediaImage = async (
   file,
   endpoint = "/uploads/certificate-image",
-  options = { maxWidth: 1000, maxHeight: 800, quality: 0.85 }
+  options = { maxWidth: 1600, maxHeight: 1600, quality: 0.88 }
 ) => {
   if (!file) {
     throw new Error("No file provided");
   }
 
-  // 1. Try uploading to Backend -> Cloudinary
+  // 1. Optimize Blob client-side before sending across network
+  let uploadPayload = file;
+  try {
+    uploadPayload = await compressImageFileToBlob(
+      file,
+      options.maxWidth || 1600,
+      options.maxHeight || 1600,
+      options.quality || 0.88
+    );
+  } catch (compErr) {
+    console.warn("Client pre-compression skipped:", compErr?.message);
+  }
+
+  // 2. Upload to Backend -> Cloudinary CDN
   try {
     const formData = new FormData();
-    formData.append("image", file);
+    formData.append("image", uploadPayload, file.name || "image.jpg");
 
     const { data } = await api.post(endpoint, formData, {
       headers: { "Content-Type": "multipart/form-data" },
@@ -36,14 +50,14 @@ export const uploadMediaImage = async (
       };
     }
   } catch (err) {
-    console.warn("Backend Cloudinary upload failed, falling back to local compression:", err?.message);
+    console.warn("Backend Cloudinary upload failed, falling back to local base64:", err?.message);
   }
 
-  // 2. Fallback: Compress to client-side base64 data URL
+  // 3. Fallback: Compress to client-side base64 data URL
   const base64Url = await compressImageFile(
     file,
-    options.maxWidth || 1000,
-    options.maxHeight || 800,
+    options.maxWidth || 1200,
+    options.maxHeight || 1200,
     options.quality || 0.85
   );
 
@@ -52,3 +66,4 @@ export const uploadMediaImage = async (
     provider: "base64",
   };
 };
+
