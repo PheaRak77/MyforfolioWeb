@@ -4,6 +4,9 @@ export default {
   content: ["./index.html", "./src/**/*.{js,jsx}"],
   theme: {
     extend: {
+      fontFamily: {
+        sans: ["Poppins", "system-ui", "-apple-system", "sans-serif"],
+      },
       spacing: {
         "safe-top": "env(safe-area-inset-top, 0px)",
         "safe-bottom": "env(safe-area-inset-bottom, 0px)",

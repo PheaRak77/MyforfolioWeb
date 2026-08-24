@@ -2,7 +2,7 @@ import React, { useMemo } from "react";
 
 /**
  * MotionBackground
- * Generates an iconic Motion.dev-inspired ASCII / geometric wave pattern
+ * Generates an iconic Motion.dev + Rombo.co inspired ASCII geometric wave pattern
  * with FULL-WIDTH luminous yellow, amber, and golden-lime glow across the entire top banner.
  */
 export default function MotionBackground() {
@@ -29,29 +29,29 @@ export default function MotionBackground() {
   return (
     <div className="fixed inset-0 z-0 pointer-events-none overflow-hidden select-none" aria-hidden="true">
       {/* 1. FULL WIDTH Vibrant Yellow / Amber Top Banner Glow (Edge-to-Edge 100vw) */}
-      <div className="absolute top-0 inset-x-0 w-full h-[520px] overflow-hidden">
+      <div className="absolute top-0 inset-x-0 w-full h-[540px] overflow-hidden">
         {/* Full-width continuous Golden Yellow radiant horizon */}
-        <div className="absolute -top-24 inset-x-0 w-full h-[360px] bg-gradient-to-b from-amber-400/40 via-yellow-400/30 via-amber-500/20 to-transparent blur-[80px] sm:blur-[110px]" />
+        <div className="absolute -top-28 inset-x-0 w-full h-[400px] bg-gradient-to-b from-amber-300/40 via-yellow-400/30 via-amber-500/15 to-transparent blur-[80px] sm:blur-[110px]" />
 
         {/* Left Yellow/Amber Aurora Orb */}
-        <div className="absolute -top-20 -left-[10%] w-[55vw] h-[400px] rounded-full bg-gradient-to-br from-yellow-400/35 via-amber-500/25 to-transparent blur-[100px] animate-aurora-1" />
+        <div className="absolute -top-20 -left-[10%] w-[55vw] h-[440px] rounded-full bg-gradient-to-br from-yellow-400/40 via-amber-400/30 to-transparent blur-[100px] animate-aurora-1" />
 
         {/* Center Golden Sunburst Glow */}
-        <div className="absolute -top-10 left-1/2 -translate-x-1/2 w-[70vw] h-[420px] rounded-full bg-gradient-to-b from-amber-300/40 via-yellow-400/30 to-transparent blur-[90px]" />
+        <div className="absolute -top-10 left-1/2 -translate-x-1/2 w-[75vw] h-[460px] rounded-full bg-gradient-to-b from-amber-300/45 via-yellow-400/35 to-transparent blur-[90px]" />
 
         {/* Right Yellow/Lime Aurora Orb */}
-        <div className="absolute -top-20 -right-[10%] w-[55vw] h-[420px] rounded-full bg-gradient-to-bl from-yellow-400/35 via-amber-400/25 to-lime-400/20 blur-[100px] animate-aurora-2" />
+        <div className="absolute -top-20 -right-[10%] w-[55vw] h-[440px] rounded-full bg-gradient-to-bl from-yellow-300/40 via-amber-400/30 to-lime-400/20 blur-[100px] animate-aurora-2" />
       </div>
 
       {/* 2. Motion-style Parametric ASCII Matrix Banner (Full Width 100vw) */}
-      <div className="absolute top-0 inset-x-0 w-full h-[460px] overflow-hidden flex flex-col justify-start items-center opacity-[0.26] dark:opacity-[0.34] [mask-image:linear-gradient(to_bottom,black_60%,transparent_100%)]">
-        <div className="font-mono text-[10px] sm:text-xs leading-[1.3] tracking-[0.25em] text-yellow-500 dark:text-yellow-300 whitespace-nowrap overflow-hidden text-center w-[120vw] scale-105 origin-top">
+      <div className="absolute top-0 inset-x-0 w-full h-[480px] overflow-hidden flex flex-col justify-start items-center opacity-[0.24] dark:opacity-[0.32] [mask-image:linear-gradient(to_bottom,black_60%,transparent_100%)]">
+        <div className="font-mono text-[10px] sm:text-xs leading-[1.32] tracking-[0.25em] text-amber-500 dark:text-yellow-300 whitespace-nowrap overflow-hidden text-center w-[120vw] scale-105 origin-top font-bold">
           {patternRows.map((row, idx) => (
             <div
               key={idx}
-              className="transition-transform duration-700 select-none font-extrabold"
+              className="transition-transform duration-700 select-none"
               style={{
-                opacity: 0.45 + Math.sin(idx * 0.35) * 0.45,
+                opacity: 0.4 + Math.sin(idx * 0.35) * 0.5,
               }}
             >
               {row}
@@ -65,7 +65,7 @@ export default function MotionBackground() {
       <div className="absolute bottom-10 -right-20 w-[600px] h-[600px] rounded-full bg-gradient-to-tl from-indigo-600/10 via-purple-600/10 to-amber-500/5 blur-[130px]" />
 
       {/* 4. Subtle Tech Dot Grid Overlay */}
-      <div className="absolute inset-0 bg-grid-mesh opacity-40 dark:opacity-25 [mask-image:radial-gradient(ellipse_at_center,black_50%,transparent_90%)]" />
+      <div className="absolute inset-0 bg-grid-mesh opacity-35 dark:opacity-20 [mask-image:radial-gradient(ellipse_at_center,black_50%,transparent_90%)]" />
     </div>
   );
 }

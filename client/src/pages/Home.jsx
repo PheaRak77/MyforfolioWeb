@@ -258,24 +258,24 @@ const Home = () => {
       {/* Motion-style Parametric Matrix Wave & Ambient Aurora Glow */}
       <MotionBackground />
 
-      {/* Top Navigation Bar */}
-      <header className="sticky top-0 z-40 backdrop-blur-xl bg-white/80 dark:bg-[#070b14]/85 border-b border-slate-200/80 dark:border-slate-800/80 pt-safe-top transition-colors duration-300 shadow-sm dark:shadow-2xl">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 h-16 sm:h-20 flex items-center justify-between gap-3 sm:gap-4">
+      {/* Top Apple-Style Glassmorphic Navigation Bar */}
+      <header className="sticky top-0 z-40 apple-nav-blur bg-white/75 dark:bg-[#070b14]/75 border-b border-black/[0.06] dark:border-white/[0.08] pt-safe-top transition-colors duration-300 shadow-sm">
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 h-16 sm:h-18 flex items-center justify-between gap-3 sm:gap-4">
           <a
             href="#hero"
             className="flex items-center gap-3 group transition-transform hover:scale-105 flex-shrink-0"
           >
             <div className="relative flex-shrink-0">
-              <div className="absolute -inset-1 bg-gradient-to-r from-amber-400 via-yellow-500 to-indigo-500 rounded-full blur-sm opacity-60 group-hover:opacity-100 transition duration-300" />
+              <div className="absolute -inset-1 bg-gradient-to-r from-amber-400 via-yellow-400 to-amber-500 rounded-full blur-sm opacity-70 group-hover:opacity-100 transition duration-300" />
               {displayUser?.profile_image && !headerImgError ? (
                 <PortfolioImage
                   src={displayUser.profile_image}
                   alt={displayUser.name || "Portfolio"}
                   variant="profile"
                   onError={() => setHeaderImgError(true)}
-                  className="relative w-10 h-10 sm:w-11 sm:h-11 rounded-full object-cover ring-2 ring-white dark:ring-slate-900 shadow-md"
+                  className="relative w-9 h-9 sm:w-10 sm:h-10 rounded-full object-cover ring-2 ring-white dark:ring-slate-900 shadow-md"
                   fallback={
-                    <div className="relative w-10 h-10 sm:w-11 sm:h-11 rounded-full bg-gradient-to-tr from-amber-500 via-indigo-600 to-purple-600 flex items-center justify-center font-bold text-white shadow-md text-lg">
+                    <div className="relative w-9 h-9 sm:w-10 sm:h-10 rounded-full bg-gradient-to-tr from-amber-500 via-orange-500 to-yellow-500 flex items-center justify-center font-bold text-slate-900 shadow-md text-base">
                       {displayUser?.name
                         ? displayUser.name.charAt(0).toUpperCase()
                         : "P"}
@@ -283,7 +283,7 @@ const Home = () => {
                   }
                 />
               ) : (
-                <div className="relative w-10 h-10 sm:w-11 sm:h-11 rounded-full bg-gradient-to-tr from-amber-500 via-indigo-600 to-purple-600 flex items-center justify-center font-bold text-white shadow-md text-lg">
+                <div className="relative w-9 h-9 sm:w-10 sm:h-10 rounded-full bg-gradient-to-tr from-amber-500 via-orange-500 to-yellow-500 flex items-center justify-center font-bold text-slate-900 shadow-md text-base">
                   {displayUser?.name
                     ? displayUser.name.charAt(0).toUpperCase()
                     : "P"}
@@ -292,53 +292,53 @@ const Home = () => {
             </div>
             <div className="min-w-0 flex flex-col justify-center">
               <div className="flex items-center gap-1.5 min-w-0">
-                <span className="font-bold text-base sm:text-lg tracking-tight text-slate-900 dark:text-white group-hover:text-amber-500 dark:group-hover:text-amber-300 transition-colors truncate max-w-[130px] sm:max-w-[170px]">
+                <span className="font-bold text-sm sm:text-base tracking-tight text-neutral-900 dark:text-white group-hover:text-amber-500 dark:group-hover:text-amber-300 transition-colors truncate max-w-[130px] sm:max-w-[170px]">
                   {displayUser?.name || "Yorn Pheareak"}
                 </span>
                 <VerifiedBadge size="sm" className="flex-shrink-0" />
               </div>
-              <span className="block text-xs text-slate-500 dark:text-slate-400 font-medium capitalize truncate">
+              <span className="block text-[11px] text-neutral-500 dark:text-neutral-400 font-medium capitalize truncate">
                 {displayUser?.role || "Full-Stack Developer"}
               </span>
             </div>
           </a>
 
-          {/* Desktop Nav Links (Visible on LG screens 1024px and up) */}
-          <nav className="hidden lg:flex items-center gap-5 xl:gap-7 text-sm font-medium text-slate-600 dark:text-slate-300">
+          {/* Apple-Style Desktop Nav Links (Visible on LG screens) */}
+          <nav className="hidden lg:flex items-center gap-1.5 xl:gap-2 text-xs font-semibold text-neutral-600 dark:text-neutral-300">
             <a
               href="#about"
-              className="hover:text-amber-500 dark:hover:text-amber-300 transition-colors hover:translate-y-[-1px]"
+              className="px-3.5 py-1.5 rounded-full hover:bg-black/5 dark:hover:bg-white/10 hover:text-neutral-900 dark:hover:text-white transition-all"
             >
               About
             </a>
             <a
               href="#skills"
-              className="hover:text-amber-500 dark:hover:text-amber-300 transition-colors hover:translate-y-[-1px]"
+              className="px-3.5 py-1.5 rounded-full hover:bg-black/5 dark:hover:bg-white/10 hover:text-neutral-900 dark:hover:text-white transition-all"
             >
               Skills ({skills.length})
             </a>
             <a
               href="#projects"
-              className="hover:text-amber-500 dark:hover:text-amber-300 transition-colors hover:translate-y-[-1px]"
+              className="px-3.5 py-1.5 rounded-full hover:bg-black/5 dark:hover:bg-white/10 hover:text-neutral-900 dark:hover:text-white transition-all"
             >
               Projects ({projects.length})
             </a>
             <a
               href="#certificates"
-              className="hover:text-amber-500 dark:hover:text-amber-300 transition-colors hover:translate-y-[-1px]"
+              className="px-3.5 py-1.5 rounded-full hover:bg-black/5 dark:hover:bg-white/10 hover:text-neutral-900 dark:hover:text-white transition-all"
             >
               Certificates ({certificates.length})
             </a>
             <a
               href="#contact"
-              className="hover:text-amber-500 dark:hover:text-amber-300 transition-colors hover:translate-y-[-1px]"
+              className="px-3.5 py-1.5 rounded-full hover:bg-black/5 dark:hover:bg-white/10 hover:text-neutral-900 dark:hover:text-white transition-all"
             >
               Contact
             </a>
             <button
               type="button"
               onClick={() => setCvModalOpen(true)}
-              className="text-white font-bold transition-all hover:translate-y-[-1px] flex items-center gap-2 px-4 py-2 rounded-xl bg-gradient-to-r from-amber-500 via-orange-500 to-indigo-600 hover:from-amber-400 hover:to-indigo-500 shadow-md shadow-amber-500/20 hover:shadow-amber-500/35"
+              className="ml-2 text-neutral-950 font-bold transition-all hover:scale-105 flex items-center gap-1.5 px-4 py-1.5 rounded-full bg-gradient-to-r from-amber-400 via-yellow-400 to-amber-500 hover:from-amber-300 hover:to-amber-400 shadow-md shadow-amber-500/25"
               title="Look and Download CV"
             >
               <svg
@@ -350,7 +350,7 @@ const Home = () => {
                 <path
                   strokeLinecap="round"
                   strokeLinejoin="round"
-                  strokeWidth={2}
+                  strokeWidth={2.2}
                   d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"
                 />
               </svg>
@@ -359,21 +359,21 @@ const Home = () => {
           </nav>
 
           {/* Right Action / Mobile Hamburger Toggle */}
-          <div className="flex items-center gap-2 sm:gap-3 flex-shrink-0">
+          <div className="flex items-center gap-2 sm:gap-2.5 flex-shrink-0">
             {/* Theme Toggle Button (Light / Dark) */}
             <button
               type="button"
               onClick={toggleTheme}
-              className="p-2 sm:p-2.5 rounded-xl bg-slate-100 hover:bg-slate-200 dark:bg-slate-900/90 dark:hover:bg-slate-800 text-slate-700 dark:text-amber-300 border border-slate-200 dark:border-slate-700/80 transition-all shadow-sm flex items-center justify-center backdrop-blur-md"
-              title={isDark ? "Switch to Light (Normal) Mode" : "Switch to Dark Mode"}
+              className="w-9 h-9 sm:w-10 sm:h-10 rounded-full bg-black/5 hover:bg-black/10 dark:bg-white/10 dark:hover:bg-white/15 text-neutral-700 dark:text-amber-300 border border-black/5 dark:border-white/10 transition-all flex items-center justify-center shadow-sm"
+              title={isDark ? "Switch to Light Mode" : "Switch to Dark Mode"}
               aria-label="Toggle Theme Mode"
             >
               {isDark ? (
-                <svg className="w-4 h-4 text-amber-300 drop-shadow-[0_0_8px_rgba(252,211,77,0.5)]" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <svg className="w-4 h-4 text-amber-300 drop-shadow-[0_0_8px_rgba(252,211,77,0.6)]" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                   <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 3v1m0 16v1m9-9h-1M4 12H3m15.364 6.364l-.707-.707M6.343 6.343l-.707-.707m12.728 0l-.707.707M6.343 17.657l-.707.707M16 12a4 4 0 11-8 0 4 4 0 018 0z" />
                 </svg>
               ) : (
-                <svg className="w-4 h-4 text-slate-700" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <svg className="w-4 h-4 text-neutral-800" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                   <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M20.354 15.354A9 9 0 018.646 3.646 9.003 9.003 0 0012 21a9.003 9.003 0 008.354-5.646z" />
                 </svg>
               )}
@@ -386,27 +386,14 @@ const Home = () => {
                   {authUser?.role === "admin" && (
                     <Link
                       to="/dashboard"
-                      className="px-3.5 py-2 text-xs font-semibold rounded-xl bg-gradient-to-r from-amber-500 via-orange-500 to-indigo-600 text-white hover:from-amber-400 hover:to-indigo-500 shadow-lg shadow-amber-500/25 transition-all flex items-center gap-1.5"
+                      className="px-3.5 py-1.5 text-xs font-semibold rounded-full bg-neutral-900 text-white dark:bg-white dark:text-neutral-900 hover:scale-105 transition-all flex items-center gap-1.5 shadow-sm"
                     >
-                      <svg
-                        className="w-3.5 h-3.5"
-                        fill="none"
-                        stroke="currentColor"
-                        viewBox="0 0 24 24"
-                      >
-                        <path
-                          strokeLinecap="round"
-                          strokeLinejoin="round"
-                          strokeWidth={2}
-                          d="M4 6a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2H6a2 2 0 01-2-2V6zM14 6a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2h-2a2 2 0 01-2-2V6zM4 16a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2H6a2 2 0 01-2-2v-2zM14 16a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2h-2a2 2 0 01-2-2v-2z"
-                        />
-                      </svg>
-                      Admin Dashboard
+                      Dashboard
                     </Link>
                   )}
                   <button
                     onClick={logout}
-                    className="px-3 py-2 text-xs font-semibold rounded-xl bg-slate-100 dark:bg-slate-900/90 text-slate-700 dark:text-slate-300 hover:text-black dark:hover:text-white hover:bg-slate-200 dark:hover:bg-slate-800 transition-colors border border-slate-200 dark:border-slate-800"
+                    className="px-3 py-1.5 text-xs font-medium rounded-full bg-black/5 dark:bg-white/10 text-neutral-700 dark:text-neutral-300 hover:text-black dark:hover:text-white transition-colors"
                     title="Logout"
                   >
                     Logout
@@ -415,126 +402,98 @@ const Home = () => {
               ) : (
                 <Link
                   to="/login"
-                  className="px-3.5 py-2 text-xs font-semibold rounded-xl bg-slate-100 dark:bg-slate-900/80 border border-slate-200 dark:border-slate-800 text-slate-700 dark:text-slate-300 hover:text-black dark:hover:text-white hover:bg-slate-200 dark:hover:bg-slate-800 transition-all flex items-center gap-1.5"
+                  className="px-3.5 py-1.5 text-xs font-semibold rounded-full bg-black/5 dark:bg-white/10 border border-black/5 dark:border-white/10 text-neutral-800 dark:text-neutral-200 hover:text-black dark:hover:text-white hover:bg-black/10 dark:hover:bg-white/15 transition-all flex items-center gap-1.5"
                 >
-                  <svg
-                    className="w-3.5 h-3.5 text-slate-400"
-                    fill="none"
-                    stroke="currentColor"
-                    viewBox="0 0 24 24"
-                  >
-                    <path
-                      strokeLinecap="round"
-                      strokeLinejoin="round"
-                      strokeWidth={2}
-                      d="M11 16l-4-4m0 0l4-4m-4 4h14m-5 4v1a3 3 0 01-3 3H6a3 3 0 01-3-3V7a3 3 0 013-3h7a3 3 0 013 3v1"
-                    />
-                  </svg>
                   Sign In
                 </Link>
               )}
             </div>
 
-            {/* Mobile / Tablet Hamburger Button */}
+            {/* Apple-Grade Morphing Hamburger Button for Smartphone */}
             <button
               type="button"
               onClick={() => setMobileMenuOpen(!mobileMenuOpen)}
-              className="lg:hidden p-2.5 rounded-xl bg-slate-100 dark:bg-slate-900/80 border border-slate-200 dark:border-slate-800 text-slate-700 dark:text-slate-300 hover:text-black dark:hover:text-white hover:bg-slate-200 dark:hover:bg-slate-800 focus:outline-none transition-all flex items-center gap-2"
+              className="lg:hidden w-10 h-10 rounded-full bg-black/5 dark:bg-white/10 border border-black/5 dark:border-white/10 flex flex-col items-center justify-center gap-1.5 focus:outline-none transition-all active:scale-95"
               aria-label="Toggle Navigation Menu"
             >
-              <span className="text-xs font-semibold hidden sm:inline text-slate-500 dark:text-slate-400">
-                Menu
-              </span>
-              {mobileMenuOpen ? (
-                <svg
-                  className="w-5 h-5"
-                  fill="none"
-                  stroke="currentColor"
-                  viewBox="0 0 24 24"
-                >
-                  <path
-                    strokeLinecap="round"
-                    strokeLinejoin="round"
-                    strokeWidth={2}
-                    d="M6 18L18 6M6 6l12 12"
-                  />
-                </svg>
-              ) : (
-                <svg
-                  className="w-5 h-5"
-                  fill="none"
-                  stroke="currentColor"
-                  viewBox="0 0 24 24"
-                >
-                  <path
-                    strokeLinecap="round"
-                    strokeLinejoin="round"
-                    strokeWidth={2}
-                    d="M4 6h16M4 12h16M4 18h16"
-                  />
-                </svg>
-              )}
+              <span
+                className={`w-5 h-0.5 bg-neutral-800 dark:bg-neutral-200 rounded-full transform transition-all duration-300 origin-center ${
+                  mobileMenuOpen ? "rotate-45 translate-y-2" : ""
+                }`}
+              />
+              <span
+                className={`w-5 h-0.5 bg-neutral-800 dark:bg-neutral-200 rounded-full transition-all duration-200 ${
+                  mobileMenuOpen ? "opacity-0 scale-0" : "opacity-100"
+                }`}
+              />
+              <span
+                className={`w-5 h-0.5 bg-neutral-800 dark:bg-neutral-200 rounded-full transform transition-all duration-300 origin-center ${
+                  mobileMenuOpen ? "-rotate-45 -translate-y-2" : ""
+                }`}
+              />
             </button>
           </div>
         </div>
 
-        {/* Mobile / Tablet Dropdown Menu */}
+        {/* Apple-Style Animated Mobile Drawer Menu */}
         {mobileMenuOpen && (
-          <div className="lg:hidden bg-white/95 dark:bg-[#0a0f1d]/95 backdrop-blur-2xl border-b border-slate-200 dark:border-slate-800 px-4 sm:px-6 pt-3 pb-6 pb-safe-bottom space-y-3 shadow-2xl animate-in slide-in-from-top-2 duration-200">
-            <nav className="flex flex-col space-y-1.5 text-sm font-medium">
+          <div className="lg:hidden apple-nav-blur bg-white/95 dark:bg-[#070b14]/95 border-b border-black/[0.08] dark:border-white/[0.08] px-5 pt-4 pb-7 pb-safe-bottom space-y-4 shadow-2xl">
+            <nav className="flex flex-col space-y-2 text-sm font-semibold">
               <a
                 href="#about"
                 onClick={() => setMobileMenuOpen(false)}
-                className="px-4 py-3 rounded-xl text-slate-700 dark:text-slate-300 hover:text-amber-500 dark:hover:text-white hover:bg-slate-100 dark:hover:bg-slate-800/80 transition-colors flex items-center justify-between"
+                className="animate-menu-item-1 px-4 py-3 rounded-2xl text-neutral-800 dark:text-neutral-200 hover:bg-black/5 dark:hover:bg-white/10 transition-colors flex items-center justify-between"
               >
                 <span>About & Overview</span>
-                <span className="text-xs text-slate-400">&rarr;</span>
+                <span className="text-xs text-neutral-400 font-bold">&rarr;</span>
               </a>
               <a
                 href="#skills"
                 onClick={() => setMobileMenuOpen(false)}
-                className="px-4 py-3 rounded-xl text-slate-700 dark:text-slate-300 hover:text-amber-500 dark:hover:text-white hover:bg-slate-100 dark:hover:bg-slate-800/80 transition-colors flex items-center justify-between"
+                className="animate-menu-item-2 px-4 py-3 rounded-2xl text-neutral-800 dark:text-neutral-200 hover:bg-black/5 dark:hover:bg-white/10 transition-colors flex items-center justify-between"
               >
                 <span>Skills & Technologies</span>
-                <span className="text-xs px-2.5 py-0.5 rounded-md bg-amber-500/10 text-amber-600 dark:text-amber-400 font-semibold">
+                <span className="text-xs px-2.5 py-0.5 rounded-full bg-amber-500/15 text-amber-600 dark:text-amber-300 font-bold">
                   {skills.length}
                 </span>
               </a>
               <a
                 href="#projects"
                 onClick={() => setMobileMenuOpen(false)}
-                className="px-4 py-3 rounded-xl text-slate-700 dark:text-slate-300 hover:text-amber-500 dark:hover:text-white hover:bg-slate-100 dark:hover:bg-slate-800/80 transition-colors flex items-center justify-between"
+                className="animate-menu-item-3 px-4 py-3 rounded-2xl text-neutral-800 dark:text-neutral-200 hover:bg-black/5 dark:hover:bg-white/10 transition-colors flex items-center justify-between"
               >
                 <span>Featured Projects</span>
-                <span className="text-xs px-2.5 py-0.5 rounded-md bg-blue-500/10 text-blue-600 dark:text-blue-400 font-semibold">
+                <span className="text-xs px-2.5 py-0.5 rounded-full bg-blue-500/15 text-blue-600 dark:text-blue-300 font-bold">
                   {projects.length}
                 </span>
               </a>
               <a
                 href="#certificates"
                 onClick={() => setMobileMenuOpen(false)}
-                className="px-4 py-3 rounded-xl text-slate-700 dark:text-slate-300 hover:text-amber-500 dark:hover:text-white hover:bg-slate-100 dark:hover:bg-slate-800/80 transition-colors flex items-center justify-between"
+                className="animate-menu-item-4 px-4 py-3 rounded-2xl text-neutral-800 dark:text-neutral-200 hover:bg-black/5 dark:hover:bg-white/10 transition-colors flex items-center justify-between"
               >
-                <span>Certifications</span>
-                <span className="text-xs px-2.5 py-0.5 rounded-md bg-purple-500/10 text-purple-600 dark:text-purple-400 font-semibold">
+                <span>Certificates</span>
+                <span className="text-xs px-2.5 py-0.5 rounded-full bg-purple-500/15 text-purple-600 dark:text-purple-300 font-bold">
                   {certificates.length}
                 </span>
               </a>
               <a
                 href="#contact"
                 onClick={() => setMobileMenuOpen(false)}
-                className="px-4 py-3 rounded-xl text-slate-700 dark:text-slate-300 hover:text-amber-500 dark:hover:text-white hover:bg-slate-100 dark:hover:bg-slate-800/80 transition-colors flex items-center justify-between"
+                className="animate-menu-item-5 px-4 py-3 rounded-2xl text-neutral-800 dark:text-neutral-200 hover:bg-black/5 dark:hover:bg-white/10 transition-colors flex items-center justify-between"
               >
-                <span>Contact</span>
-                <span className="text-xs text-slate-400">&rarr;</span>
+                <span>Contact Me</span>
+                <span className="text-xs text-neutral-400 font-bold">&rarr;</span>
               </a>
+
+              {/* Look CV Action in Menu */}
               <button
                 type="button"
                 onClick={() => {
                   setMobileMenuOpen(false);
                   setCvModalOpen(true);
                 }}
-                className="w-full px-4 py-3 rounded-xl bg-gradient-to-r from-amber-500 via-orange-500 to-indigo-600 text-white font-semibold shadow-lg shadow-amber-500/20 transition-all flex items-center justify-between text-left"
+                className="animate-menu-item-6 w-full px-5 py-3.5 rounded-2xl bg-gradient-to-r from-amber-400 via-yellow-400 to-amber-500 text-neutral-950 font-bold shadow-lg shadow-amber-500/25 transition-transform active:scale-98 flex items-center justify-between text-left"
               >
                 <div className="flex items-center gap-2.5">
                   <svg
@@ -546,26 +505,26 @@ const Home = () => {
                     <path
                       strokeLinecap="round"
                       strokeLinejoin="round"
-                      strokeWidth={2}
+                      strokeWidth={2.2}
                       d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"
                     />
                   </svg>
                   <span>Look & Download CV</span>
                 </div>
-                <span className="text-[10px] px-2 py-0.5 rounded bg-white/20 text-white font-bold uppercase">
+                <span className="text-[10px] px-2 py-0.5 rounded-full bg-black/10 text-neutral-950 font-extrabold uppercase">
                   PDF
                 </span>
               </button>
             </nav>
 
-            {/* Mobile / Tablet Auth Actions & Theme Switch */}
-            <div className="pt-3 border-t border-slate-200 dark:border-slate-800 space-y-2">
+            {/* Mobile Auth Actions & Theme Switch */}
+            <div className="pt-3 border-t border-black/[0.08] dark:border-white/[0.08] space-y-2">
               <button
                 type="button"
                 onClick={toggleTheme}
-                className="w-full py-2.5 px-4 rounded-xl bg-slate-100 dark:bg-slate-800 text-slate-800 dark:text-slate-200 text-xs font-semibold flex items-center justify-between border border-slate-200 dark:border-slate-700"
+                className="w-full py-2.5 px-4 rounded-xl bg-black/5 dark:bg-white/10 text-neutral-800 dark:text-neutral-200 text-xs font-semibold flex items-center justify-between border border-black/5 dark:border-white/10"
               >
-                <span>Theme: {isDark ? "Dark Mode" : "Light (Normal) Mode"}</span>
+                <span>Theme: {isDark ? "Dark Mode" : "Light Mode"}</span>
                 <span>{isDark ? "🌙" : "☀️"}</span>
               </button>
 
@@ -575,21 +534,8 @@ const Home = () => {
                     <Link
                       to="/dashboard"
                       onClick={() => setMobileMenuOpen(false)}
-                      className="w-full py-3 px-4 rounded-xl bg-gradient-to-r from-amber-500 via-orange-500 to-indigo-600 text-white font-semibold text-xs text-center block shadow-lg shadow-amber-500/25 hover:from-amber-400 hover:to-indigo-500 transition-all flex items-center justify-center gap-2"
+                      className="w-full py-3 px-4 rounded-xl bg-neutral-900 text-white dark:bg-white dark:text-neutral-900 font-semibold text-xs text-center block shadow-md transition-all flex items-center justify-center gap-2"
                     >
-                      <svg
-                        className="w-4 h-4"
-                        fill="none"
-                        stroke="currentColor"
-                        viewBox="0 0 24 24"
-                      >
-                        <path
-                          strokeLinecap="round"
-                          strokeLinejoin="round"
-                          strokeWidth={2}
-                          d="M4 6a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2H6a2 2 0 01-2-2V6zM14 6a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2h-2a2 2 0 01-2-2V6zM4 16a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2H6a2 2 0 01-2-2v-2zM14 16a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2h-2a2 2 0 01-2-2v-2z"
-                        />
-                      </svg>
                       <span>Admin Dashboard</span>
                     </Link>
                   )}
@@ -598,7 +544,7 @@ const Home = () => {
                       logout();
                       setMobileMenuOpen(false);
                     }}
-                    className="w-full py-3 px-4 rounded-xl bg-slate-100 dark:bg-slate-800 text-slate-700 dark:text-slate-300 hover:text-black dark:hover:text-white hover:bg-slate-200 dark:hover:bg-slate-700 text-xs font-semibold transition-all text-center border border-slate-200 dark:border-slate-700"
+                    className="w-full py-3 px-4 rounded-xl bg-black/5 dark:bg-white/10 text-neutral-700 dark:text-neutral-300 text-xs font-semibold transition-all text-center"
                   >
                     Logout
                   </button>
@@ -607,7 +553,7 @@ const Home = () => {
                 <Link
                   to="/login"
                   onClick={() => setMobileMenuOpen(false)}
-                  className="w-full py-3 px-4 rounded-xl bg-slate-100 dark:bg-slate-800 border border-slate-200 dark:border-slate-700 text-slate-700 dark:text-slate-200 hover:text-black dark:hover:text-white text-xs font-semibold text-center block transition-all"
+                  className="w-full py-3 px-4 rounded-xl bg-black/5 dark:bg-white/10 text-neutral-800 dark:text-neutral-200 text-xs font-semibold text-center block transition-all"
                 >
                   Sign In
                 </Link>
@@ -637,8 +583,8 @@ const Home = () => {
               </span>
             </div>
 
-            <h1 className="text-4xl sm:text-5xl lg:text-6xl xl:text-7xl font-black tracking-tight text-slate-900 dark:text-white leading-[1.12] animate-hero-1">
-              <span className="inline-flex items-center gap-3 font-extrabold text-slate-800 dark:text-slate-100 animate-greeting-shimmer">
+            <h1 className="text-4xl sm:text-5xl lg:text-6xl xl:text-7xl font-black tracking-tight text-neutral-900 dark:text-white leading-[1.12] animate-hero-1">
+              <span className="inline-flex items-center gap-3 font-extrabold text-neutral-800 dark:text-slate-100 animate-greeting-shimmer">
                 Hi, I'm{" "}
                 <span className="animate-hand-wave text-3xl sm:text-4xl lg:text-5xl drop-shadow-md">
                   👋
@@ -658,7 +604,7 @@ const Home = () => {
               </span>
             </h1>
 
-            <p className="text-base sm:text-lg text-slate-600 dark:text-slate-300 max-w-2xl mx-auto lg:mx-0 leading-relaxed font-normal animate-hero-2">
+            <p className="text-base sm:text-lg text-neutral-600 dark:text-slate-300 max-w-2xl mx-auto lg:mx-0 leading-relaxed font-normal animate-hero-2">
               Welcome to my portfolio! Explore my latest completed projects,
               verified credentials, and technical skills below.
             </p>
@@ -740,9 +686,9 @@ const Home = () => {
               <button
                 type="button"
                 onClick={() => setCvModalOpen(true)}
-                className="relative group overflow-hidden px-6 sm:px-7 py-3.5 rounded-2xl bg-gradient-to-r from-amber-500 via-orange-500 to-indigo-600 hover:from-amber-400 hover:to-indigo-500 text-white font-bold shadow-xl shadow-amber-500/25 hover:shadow-2xl hover:shadow-amber-500/40 hover:-translate-y-0.5 active:translate-y-0 transition-all text-sm sm:text-base flex items-center gap-3"
+                className="relative group overflow-hidden px-6 sm:px-7 py-3.5 rounded-full bg-gradient-to-r from-amber-400 via-yellow-400 to-amber-500 hover:from-amber-300 hover:to-amber-400 text-neutral-950 font-bold shadow-xl shadow-amber-500/25 hover:shadow-2xl hover:shadow-amber-500/40 hover:-translate-y-0.5 active:translate-y-0 transition-all text-sm sm:text-base flex items-center gap-3"
               >
-                <div className="absolute inset-0 w-1/2 h-full bg-white/25 skew-x-12 -translate-x-full group-hover:translate-x-[300%] transition-transform duration-1000" />
+                <div className="absolute inset-0 w-1/2 h-full bg-white/30 skew-x-12 -translate-x-full group-hover:translate-x-[300%] transition-transform duration-1000" />
                 <svg
                   className="w-4 h-4 group-hover:scale-110 transition-transform"
                   fill="none"
@@ -752,52 +698,57 @@ const Home = () => {
                   <path
                     strokeLinecap="round"
                     strokeLinejoin="round"
-                    strokeWidth={2}
+                    strokeWidth={2.2}
                     d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"
                   />
                   <path
                     strokeLinecap="round"
                     strokeLinejoin="round"
-                    strokeWidth={2}
+                    strokeWidth={2.2}
                     d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z"
                   />
                 </svg>
                 <span>Look CV</span>
-                <span className="text-[10px] uppercase font-extrabold px-2 py-0.5 rounded-full bg-white/20 text-white">
+                <span className="text-[10px] uppercase font-extrabold px-2 py-0.5 rounded-full bg-black/10 text-neutral-950">
                   PDF
                 </span>
               </button>
 
               <a
                 href="#projects"
-                className="px-5 py-3.5 rounded-2xl bg-white/80 dark:bg-slate-900/80 hover:bg-white dark:hover:bg-slate-800 text-slate-800 dark:text-white font-semibold border border-slate-200 dark:border-slate-800 hover:border-amber-500/40 transition-all hover:-translate-y-0.5 text-sm shadow-sm backdrop-blur-md"
+                className="px-5 py-3.5 rounded-full bg-white/80 dark:bg-white/5 hover:bg-white dark:hover:bg-white/10 text-neutral-800 dark:text-white font-semibold border border-black/5 dark:border-white/10 hover:border-amber-400/50 transition-all hover:-translate-y-0.5 text-sm shadow-sm backdrop-blur-md"
               >
                 View Projects
               </a>
               <a
                 href="#certificates"
-                className="px-5 py-3.5 rounded-2xl bg-white/80 dark:bg-slate-900/80 hover:bg-white dark:hover:bg-slate-800 text-slate-700 dark:text-slate-200 font-semibold border border-slate-200 dark:border-slate-800 hover:border-purple-500/40 transition-all hover:-translate-y-0.5 text-sm shadow-sm backdrop-blur-md"
+                className="px-5 py-3.5 rounded-full bg-white/80 dark:bg-white/5 hover:bg-white dark:hover:bg-white/10 text-neutral-700 dark:text-slate-200 font-semibold border border-black/5 dark:border-white/10 hover:border-amber-400/50 transition-all hover:-translate-y-0.5 text-sm shadow-sm backdrop-blur-md"
               >
                 Certificates
               </a>
               <a
                 href="#contact"
-                className="px-5 py-3.5 rounded-2xl bg-transparent hover:bg-slate-200/50 dark:hover:bg-slate-800/50 text-slate-600 dark:text-slate-300 hover:text-slate-900 dark:hover:text-white font-semibold transition-all text-sm"
+                className="px-5 py-3.5 rounded-full bg-transparent hover:bg-black/5 dark:hover:bg-white/10 text-neutral-600 dark:text-slate-300 hover:text-neutral-950 dark:hover:text-white font-semibold transition-all text-sm"
               >
                 Contact Me &rarr;
               </a>
             </div>
           </div>
 
-          {/* Right Profile Card / Avatar Column (Clean, Extended Size, No Overlay Badges) */}
+          {/* Right Circular Avatar Showcase with Rotating Animated Ring */}
           <div className="flex-shrink-0 z-10 animate-hero-avatar relative">
-            <div className="relative group">
-              {/* Dynamic Multi-Layer Holographic Aura Glow */}
-              <div className="absolute -inset-4 bg-gradient-to-tr from-amber-400 via-yellow-500 via-indigo-600 to-fuchsia-600 rounded-[2.5rem] blur-2xl opacity-75 group-hover:opacity-100 group-hover:blur-3xl transition duration-700" />
-              <div className="absolute -inset-1.5 bg-gradient-to-r from-amber-400 to-purple-500 rounded-[2.2rem] opacity-40 group-hover:opacity-75 transition duration-500" />
+            <div className="relative group flex items-center justify-center">
+              {/* Full Ambient Golden / Yellow Halo Bloom */}
+              <div className="absolute -inset-6 rounded-full bg-gradient-to-tr from-amber-400/50 via-yellow-400/40 to-amber-500/30 blur-3xl opacity-80 group-hover:opacity-100 group-hover:blur-3xl transition duration-700 pointer-events-none" />
 
-              {/* Extended Profile Picture Container */}
-              <div className="relative w-72 h-72 sm:w-88 sm:h-88 md:w-[24rem] md:h-[24rem] lg:w-[26rem] lg:h-[26rem] xl:w-[29rem] xl:h-[29rem] rounded-[2rem] sm:rounded-[2.2rem] overflow-hidden bg-slate-900 border-2 border-white/20 dark:border-slate-700/80 flex items-center justify-center shadow-2xl">
+              {/* Rotating Iridescent Outer Ring */}
+              <div className="absolute -inset-2 rounded-full bg-gradient-to-tr from-amber-400 via-yellow-300 via-indigo-500 to-fuchsia-500 animate-spin-ring opacity-90 group-hover:opacity-100 transition duration-500" />
+
+              {/* Secondary Inner Background Ring */}
+              <div className="absolute -inset-0.5 rounded-full bg-white dark:bg-[#070b14]" />
+
+              {/* Circular Avatar Container */}
+              <div className="relative w-64 h-64 sm:w-80 sm:h-80 md:w-96 md:h-96 lg:w-[26rem] lg:h-[26rem] xl:w-[28rem] xl:h-[28rem] rounded-full overflow-hidden bg-slate-900 border-2 border-white/40 dark:border-slate-700/80 flex items-center justify-center shadow-2xl group-hover:scale-[1.02] transition-transform duration-500">
                 {displayUser?.profile_image && !profileImgError ? (
                   <PortfolioImage
                     src={displayUser.profile_image}
@@ -1063,14 +1014,14 @@ const Home = () => {
               </p>
             </div>
 
-            {/* Category Filter Pills */}
+            {/* Category Filter Pills (Apple-Grade Rounded Pills) */}
             <div className="flex flex-wrap items-center gap-2">
               <button
                 onClick={() => setSelectedSkillCategory("all")}
-                className={`px-4 py-2 rounded-xl text-xs font-semibold transition-all ${
+                className={`px-4 py-2 rounded-full text-xs font-semibold transition-all ${
                   selectedSkillCategory === "all"
-                    ? "bg-gradient-to-r from-blue-600 to-indigo-600 text-white shadow-lg shadow-blue-500/30"
-                    : "bg-white/80 dark:bg-slate-900/80 hover:bg-white dark:hover:bg-slate-800 text-slate-600 dark:text-slate-300 border border-slate-200 dark:border-slate-800"
+                    ? "bg-neutral-900 text-white dark:bg-white dark:text-neutral-950 shadow-md"
+                    : "bg-white/80 dark:bg-white/5 hover:bg-white dark:hover:bg-white/10 text-neutral-700 dark:text-neutral-300 border border-black/5 dark:border-white/10"
                 }`}
               >
                 All ({skills.length})
@@ -1079,10 +1030,10 @@ const Home = () => {
               {skills.some((s) => s.is_featured) && (
                 <button
                   onClick={() => setSelectedSkillCategory("featured")}
-                  className={`px-4 py-2 rounded-xl text-xs font-semibold transition-all ${
+                  className={`px-4 py-2 rounded-full text-xs font-semibold transition-all ${
                     selectedSkillCategory === "featured"
-                      ? "bg-gradient-to-r from-amber-500 to-orange-500 text-white shadow-lg shadow-amber-500/30"
-                      : "bg-white/80 dark:bg-slate-900/80 hover:bg-white dark:hover:bg-slate-800 text-slate-600 dark:text-slate-300 border border-slate-200 dark:border-slate-800"
+                      ? "bg-gradient-to-r from-amber-400 via-yellow-400 to-amber-500 text-neutral-950 font-bold shadow-md shadow-amber-500/25"
+                      : "bg-white/80 dark:bg-white/5 hover:bg-white dark:hover:bg-white/10 text-neutral-700 dark:text-neutral-300 border border-black/5 dark:border-white/10"
                   }`}
                 >
                   ★ Featured
@@ -1093,10 +1044,10 @@ const Home = () => {
                 <button
                   key={cat}
                   onClick={() => setSelectedSkillCategory(cat)}
-                  className={`px-4 py-2 rounded-xl text-xs font-semibold transition-all ${
+                  className={`px-4 py-2 rounded-full text-xs font-semibold transition-all ${
                     selectedSkillCategory === cat
-                      ? "bg-gradient-to-r from-blue-600 to-indigo-600 text-white shadow-lg shadow-blue-500/30"
-                      : "bg-white/80 dark:bg-slate-900/80 hover:bg-white dark:hover:bg-slate-800 text-slate-600 dark:text-slate-300 border border-slate-200 dark:border-slate-800"
+                      ? "bg-neutral-900 text-white dark:bg-white dark:text-neutral-950 shadow-md"
+                      : "bg-white/80 dark:bg-white/5 hover:bg-white dark:hover:bg-white/10 text-neutral-700 dark:text-neutral-300 border border-black/5 dark:border-white/10"
                   }`}
                 >
                   {cat}
@@ -1106,13 +1057,13 @@ const Home = () => {
           </div>
 
           {loading ? (
-            <div className="p-12 text-center text-slate-400 bg-white/80 dark:bg-slate-900/60 backdrop-blur-xl rounded-3xl border border-slate-200 dark:border-slate-800">
-              <div className="w-8 h-8 mx-auto mb-3 border-2 border-blue-500 border-t-transparent rounded-full animate-spin" />
+            <div className="p-12 text-center text-neutral-400 bg-white/80 dark:bg-white/[0.03] backdrop-blur-xl rounded-3xl border border-black/5 dark:border-white/10">
+              <div className="w-8 h-8 mx-auto mb-3 border-2 border-amber-500 border-t-transparent rounded-full animate-spin" />
               <p>Loading skills...</p>
             </div>
           ) : filteredSkills.length === 0 ? (
-            <div className="p-12 text-center text-slate-400 bg-white/80 dark:bg-slate-900/60 backdrop-blur-xl rounded-3xl border border-slate-200 dark:border-slate-800">
-              <p className="text-slate-600 dark:text-slate-300">
+            <div className="p-12 text-center text-neutral-400 bg-white/80 dark:bg-white/[0.03] backdrop-blur-xl rounded-3xl border border-black/5 dark:border-white/10">
+              <p className="text-neutral-600 dark:text-slate-300">
                 No skills found in this category.
               </p>
             </div>
@@ -1121,7 +1072,7 @@ const Home = () => {
               {filteredSkills.map((skill, index) => (
                 <div
                   key={skill.id}
-                  className="p-5 rounded-3xl bg-white/80 dark:bg-slate-900/60 backdrop-blur-xl border border-slate-200/80 dark:border-slate-800/80 hover:border-blue-500/40 hover:shadow-xl hover:shadow-blue-500/10 transition-all duration-300 group flex flex-col justify-between hover:-translate-y-1"
+                  className="p-5 sm:p-6 rounded-3xl bg-white/80 dark:bg-white/[0.04] backdrop-blur-xl border border-black/[0.06] dark:border-white/[0.08] hover:border-amber-400/60 dark:hover:border-amber-400/50 hover:shadow-2xl hover:shadow-amber-500/10 transition-all duration-300 group flex flex-col justify-between hover:-translate-y-1.5"
                   style={{
                     opacity: revealSkills.isVisible ? 1 : 0,
                     transform: revealSkills.isVisible
@@ -1137,36 +1088,36 @@ const Home = () => {
                     <div className="flex items-start justify-between gap-3 mb-3">
                       <div className="flex items-center gap-3">
                         {skill.icon ? (
-                          <div className="w-12 h-12 rounded-2xl bg-gradient-to-tr from-slate-100 to-slate-200 dark:from-slate-800 dark:to-slate-900 border border-slate-200 dark:border-slate-700/70 p-2.5 flex items-center justify-center shadow-sm flex-shrink-0 group-hover:scale-110 group-hover:border-blue-500/50 transition-all duration-300">
+                          <div className="w-13 h-13 sm:w-14 sm:h-14 rounded-2xl bg-amber-500/10 dark:bg-white/10 border border-amber-500/20 dark:border-white/10 p-3 flex items-center justify-center shadow-sm flex-shrink-0 group-hover:scale-110 group-hover:border-amber-400/60 group-hover:shadow-lg group-hover:shadow-amber-500/20 transition-all duration-300">
                             <PortfolioImage
                               src={skill.icon}
                               alt={skill.name}
                               className="w-full h-full object-contain"
                               fallback={
-                                <span className="text-blue-500 font-bold text-base">
+                                <span className="text-amber-500 font-bold text-base">
                                   {skill.name?.charAt(0)}
                                 </span>
                               }
                             />
                           </div>
                         ) : (
-                          <div className="w-12 h-12 rounded-2xl bg-gradient-to-tr from-blue-600/20 to-indigo-600/20 border border-blue-500/30 text-blue-500 flex items-center justify-center font-bold text-base shadow-sm flex-shrink-0">
+                          <div className="w-13 h-13 sm:w-14 sm:h-14 rounded-2xl bg-amber-500/10 dark:bg-white/10 border border-amber-500/20 dark:border-white/10 text-amber-500 flex items-center justify-center font-bold text-base shadow-sm flex-shrink-0">
                             {skill.name?.charAt(0)}
                           </div>
                         )}
 
                         <div>
-                          <div className="flex items-center gap-1.5">
-                            <span className="text-[11px] font-bold px-2 py-0.5 rounded-md bg-blue-500/10 text-blue-600 dark:text-blue-400 border border-blue-500/20">
+                          <div className="flex items-center gap-1.5 flex-wrap">
+                            <span className="text-[10px] uppercase font-bold tracking-wider px-2 py-0.5 rounded-full bg-black/5 dark:bg-white/10 text-neutral-600 dark:text-neutral-300">
                               {skill.category}
                             </span>
                             {skill.is_featured && (
-                              <span className="text-[11px] font-bold px-1.5 py-0.5 rounded-md bg-amber-500/10 text-amber-500 dark:text-amber-400 border border-amber-500/20">
+                              <span className="text-[10px] font-bold px-1.5 py-0.5 rounded-full bg-amber-500/20 text-amber-600 dark:text-amber-300">
                                 ★
                               </span>
                             )}
                           </div>
-                          <h3 className="font-bold text-slate-900 dark:text-white text-base mt-1 group-hover:text-blue-600 dark:group-hover:text-cyan-400 transition-colors">
+                          <h3 className="font-bold text-neutral-900 dark:text-white text-base mt-1.5 group-hover:text-amber-500 dark:group-hover:text-amber-300 transition-colors">
                             {skill.name}
                           </h3>
                         </div>
@@ -1174,18 +1125,18 @@ const Home = () => {
                     </div>
                   </div>
 
-                  <div className="mt-4 pt-3 border-t border-slate-100 dark:border-slate-800/80">
+                  <div className="mt-4 pt-3 border-t border-black/5 dark:border-white/10">
                     <div className="flex items-center justify-between text-xs mb-2">
-                      <span className="text-slate-500 dark:text-slate-400 font-medium">
+                      <span className="text-neutral-500 dark:text-neutral-400 font-medium text-[11px]">
                         Proficiency
                       </span>
-                      <span className="font-extrabold text-blue-600 dark:text-cyan-400 font-mono">
+                      <span className="font-extrabold text-amber-500 dark:text-yellow-300 font-mono">
                         {skill.percentage || 80}%
                       </span>
                     </div>
-                    <div className="w-full h-2.5 bg-slate-100 dark:bg-slate-800 rounded-full overflow-hidden p-0.5 border border-slate-200/60 dark:border-slate-700/60">
+                    <div className="w-full h-2 bg-black/5 dark:bg-white/10 rounded-full overflow-hidden p-0.5">
                       <div
-                        className="h-full bg-gradient-to-r from-cyan-500 via-blue-500 to-indigo-500 rounded-full transition-all duration-1000 ease-out shadow-sm"
+                        className="h-full bg-gradient-to-r from-amber-400 via-yellow-400 to-amber-500 rounded-full transition-all duration-1000 ease-out shadow-sm"
                         style={{
                           width: revealSkills.isVisible
                             ? `${skill.percentage || 80}%`
@@ -1219,14 +1170,14 @@ const Home = () => {
               </p>
             </div>
 
-            {/* Filter Pills */}
+            {/* Filter Pills (Apple-Grade Rounded Pills) */}
             <div className="flex flex-wrap items-center gap-2">
               <button
                 onClick={() => setSelectedTech("all")}
-                className={`px-4 py-2 rounded-xl text-xs font-semibold transition-all ${
+                className={`px-4 py-2 rounded-full text-xs font-semibold transition-all ${
                   selectedTech === "all"
-                    ? "bg-gradient-to-r from-blue-600 to-indigo-600 text-white shadow-lg shadow-blue-500/30"
-                    : "bg-white/80 dark:bg-slate-900/80 hover:bg-white dark:hover:bg-slate-800 text-slate-600 dark:text-slate-300 border border-slate-200 dark:border-slate-800"
+                    ? "bg-neutral-900 text-white dark:bg-white dark:text-neutral-950 shadow-md"
+                    : "bg-white/80 dark:bg-white/5 hover:bg-white dark:hover:bg-white/10 text-neutral-700 dark:text-neutral-300 border border-black/5 dark:border-white/10"
                 }`}
               >
                 All ({projects.length})
@@ -1235,10 +1186,10 @@ const Home = () => {
               {projects.some((p) => p.is_featured) && (
                 <button
                   onClick={() => setSelectedTech("featured")}
-                  className={`px-4 py-2 rounded-xl text-xs font-semibold transition-all ${
+                  className={`px-4 py-2 rounded-full text-xs font-semibold transition-all ${
                     selectedTech === "featured"
-                      ? "bg-gradient-to-r from-amber-500 to-orange-500 text-white shadow-lg shadow-amber-500/30"
-                      : "bg-white/80 dark:bg-slate-900/80 hover:bg-white dark:hover:bg-slate-800 text-slate-600 dark:text-slate-300 border border-slate-200 dark:border-slate-800"
+                      ? "bg-gradient-to-r from-amber-400 via-yellow-400 to-amber-500 text-neutral-950 font-bold shadow-md shadow-amber-500/25"
+                      : "bg-white/80 dark:bg-white/5 hover:bg-white dark:hover:bg-white/10 text-neutral-700 dark:text-neutral-300 border border-black/5 dark:border-white/10"
                   }`}
                 >
                   ★ Featured
@@ -1249,10 +1200,10 @@ const Home = () => {
                 <button
                   key={tech}
                   onClick={() => setSelectedTech(tech)}
-                  className={`px-4 py-2 rounded-xl text-xs font-semibold transition-all ${
+                  className={`px-4 py-2 rounded-full text-xs font-semibold transition-all ${
                     selectedTech === tech
-                      ? "bg-gradient-to-r from-blue-600 to-indigo-600 text-white shadow-lg shadow-blue-500/30"
-                      : "bg-white/80 dark:bg-slate-900/80 hover:bg-white dark:hover:bg-slate-800 text-slate-600 dark:text-slate-300 border border-slate-200 dark:border-slate-800"
+                      ? "bg-neutral-900 text-white dark:bg-white dark:text-neutral-950 shadow-md"
+                      : "bg-white/80 dark:bg-white/5 hover:bg-white dark:hover:bg-white/10 text-neutral-700 dark:text-neutral-300 border border-black/5 dark:border-white/10"
                   }`}
                 >
                   {tech}
