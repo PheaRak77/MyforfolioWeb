@@ -1,20 +1,39 @@
 const nodemailer = require("nodemailer");
 
 const createTransporter = () => {
+  const email = (process.env.SMTP_EMAIL || "").trim();
+  const rawPass = (process.env.SMTP_PASSWORD || "").trim();
+  const pass = rawPass.replace(/\s+/g, ""); // Remove any spaces from app password
+
+  // If using Gmail, 'service: gmail' is the most reliable transport on cloud hosts (Render/Vercel/Heroku)
+  if (email.endsWith("@gmail.com") || (!process.env.SMTP_HOST && email.includes("@gmail"))) {
+    return nodemailer.createTransport({
+      service: "gmail",
+      auth: {
+        user: email,
+        pass: pass,
+      },
+      tls: {
+        rejectUnauthorized: false,
+      },
+    });
+  }
+
+  // Generic SMTP fallback for custom domains / other providers
   return nodemailer.createTransport({
-    host: "smtp.gmail.com",
-    port: 465,
-    secure: true, // SSL
+    host: process.env.SMTP_HOST || "smtp.gmail.com",
+    port: parseInt(process.env.SMTP_PORT, 10) || 465,
+    secure: (process.env.SMTP_PORT || "465") === "465",
     auth: {
-      user: (process.env.SMTP_EMAIL || "").trim(),
-      pass: (process.env.SMTP_PASSWORD || "").trim().replace(/\s+/g, ""), // Remove any spaces from app password
+      user: email,
+      pass: pass,
     },
     tls: {
       rejectUnauthorized: false,
     },
-    connectionTimeout: 10000,
-    greetingTimeout: 10000,
-    socketTimeout: 15000,
+    connectionTimeout: 15000,
+    greetingTimeout: 15000,
+    socketTimeout: 20000,
   });
 };
 

@@ -383,12 +383,34 @@ const Home = () => {
               aria-label="Toggle Theme Mode"
             >
               {isDark ? (
-                <svg key="sun-icon" className="w-4 h-4 text-amber-300 drop-shadow-[0_0_8px_rgba(252,211,77,0.6)] animate-theme-pop" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 3v1m0 16v1m9-9h-1M4 12H3m15.364 6.364l-.707-.707M6.343 6.343l-.707-.707m12.728 0l-.707.707M6.343 17.657l-.707.707M16 12a4 4 0 11-8 0 4 4 0 018 0z" />
+                <svg
+                  key="sun-icon"
+                  className="w-4 h-4 text-amber-300 drop-shadow-[0_0_8px_rgba(252,211,77,0.6)] animate-theme-pop"
+                  fill="none"
+                  stroke="currentColor"
+                  viewBox="0 0 24 24"
+                >
+                  <path
+                    strokeLinecap="round"
+                    strokeLinejoin="round"
+                    strokeWidth={2}
+                    d="M12 3v1m0 16v1m9-9h-1M4 12H3m15.364 6.364l-.707-.707M6.343 6.343l-.707-.707m12.728 0l-.707.707M6.343 17.657l-.707.707M16 12a4 4 0 11-8 0 4 4 0 018 0z"
+                  />
                 </svg>
               ) : (
-                <svg key="moon-icon" className="w-4 h-4 text-neutral-800 animate-theme-pop" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M20.354 15.354A9 9 0 018.646 3.646 9.003 9.003 0 0012 21a9.003 9.003 0 008.354-5.646z" />
+                <svg
+                  key="moon-icon"
+                  className="w-4 h-4 text-neutral-800 animate-theme-pop"
+                  fill="none"
+                  stroke="currentColor"
+                  viewBox="0 0 24 24"
+                >
+                  <path
+                    strokeLinecap="round"
+                    strokeLinejoin="round"
+                    strokeWidth={2}
+                    d="M20.354 15.354A9 9 0 018.646 3.646 9.003 9.003 0 0012 21a9.003 9.003 0 008.354-5.646z"
+                  />
                 </svg>
               )}
             </button>
@@ -459,7 +481,9 @@ const Home = () => {
                 className="animate-menu-item-1 px-4 py-3 rounded-2xl text-neutral-800 dark:text-neutral-200 hover:bg-black/5 dark:hover:bg-white/10 transition-colors flex items-center justify-between"
               >
                 <span>About & Overview</span>
-                <span className="text-xs text-neutral-400 font-bold">&rarr;</span>
+                <span className="text-xs text-neutral-400 font-bold">
+                  &rarr;
+                </span>
               </a>
               <a
                 href="#skills"
@@ -467,7 +491,9 @@ const Home = () => {
                 className="animate-menu-item-2 px-4 py-3 rounded-2xl text-neutral-800 dark:text-neutral-200 hover:bg-black/5 dark:hover:bg-white/10 transition-colors flex items-center justify-between"
               >
                 <span>Skills & Technologies</span>
-                <span className="text-xs text-neutral-400 font-bold">&rarr;</span>
+                <span className="text-xs text-neutral-400 font-bold">
+                  &rarr;
+                </span>
               </a>
               <a
                 href="#projects"
@@ -475,7 +501,9 @@ const Home = () => {
                 className="animate-menu-item-3 px-4 py-3 rounded-2xl text-neutral-800 dark:text-neutral-200 hover:bg-black/5 dark:hover:bg-white/10 transition-colors flex items-center justify-between"
               >
                 <span>Featured Projects</span>
-                <span className="text-xs text-neutral-400 font-bold">&rarr;</span>
+                <span className="text-xs text-neutral-400 font-bold">
+                  &rarr;
+                </span>
               </a>
               <a
                 href="#certificates"
@@ -483,7 +511,9 @@ const Home = () => {
                 className="animate-menu-item-4 px-4 py-3 rounded-2xl text-neutral-800 dark:text-neutral-200 hover:bg-black/5 dark:hover:bg-white/10 transition-colors flex items-center justify-between"
               >
                 <span>Certificates</span>
-                <span className="text-xs text-neutral-400 font-bold">&rarr;</span>
+                <span className="text-xs text-neutral-400 font-bold">
+                  &rarr;
+                </span>
               </a>
               <a
                 href="#contact"
@@ -491,7 +521,9 @@ const Home = () => {
                 className="animate-menu-item-5 px-4 py-3 rounded-2xl text-neutral-800 dark:text-neutral-200 hover:bg-black/5 dark:hover:bg-white/10 transition-colors flex items-center justify-between"
               >
                 <span>Contact Me</span>
-                <span className="text-xs text-neutral-400 font-bold">&rarr;</span>
+                <span className="text-xs text-neutral-400 font-bold">
+                  &rarr;
+                </span>
               </a>
 
               {/* Look CV Action in Menu */}
@@ -533,7 +565,12 @@ const Home = () => {
                 className="w-full py-2.5 px-4 rounded-xl bg-black/5 dark:bg-white/10 text-neutral-800 dark:text-neutral-200 text-xs font-semibold flex items-center justify-between border border-black/5 dark:border-white/10 active:scale-98 transition-transform"
               >
                 <span>Theme: {isDark ? "Dark Mode" : "Light Mode"}</span>
-                <span key={isDark ? "dark-m" : "light-m"} className="animate-theme-pop">{isDark ? "🌙" : "☀️"}</span>
+                <span
+                  key={isDark ? "dark-m" : "light-m"}
+                  className="animate-theme-pop"
+                >
+                  {isDark ? "🌙" : "☀️"}
+                </span>
               </button>
 
               {isAuthenticated ? (
@@ -587,7 +624,7 @@ const Home = () => {
                 <span className="relative inline-flex rounded-full h-2.5 w-2.5 bg-emerald-500"></span>
               </span>
               <span className="text-xs font-bold tracking-wide uppercase">
-                Full-Stack Developer • Available for Projects
+                Full-Stack Developer
               </span>
             </div>
 
@@ -603,7 +640,10 @@ const Home = () => {
                 <span className="animate-name-gradient font-black text-4xl sm:text-5xl lg:text-6xl xl:text-7xl tracking-tight drop-shadow-sm">
                   {displayUser?.name || "Yorn Pheareak"}
                 </span>
-                <VerifiedBadge size="2xl" className="inline-block flex-shrink-0 drop-shadow-[0_0_14px_rgba(56,189,248,0.6)]" />
+                <VerifiedBadge
+                  size="2xl"
+                  className="inline-block flex-shrink-0 drop-shadow-[0_0_14px_rgba(56,189,248,0.6)]"
+                />
                 {/* Ambient dynamic glow underneath */}
                 <span
                   aria-hidden="true"
@@ -807,13 +847,22 @@ const Home = () => {
 
           {/* Timeline Container */}
           <div className="relative border-l-2 border-amber-400/40 dark:border-amber-400/30 ml-4 sm:ml-6 pl-6 sm:pl-8 space-y-12">
-            
             {/* 1. WORK EXPERIENCE */}
             <div className="relative group">
               {/* Timeline Icon Badge */}
               <div className="absolute -left-[43px] sm:-left-[51px] top-0 w-10 h-10 sm:w-11 sm:h-11 rounded-2xl bg-amber-400 text-neutral-950 font-bold flex items-center justify-center shadow-lg shadow-amber-400/25 ring-4 ring-white dark:ring-[#070b14] group-hover:scale-110 transition-transform">
-                <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M21 13.255A23.931 23.931 0 0112 15c-3.183 0-6.22-.62-9-1.745M16 6V4a2 2 0 00-2-2h-4a2 2 0 00-2 2v2m4 6h.01M5 20h14a2 2 0 002-2V8a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z" />
+                <svg
+                  className="w-5 h-5"
+                  fill="none"
+                  stroke="currentColor"
+                  viewBox="0 0 24 24"
+                >
+                  <path
+                    strokeLinecap="round"
+                    strokeLinejoin="round"
+                    strokeWidth={2}
+                    d="M21 13.255A23.931 23.931 0 0112 15c-3.183 0-6.22-.62-9-1.745M16 6V4a2 2 0 00-2-2h-4a2 2 0 00-2 2v2m4 6h.01M5 20h14a2 2 0 002-2V8a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z"
+                  />
                 </svg>
               </div>
 
@@ -839,13 +888,17 @@ const Home = () => {
                   <li className="flex items-start gap-2.5">
                     <span className="text-amber-500 font-bold mt-0.5">•</span>
                     <span>
-                      Manage device diagnostics, cross-platform data migration, and mobile operating system troubleshooting for diverse client devices.
+                      Manage device diagnostics, cross-platform data migration,
+                      and mobile operating system troubleshooting for diverse
+                      client devices.
                     </span>
                   </li>
                   <li className="flex items-start gap-2.5">
                     <span className="text-amber-500 font-bold mt-0.5">•</span>
                     <span>
-                      Provide direct technical support to users, resolving application configuration, network connectivity, and hardware issues.
+                      Provide direct technical support to users, resolving
+                      application configuration, network connectivity, and
+                      hardware issues.
                     </span>
                   </li>
                 </ul>
@@ -856,8 +909,18 @@ const Home = () => {
             <div className="relative group">
               {/* Timeline Icon Badge */}
               <div className="absolute -left-[43px] sm:-left-[51px] top-0 w-10 h-10 sm:w-11 sm:h-11 rounded-2xl bg-amber-400 text-neutral-950 font-bold flex items-center justify-center shadow-lg shadow-amber-400/25 ring-4 ring-white dark:ring-[#070b14] group-hover:scale-110 transition-transform">
-                <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M10 20l4-16m4 4l4 4-4 4M6 16l-4-4 4-4" />
+                <svg
+                  className="w-5 h-5"
+                  fill="none"
+                  stroke="currentColor"
+                  viewBox="0 0 24 24"
+                >
+                  <path
+                    strokeLinecap="round"
+                    strokeLinejoin="round"
+                    strokeWidth={2}
+                    d="M10 20l4-16m4 4l4 4-4 4M6 16l-4-4 4-4"
+                  />
                 </svg>
               </div>
 
@@ -878,7 +941,8 @@ const Home = () => {
                       Frontend
                     </h4>
                     <p className="text-xs sm:text-sm font-medium text-neutral-800 dark:text-neutral-200">
-                      Vue.js, React.js, JavaScript, HTML, CSS, Tailwind CSS, Bootstrap.
+                      Vue.js, React.js, JavaScript, HTML, CSS, Tailwind CSS,
+                      Bootstrap.
                     </p>
                   </div>
 
@@ -887,7 +951,8 @@ const Home = () => {
                       Backend & APIs
                     </h4>
                     <p className="text-xs sm:text-sm font-medium text-neutral-800 dark:text-neutral-200">
-                      Node.js (In Progress), Express.js (In Progress), PHP, RESTful APIs
+                      Node.js (In Progress), Express.js (In Progress), PHP,
+                      RESTful APIs
                     </p>
                   </div>
 
@@ -917,24 +982,45 @@ const Home = () => {
                   </h4>
                   <div className="space-y-3 text-sm text-neutral-600 dark:text-neutral-300">
                     <div className="p-3.5 rounded-2xl bg-white/50 dark:bg-white/[0.02] border border-black/5 dark:border-white/5">
-                      <strong className="text-neutral-900 dark:text-white font-semibold">Clean & Beautiful User Interfaces:</strong>{" "}
-                      Passionate about crafting visually appealing, modern, and intuitive user interfaces that deliver exceptional user experiences across all digital touchpoints.
+                      <strong className="text-neutral-900 dark:text-white font-semibold">
+                        Clean & Beautiful User Interfaces:
+                      </strong>{" "}
+                      Passionate about crafting visually appealing, modern, and
+                      intuitive user interfaces that deliver exceptional user
+                      experiences across all digital touchpoints.
                     </div>
                     <div className="p-3.5 rounded-2xl bg-white/50 dark:bg-white/[0.02] border border-black/5 dark:border-white/5">
-                      <strong className="text-neutral-900 dark:text-white font-semibold">Fully Responsive Web Development:</strong>{" "}
-                      Expert in designing and building fully responsive websites that adapt seamlessly to any screen size—from mobile phones and tablets to desktop monitors—ensuring optimal layout consistency and accessibility.
+                      <strong className="text-neutral-900 dark:text-white font-semibold">
+                        Fully Responsive Web Development:
+                      </strong>{" "}
+                      Expert in designing and building fully responsive websites
+                      that adapt seamlessly to any screen size—from mobile
+                      phones and tablets to desktop monitors—ensuring optimal
+                      layout consistency and accessibility.
                     </div>
                     <div className="p-3.5 rounded-2xl bg-white/50 dark:bg-white/[0.02] border border-black/5 dark:border-white/5">
-                      <strong className="text-neutral-900 dark:text-white font-semibold">Modern Styling Frameworks:</strong>{" "}
-                      Proficient in leveraging Tailwind CSS and Bootstrap to create fast-loading, clean, and pixel-perfect layouts with custom styling and animations.
+                      <strong className="text-neutral-900 dark:text-white font-semibold">
+                        Modern Styling Frameworks:
+                      </strong>{" "}
+                      Proficient in leveraging Tailwind CSS and Bootstrap to
+                      create fast-loading, clean, and pixel-perfect layouts with
+                      custom styling and animations.
                     </div>
                     <div className="p-3.5 rounded-2xl bg-white/50 dark:bg-white/[0.02] border border-black/5 dark:border-white/5">
-                      <strong className="text-neutral-900 dark:text-white font-semibold">Framework Mastery:</strong>{" "}
-                      Strong hands-on experience building dynamic, component-driven single-page applications (SPAs) using Vue.js and React.js.
+                      <strong className="text-neutral-900 dark:text-white font-semibold">
+                        Framework Mastery:
+                      </strong>{" "}
+                      Strong hands-on experience building dynamic,
+                      component-driven single-page applications (SPAs) using
+                      Vue.js and React.js.
                     </div>
                     <div className="p-3.5 rounded-2xl bg-white/50 dark:bg-white/[0.02] border border-black/5 dark:border-white/5">
-                      <strong className="text-neutral-900 dark:text-white font-semibold">Server-Side Development:</strong>{" "}
-                      Actively expanding backend engineering expertise in building scalable server-side applications using Node.js PHP and Express.js (In Progress).
+                      <strong className="text-neutral-900 dark:text-white font-semibold">
+                        Server-Side Development:
+                      </strong>{" "}
+                      Actively expanding backend engineering expertise in
+                      building scalable server-side applications using Node.js
+                      PHP and Express.js (In Progress).
                     </div>
                   </div>
                 </div>
@@ -945,9 +1031,24 @@ const Home = () => {
             <div className="relative group">
               {/* Timeline Icon Badge */}
               <div className="absolute -left-[43px] sm:-left-[51px] top-0 w-10 h-10 sm:w-11 sm:h-11 rounded-2xl bg-amber-400 text-neutral-950 font-bold flex items-center justify-center shadow-lg shadow-amber-400/25 ring-4 ring-white dark:ring-[#070b14] group-hover:scale-110 transition-transform">
-                <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 14l9-5-9-5-9 5 9 5z" />
-                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 14l6.16-3.422a12.083 12.083 0 01.665 6.479A11.952 11.952 0 0112 20.055a11.952 11.952 0 01-6.824-2.998 12.078 12.078 0 01.665-6.479L12 14z" />
+                <svg
+                  className="w-5 h-5"
+                  fill="none"
+                  stroke="currentColor"
+                  viewBox="0 0 24 24"
+                >
+                  <path
+                    strokeLinecap="round"
+                    strokeLinejoin="round"
+                    strokeWidth={2}
+                    d="M12 14l9-5-9-5-9 5 9 5z"
+                  />
+                  <path
+                    strokeLinecap="round"
+                    strokeLinejoin="round"
+                    strokeWidth={2}
+                    d="M12 14l6.16-3.422a12.083 12.083 0 01.665 6.479A11.952 11.952 0 0112 20.055a11.952 11.952 0 01-6.824-2.998 12.078 12.078 0 01.665-6.479L12 14z"
+                  />
                 </svg>
               </div>
 
@@ -974,7 +1075,6 @@ const Home = () => {
                 </div>
               </div>
             </div>
-
           </div>
         </section>
 
@@ -1031,8 +1131,8 @@ const Home = () => {
               </h3>
               <p className="text-slate-600 dark:text-slate-400 text-sm leading-relaxed">
                 Building responsive frontend user interfaces, robust REST APIs,
-                secure authentication workflows, and scalable relational database
-                schemas.
+                secure authentication workflows, and scalable relational
+                database schemas.
               </p>
             </div>
 
@@ -1136,7 +1236,8 @@ const Home = () => {
                   Looking for my Full Curriculum Vitae?
                 </h4>
                 <p className="text-xs sm:text-sm text-slate-600 dark:text-slate-300 mt-1">
-                  Detailed background, technical proficiency, NUM academic education, and contact references.
+                  Detailed background, technical proficiency, NUM academic
+                  education, and contact references.
                 </p>
               </div>
             </div>
@@ -1914,7 +2015,10 @@ const Home = () => {
                     </button>
                   </div>
                 ) : (
-                  <form onSubmit={handleContactSubmit} className="space-y-4 sm:space-y-5">
+                  <form
+                    onSubmit={handleContactSubmit}
+                    className="space-y-4 sm:space-y-5"
+                  >
                     <h3 className="text-lg sm:text-xl font-bold text-neutral-900 dark:text-white mb-2">
                       Send a Message
                     </h3>
