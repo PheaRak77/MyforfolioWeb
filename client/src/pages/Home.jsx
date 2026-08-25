@@ -1325,7 +1325,7 @@ const Home = () => {
               {filteredSkills.map((skill, index) => (
                 <div
                   key={skill.id}
-                  className="p-3.5 sm:p-5 rounded-2xl sm:rounded-3xl bg-white/80 dark:bg-white/[0.04] backdrop-blur-xl border border-black/[0.06] dark:border-white/[0.08] hover:border-amber-400/60 dark:hover:border-amber-400/50 hover:shadow-2xl hover:shadow-amber-500/10 transition-all duration-300 group flex flex-col justify-between hover:-translate-y-1"
+                  className="portfolio-scroll-card p-3.5 sm:p-5 rounded-2xl sm:rounded-3xl bg-white/80 dark:bg-white/[0.04] backdrop-blur-xl border border-black/[0.06] dark:border-white/[0.08] hover:border-amber-400/60 dark:hover:border-amber-400/50 hover:shadow-2xl hover:shadow-amber-500/10 transition-all duration-300 group flex flex-col justify-between hover:-translate-y-1"
                   style={{
                     opacity: revealSkills.isVisible ? 1 : 0,
                     transform: revealSkills.isVisible
@@ -1499,7 +1499,7 @@ const Home = () => {
                 return (
                   <div
                     key={project.id}
-                    className="group rounded-3xl bg-white/80 dark:bg-slate-900/60 backdrop-blur-xl border border-slate-200/80 dark:border-slate-800/80 hover:border-blue-500/50 hover:shadow-2xl hover:shadow-blue-500/10 transition-all duration-300 flex flex-col overflow-hidden hover:-translate-y-1.5"
+                    className="portfolio-scroll-card group rounded-3xl bg-white/80 dark:bg-slate-900/60 backdrop-blur-xl border border-slate-200/80 dark:border-slate-800/80 hover:border-blue-500/50 hover:shadow-2xl hover:shadow-blue-500/10 transition-all duration-300 flex flex-col overflow-hidden hover:-translate-y-1.5"
                   >
                     {/* Project Image Preview — no opacity animation (fixes lazy-load black box) */}
                     <div
@@ -1686,7 +1686,7 @@ const Home = () => {
               {certificates.map((cert, index) => (
                 <div
                   key={cert.id}
-                  className="rounded-3xl bg-white/80 dark:bg-slate-900/60 backdrop-blur-xl border border-slate-200/80 dark:border-slate-800/80 hover:border-purple-500/50 hover:shadow-2xl hover:shadow-purple-500/10 transition-all duration-300 flex flex-col overflow-hidden group hover:-translate-y-1.5"
+                  className="portfolio-scroll-card rounded-3xl bg-white/80 dark:bg-slate-900/60 backdrop-blur-xl border border-slate-200/80 dark:border-slate-800/80 hover:border-purple-500/50 hover:shadow-2xl hover:shadow-purple-500/10 transition-all duration-300 flex flex-col overflow-hidden group hover:-translate-y-1.5"
                   style={{
                     opacity: revealCerts.isVisible ? 1 : 0,
                     transform: revealCerts.isVisible

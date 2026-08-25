@@ -718,6 +718,22 @@ html {
   contain-intrinsic-size: auto 720px;
 }
 
+/* Isolate decorative layers so scrolling does not force the browser to repaint
+   the full page. */
+.portfolio-motion-bg {
+  contain: paint;
+  transform: translateZ(0);
+}
+
+/* Long project, skill, and certificate grids are expensive when every card is
+   painted during a quick scroll. Let the browser skip cards outside the view. */
+@supports (content-visibility: auto) {
+  .portfolio-scroll-card {
+    content-visibility: auto;
+    contain-intrinsic-size: auto 440px;
+  }
+}
+
 /* Keep decorative motion inexpensive on small/touch screens. The design stays
    intact, but avoids continuously compositing large blurred layers. */
 @media (max-width: 640px), (pointer: coarse) {
@@ -729,8 +745,29 @@ html {
   }
 
   .apple-nav-blur {
-    backdrop-filter: blur(14px) saturate(150%);
-    -webkit-backdrop-filter: blur(14px) saturate(150%);
+    backdrop-filter: blur(8px) saturate(135%);
+    -webkit-backdrop-filter: blur(8px) saturate(135%);
+  }
+
+  .portfolio-motion-bg .motion-matrix,
+  .portfolio-motion-bg .motion-deep-glow,
+  .portfolio-motion-bg .motion-grid {
+    display: none;
+  }
+
+  .portfolio-motion-bg .motion-top-glow {
+    height: 390px;
+  }
+
+  .portfolio-motion-bg .motion-aurora {
+    filter: blur(56px);
+    opacity: 0.62;
+  }
+
+  .portfolio-scroll-card {
+    backdrop-filter: none !important;
+    -webkit-backdrop-filter: none !important;
+    box-shadow: none;
   }
 }
 
