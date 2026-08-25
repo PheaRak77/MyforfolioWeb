@@ -2,7 +2,7 @@ import { createContext, useCallback, useContext, useLayoutEffect, useRef, useSta
 
 const ThemeContext = createContext();
 const STORAGE_KEY = "portfolio_theme";
-const THEME_FADE_MS = 420;
+const THEME_FADE_MS = 380;
 
 function readStoredTheme() {
   try {
@@ -59,26 +59,13 @@ export const ThemeProvider = ({ children }) => {
 
     window.clearTimeout(cleanupTimer.current);
     root.classList.add("theme-transitioning");
-    root.classList.toggle("theme-to-light", nextTheme === "light");
-    root.classList.toggle("theme-to-dark", nextTheme === "dark");
-    root.classList.add("theme-veil-active");
-
-    // Let capable browsers animate one composited page snapshot. This is much
-    // smoother than asking every card and text node to repaint independently.
-    if (typeof document.startViewTransition === "function") {
-      root.classList.add("theme-view-transitioning");
-      document.startViewTransition(() => commitTheme(nextTheme));
-    } else {
-      commitTheme(nextTheme);
-    }
+    // Keep the transition focused on the actual UI colours—no screen flash or
+    // extra overlay—so switching themes feels immediate and natural.
+    commitTheme(nextTheme);
 
     cleanupTimer.current = window.setTimeout(() => {
       root.classList.remove(
-        "theme-transitioning",
-        "theme-view-transitioning",
-        "theme-veil-active",
-        "theme-to-light",
-        "theme-to-dark"
+        "theme-transitioning"
       );
     }, THEME_FADE_MS);
   }, [theme]);
