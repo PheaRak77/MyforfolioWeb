@@ -1037,7 +1037,7 @@ const Home = () => {
         <section
           id="about"
           ref={revealAbout.ref}
-          className={`scroll-mt-24 sm:scroll-mt-28 space-y-8 reveal reveal-up reveal-slow section-deferred ${revealAbout.isVisible ? "visible" : ""}`}
+          className={`scroll-mt-24 sm:scroll-mt-28 space-y-8 reveal reveal-up reveal-slow ${revealAbout.isVisible ? "visible" : ""}`}
         >
           <div className="border-b border-slate-200/80 dark:border-slate-800/80 pb-4 flex items-center justify-between">
             <div>
@@ -1251,7 +1251,7 @@ const Home = () => {
         <section
           id="skills"
           ref={revealSkills.ref}
-          className={`scroll-mt-24 sm:scroll-mt-28 space-y-8 reveal reveal-up section-deferred ${revealSkills.isVisible ? "visible" : ""}`}
+          className={`scroll-mt-24 sm:scroll-mt-28 space-y-8 reveal reveal-up ${revealSkills.isVisible ? "visible" : ""}`}
         >
           <div className="flex flex-col md:flex-row md:items-end justify-between gap-4 border-b border-slate-200/80 dark:border-slate-800/80 pb-4">
             <div>
@@ -1406,7 +1406,7 @@ const Home = () => {
         <section
           id="projects"
           ref={revealProjects.ref}
-          className={`scroll-mt-24 sm:scroll-mt-28 space-y-8 reveal reveal-up section-deferred ${revealProjects.isVisible ? "visible" : ""}`}
+          className={`scroll-mt-24 sm:scroll-mt-28 space-y-8 reveal reveal-up ${revealProjects.isVisible ? "visible" : ""}`}
         >
           <div className="flex flex-col md:flex-row md:items-end justify-between gap-4 border-b border-slate-200/80 dark:border-slate-800/80 pb-4">
             <div>
@@ -1639,7 +1639,7 @@ const Home = () => {
         <section
           id="certificates"
           ref={revealCerts.ref}
-          className={`scroll-mt-24 sm:scroll-mt-28 space-y-8 reveal reveal-up section-deferred ${revealCerts.isVisible ? "visible" : ""}`}
+          className={`scroll-mt-24 sm:scroll-mt-28 space-y-8 reveal reveal-up ${revealCerts.isVisible ? "visible" : ""}`}
         >
           <div className="border-b border-slate-200/80 dark:border-slate-800/80 pb-4">
             <div className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-purple-500/10 text-purple-600 dark:text-purple-400 text-xs font-semibold mb-2">
@@ -1830,7 +1830,7 @@ const Home = () => {
         <section
           id="contact"
           ref={revealContact.ref}
-          className={`scroll-mt-24 sm:scroll-mt-28 reveal reveal-scale-up section-deferred ${revealContact.isVisible ? "visible" : ""}`}
+          className={`scroll-mt-24 sm:scroll-mt-28 reveal reveal-scale-up ${revealContact.isVisible ? "visible" : ""}`}
         >
           <div className="rounded-2xl sm:rounded-3xl bg-gradient-to-br from-white/90 via-slate-50/80 to-amber-50/30 dark:from-[#0b1120]/90 dark:via-[#111827]/85 dark:to-[#1e1b4b]/80 border border-black/[0.06] dark:border-white/[0.08] p-4 sm:p-8 lg:p-12 relative overflow-hidden shadow-2xl backdrop-blur-xl">
             <div className="absolute top-0 right-0 w-72 sm:w-96 h-72 sm:h-96 bg-amber-400/15 rounded-full blur-3xl pointer-events-none" />

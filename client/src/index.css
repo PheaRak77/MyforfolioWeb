@@ -752,12 +752,6 @@ html {
   }
 }
 
-/* Below-fold sections: skip layout/paint until near viewport */
-.section-deferred {
-  content-visibility: auto;
-  contain-intrinsic-size: auto 720px;
-}
-
 /* Isolate decorative layers so scrolling does not force the browser to repaint
    the full page. */
 .portfolio-motion-bg {
@@ -768,6 +762,13 @@ html {
 /* Keep decorative motion inexpensive on small/touch screens. The design stays
    intact, but avoids continuously compositing large blurred layers. */
 @media (max-width: 640px), (pointer: coarse) {
+  /* The fixed decorative background is disabled on touch devices. This avoids
+     mobile browser compositing bugs where it can temporarily cover content
+     during a fast reverse scroll. */
+  .portfolio-motion-bg {
+    display: none;
+  }
+
   .animate-aurora-1,
   .animate-aurora-2,
   .animate-name-gradient,
