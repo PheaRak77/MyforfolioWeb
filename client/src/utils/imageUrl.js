@@ -69,6 +69,27 @@ export const optimizeCloudinaryUrl = (url, options = {}) => {
   return url.replace("/image/upload/", `/image/upload/${transformString}/`);
 };
 
+const RESPONSIVE_WIDTHS = {
+  avatar: [80, 160, 240],
+  profile: [160, 320, 600],
+  hero: [400, 600, 800],
+  project: [360, 640, 900],
+  certificate: [360, 640, 900],
+  "certificate-modal": [800, 1200, 1600],
+  default: [480, 800, 1200],
+};
+
+export const getCloudinarySrcSet = (url, options = {}) => {
+  if (!url?.includes("cloudinary.com") || !url.includes("/image/upload/")) return undefined;
+  const variant = options.variant || "default";
+  const sizing = options.customSize || VARIANT_SIZES[variant] || VARIANT_SIZES.default;
+  const widths = RESPONSIVE_WIDTHS[variant] || RESPONSIVE_WIDTHS.default;
+
+  return widths
+    .map((width) => `${optimizeCloudinaryUrl(url, { ...sizing, width })} ${width}w`)
+    .join(", ");
+};
+
 const VARIANT_SIZES = {
   profile: { width: 600, height: 600, crop: "fill", gravity: "face" },
   avatar: { width: 160, height: 160, crop: "fill", gravity: "face" },
@@ -126,4 +147,3 @@ export const getFullImageUrl = (imagePath, options = {}) => {
 
   return resolved;
 };
-

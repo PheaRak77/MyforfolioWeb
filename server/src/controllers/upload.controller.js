@@ -1,6 +1,5 @@
 const ApiError = require("../utils/ApiError");
 const asyncHandler = require("../utils/asyncHandler");
-const { fileToDataUrl } = require("../utils/fileToDataUrl");
 const {
   isCloudinaryConfigured,
   uploadToCloudinary,
@@ -13,42 +12,40 @@ const getSubfolderFromUrl = (originalUrl = "") => {
   return "general";
 };
 
+const hasAllowedImageSignature = (buffer) => {
+  if (!Buffer.isBuffer(buffer) || buffer.length < 12) return false;
+  const header = buffer.subarray(0, 12);
+  const isJpeg = header[0] === 0xff && header[1] === 0xd8 && header[2] === 0xff;
+  const isPng = header.subarray(0, 8).equals(Buffer.from("89504e470d0a1a0a", "hex"));
+  const isWebp = header.subarray(0, 4).toString() === "RIFF" && header.subarray(8, 12).toString() === "WEBP";
+  const isAvif = header.subarray(4, 8).toString() === "ftyp" && header.subarray(8, 12).toString().includes("avif");
+  return isJpeg || isPng || isWebp || isAvif;
+};
+
 const uploadImage = asyncHandler(async (req, res) => {
   if (!req.file || !req.file.buffer) {
     throw new ApiError(400, "Image file is required");
   }
+  if (!hasAllowedImageSignature(req.file.buffer)) {
+    throw new ApiError(400, "Uploaded file is not a valid supported image");
+  }
 
   const subfolder = getSubfolderFromUrl(req.originalUrl);
 
-  // 1. Try uploading Buffer to Cloudinary (permanent CDN URL)
-  if (isCloudinaryConfigured()) {
-    try {
-      const cloudinaryUrl = await uploadToCloudinary(req.file.buffer, {
-        folder: subfolder,
-      });
-
-      if (cloudinaryUrl) {
-        return res.status(201).json({
-          success: true,
-          message: "Image uploaded to Cloudinary successfully",
-          url: cloudinaryUrl,
-          provider: "cloudinary",
-        });
-      }
-    } catch (err) {
-      console.warn("Cloudinary upload failed, falling back to base64:", err.message);
-    }
+  if (!isCloudinaryConfigured()) {
+    throw new ApiError(503, "Image storage is not configured. Please configure Cloudinary and try again.");
   }
 
-  // 2. Fallback: Convert in-memory buffer to Base64 data URL directly
-  const mime = req.file.mimetype || "image/jpeg";
-  const dataUrl = `data:${mime};base64,${req.file.buffer.toString("base64")}`;
+  const cloudinaryUrl = await uploadToCloudinary(req.file.buffer, { folder: subfolder });
+  if (!cloudinaryUrl) {
+    throw new ApiError(502, "Image upload failed. Please try again.");
+  }
 
-  res.status(201).json({
+  return res.status(201).json({
     success: true,
-    message: "Image uploaded and stored as data URL",
-    url: dataUrl,
-    provider: "base64",
+    message: "Image uploaded to Cloudinary successfully",
+    url: cloudinaryUrl,
+    provider: "cloudinary",
   });
 });
 
@@ -61,24 +58,23 @@ const uploadRawImage = asyncHandler(async (req, res) => {
   if (!image || typeof image !== "string") {
     throw new ApiError(400, "Image data is required");
   }
-
-  if (isCloudinaryConfigured()) {
-    const cloudinaryUrl = await uploadToCloudinary(image, { folder });
-    if (cloudinaryUrl) {
-      return res.status(201).json({
-        success: true,
-        message: "Image uploaded to Cloudinary",
-        url: cloudinaryUrl,
-        provider: "cloudinary",
-      });
-    }
+  if (image.length > 8 * 1024 * 1024) {
+    throw new ApiError(413, "Image data is too large");
   }
 
-  res.status(200).json({
+  if (!isCloudinaryConfigured()) {
+    throw new ApiError(503, "Image storage is not configured. Please configure Cloudinary and try again.");
+  }
+  const cloudinaryUrl = await uploadToCloudinary(image, { folder });
+  if (!cloudinaryUrl) {
+    throw new ApiError(502, "Image upload failed. Please try again.");
+  }
+
+  res.status(201).json({
     success: true,
-    message: "Image retained as data URL",
-    url: image,
-    provider: "base64",
+    message: "Image uploaded to Cloudinary",
+    url: cloudinaryUrl,
+    provider: "cloudinary",
   });
 });
 
@@ -86,4 +82,3 @@ module.exports = {
   uploadImage,
   uploadRawImage,
 };
-

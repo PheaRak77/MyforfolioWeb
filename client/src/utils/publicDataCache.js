@@ -47,6 +47,7 @@ export const clearPublicDataCache = () => {
 
 /** Load all cached portfolio sections at once for instant first paint */
 export const hydrateFromCache = () => ({
+  portfolio: readCache("portfolio"),
   profile: readCache("profile"),
   projects: readCache("projects"),
   certificates: readCache("certificates"),

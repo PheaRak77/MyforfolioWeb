@@ -8,14 +8,21 @@ const cacheStore = new Map();
 const cacheMiddleware = (durationSeconds = 60) => {
   return (req, res, next) => {
     // Only cache GET requests
-    if (req.method !== "GET") {
+    // Protected routes must never enter a shared cache. This prevents an
+    // authenticated dashboard response being served to another visitor.
+    if (
+      req.method !== "GET" ||
+      req.headers.authorization ||
+      req.path === "/my" ||
+      req.path === "/profile"
+    ) {
       return next();
     }
 
     const key = req.originalUrl || req.url;
     const cached = cacheStore.get(key);
 
-    res.setHeader("Cache-Control", `public, max-age=${durationSeconds}, s-maxage=${durationSeconds * 2}, stale-while-revalidate=300`);
+    res.setHeader("Cache-Control", `public, max-age=${durationSeconds}, s-maxage=${durationSeconds * 10}, stale-while-revalidate=86400`);
 
     if (cached && Date.now() < cached.expiry) {
       res.setHeader("X-Cache", "HIT");

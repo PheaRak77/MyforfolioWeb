@@ -9,14 +9,13 @@ const fileFilter = (req, file, cb) => {
     "image/jpg",
     "image/png",
     "image/webp",
-    "image/gif",
-    "image/svg+xml",
+    "image/avif",
   ];
 
   if (allowedTypes.includes(file.mimetype.toLowerCase())) {
     cb(null, true);
   } else {
-    cb(new Error("Only JPG, PNG, WEBP, and GIF images are allowed"), false);
+    cb(new Error("Only JPG, PNG, WebP, and AVIF images are allowed"), false);
   }
 };
 
@@ -24,9 +23,8 @@ const upload = multer({
   storage,
   fileFilter,
   limits: {
-    fileSize: Number(process.env.MAX_FILE_SIZE || 10 * 1024 * 1024), // 10MB limit
+    fileSize: Number(process.env.MAX_FILE_SIZE || 6 * 1024 * 1024),
   },
 });
 
 module.exports = upload;
-

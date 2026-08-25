@@ -2,6 +2,7 @@ const express = require("express");
 const router = express.Router();
 const { sendContactEmail } = require("../utils/emailSender");
 const pool = require("../config/db");
+const { requireAuth, requireAdmin } = require("../middleware/auth.middleware");
 
 /**
  * POST /api/contact
@@ -39,18 +40,6 @@ router.post("/", async (req, res, next) => {
         errors,
       });
     }
-
-    // Ensure contact_messages table exists
-    await pool.query(`
-      CREATE TABLE IF NOT EXISTS contact_messages (
-        id SERIAL PRIMARY KEY,
-        name VARCHAR(255) NOT NULL,
-        email VARCHAR(255) NOT NULL,
-        subject VARCHAR(255) NOT NULL,
-        message TEXT NOT NULL,
-        created_at TIMESTAMP WITH TIME ZONE DEFAULT CURRENT_TIMESTAMP
-      )
-    `);
 
     // 1. Immediately save message into database
     await pool.query(
@@ -105,28 +94,8 @@ router.post("/", async (req, res, next) => {
  * GET /api/contact/messages
  * Admin endpoint to list all received contact messages from database.
  */
-router.get("/messages", async (req, res, next) => {
+router.get("/messages", requireAuth, requireAdmin, async (req, res, next) => {
   try {
-    const { requireAuth, requireAdmin } = require("../middleware/auth.middleware");
-    // Run auth middleware manually
-    await new Promise((resolve, reject) => {
-      requireAuth(req, res, (err) => (err ? reject(err) : resolve()));
-    });
-    await new Promise((resolve, reject) => {
-      requireAdmin(req, res, (err) => (err ? reject(err) : resolve()));
-    });
-
-    await pool.query(`
-      CREATE TABLE IF NOT EXISTS contact_messages (
-        id SERIAL PRIMARY KEY,
-        name VARCHAR(255) NOT NULL,
-        email VARCHAR(255) NOT NULL,
-        subject VARCHAR(255) NOT NULL,
-        message TEXT NOT NULL,
-        created_at TIMESTAMP WITH TIME ZONE DEFAULT CURRENT_TIMESTAMP
-      )
-    `);
-
     const { rows } = await pool.query(
       "SELECT * FROM contact_messages ORDER BY created_at DESC"
     );
@@ -144,16 +113,8 @@ router.get("/messages", async (req, res, next) => {
  * DELETE /api/contact/messages/:id
  * Admin endpoint to delete a contact message.
  */
-router.delete("/messages/:id", async (req, res, next) => {
+router.delete("/messages/:id", requireAuth, requireAdmin, async (req, res, next) => {
   try {
-    const { requireAuth, requireAdmin } = require("../middleware/auth.middleware");
-    await new Promise((resolve, reject) => {
-      requireAuth(req, res, (err) => (err ? reject(err) : resolve()));
-    });
-    await new Promise((resolve, reject) => {
-      requireAdmin(req, res, (err) => (err ? reject(err) : resolve()));
-    });
-
     const { id } = req.params;
     await pool.query("DELETE FROM contact_messages WHERE id = $1", [id]);
 

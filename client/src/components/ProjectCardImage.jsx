@@ -4,15 +4,17 @@ import PortfolioImage from "./PortfolioImage";
  * Project card thumbnail — eager load + absolute fill so images show on the grid
  * (lazy loading inside scroll-reveal cards often never fires in Safari/Brave).
  */
-export default function ProjectCardImage({ src, alt, fallback }) {
+export default function ProjectCardImage({ src, alt, fallback, priority = false }) {
   return (
     <PortfolioImage
       src={src}
       alt={alt}
       variant="project"
-      loading="eager"
-      decoding="sync"
-      fetchPriority="high"
+      priority={priority}
+      loading={priority ? "eager" : "lazy"}
+      decoding="async"
+      fetchPriority={priority ? "high" : "auto"}
+      sizes="(max-width: 767px) 100vw, (max-width: 1024px) 50vw, 33vw"
       className="absolute inset-0 w-full h-full object-cover transition-transform duration-500 group-hover:scale-105"
       fallback={
         fallback || (

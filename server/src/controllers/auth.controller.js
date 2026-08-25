@@ -6,6 +6,7 @@ const ApiError = require("../utils/ApiError");
 const asyncHandler = require("../utils/asyncHandler");
 const generateToken = require("../utils/generateToken");
 const sanitizeUser = require("../utils/sanitizeUser");
+const { sendPasswordResetEmail } = require("../utils/emailSender");
 
 const register = asyncHandler(async (req, res) => {
   const { name, email, phone, password, dob } = req.body;
@@ -171,17 +172,24 @@ const forgotPassword = asyncHandler(async (req, res) => {
       user.email,
     )}`;
 
-    console.log("\n=================================");
-    console.log("🔑 PASSWORD RESET LINK GENERATED:");
-    console.log(resetLink);
-    console.log("=================================\n");
+    // Do not expose reset tokens in production API responses or logs. Send the
+    // link asynchronously so the response stays fast and does not reveal
+    // whether a particular account exists.
+    if (process.env.NODE_ENV === "production") {
+      if (process.env.SMTP_EMAIL && process.env.SMTP_PASSWORD) {
+        setImmediate(() => sendPasswordResetEmail({
+          recipientEmail: user.email,
+          resetLink,
+        }).catch((error) => console.error("Password reset email failed:", error.message)));
+      }
+      resetLink = null;
+    }
   }
 
   res.json({
     success: true,
-    message: "Password reset request generated successfully.",
-    resetLink,
-    email: user ? user.email : null,
+    message: "If an account matches those details, reset instructions have been sent.",
+    ...(process.env.NODE_ENV !== "production" && resetLink ? { resetLink } : {}),
   });
 });
 

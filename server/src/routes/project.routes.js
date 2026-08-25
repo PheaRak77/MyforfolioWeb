@@ -9,13 +9,13 @@ const {
   deleteProject,
 } = require("../controllers/project.controller");
 
-const { requireAuth } = require("../middleware/auth.middleware");
+const { requireAuth, requireAdmin } = require("../middleware/auth.middleware");
 
 router.get("/", getAllProjects);
-router.get("/my", requireAuth, getMyProjects);
+router.get("/my", requireAuth, requireAdmin, getMyProjects);
 router.get("/:id", getProjectById);
-router.post("/", requireAuth, createProject);
-router.put("/:id", requireAuth, updateProject);
-router.delete("/:id", requireAuth, deleteProject);
+router.post("/", requireAuth, requireAdmin, createProject);
+router.put("/:id", requireAuth, requireAdmin, updateProject);
+router.delete("/:id", requireAuth, requireAdmin, deleteProject);
 
 module.exports = router;

@@ -23,18 +23,18 @@ const Home = () => {
   const { user: authUser, isAuthenticated, logout } = useAuth();
 
   const [profile, setProfile] = useState(
-    () => hydrateFromCache().profile?.user ?? null,
+    () => hydrateFromCache().portfolio?.user ?? hydrateFromCache().profile?.user ?? null,
   );
   const [projects, setProjects] = useState(
-    () => hydrateFromCache().projects?.projects ?? [],
+    () => hydrateFromCache().portfolio?.projects ?? hydrateFromCache().projects?.projects ?? [],
   );
   const [certificates, setCertificates] = useState(
-    () => hydrateFromCache().certificates?.certificates ?? [],
+    () => hydrateFromCache().portfolio?.certificates ?? hydrateFromCache().certificates?.certificates ?? [],
   );
   const [skills, setSkills] = useState(
-    () => hydrateFromCache().skills?.skills ?? [],
+    () => hydrateFromCache().portfolio?.skills ?? hydrateFromCache().skills?.skills ?? [],
   );
-  const [loading, setLoading] = useState(() => !hydrateFromCache().profile);
+  const [loading, setLoading] = useState(() => !hydrateFromCache().portfolio && !hydrateFromCache().profile);
   const [error, setError] = useState("");
 
   // Scroll Reveal Hooks for each section
@@ -157,37 +157,15 @@ const Home = () => {
         setError("");
 
         const responses = await fetchPublicPortfolioData(publicApi, {
-          profile: "/users/public-profile",
-          projects: "/projects",
-          certificates: "/certificates",
-          skills: "/skills",
+          portfolio: "/portfolio",
         });
 
-        const profileRes = responses.profile;
-        const projectsRes = responses.projects;
-        const certsRes = responses.certificates;
-        const skillsRes = responses.skills;
-
-        if (profileRes?.status === "fulfilled" && profileRes.value.data?.user) {
-          setProfile(profileRes.value.data.user);
-        }
-
-        if (
-          projectsRes?.status === "fulfilled" &&
-          projectsRes.value.data?.projects
-        ) {
-          setProjects(projectsRes.value.data.projects);
-        }
-
-        if (
-          certsRes?.status === "fulfilled" &&
-          certsRes.value.data?.certificates
-        ) {
-          setCertificates(certsRes.value.data.certificates);
-        }
-
-        if (skillsRes?.status === "fulfilled" && skillsRes.value.data?.skills) {
-          setSkills(skillsRes.value.data.skills);
+        const portfolio = responses.portfolio?.value?.data;
+        if (responses.portfolio?.status === "fulfilled" && portfolio) {
+          setProfile(portfolio.user ?? null);
+          setProjects(portfolio.projects ?? []);
+          setCertificates(portfolio.certificates ?? []);
+          setSkills(portfolio.skills ?? []);
         }
       } catch (err) {
         console.error("Error loading portfolio data:", err);
@@ -1491,7 +1469,7 @@ const Home = () => {
             </div>
           ) : (
             <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-6">
-              {filteredProjects.map((project, index) => {
+              {filteredProjects.map((project) => {
                 const mainImage = getProjectMainImage(project);
                 const validImages = getProjectValidImages(project);
 

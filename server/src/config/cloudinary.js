@@ -38,13 +38,6 @@ const uploadToCloudinary = async (input, options = {}) => {
     return null;
   }
 
-  cloudinary.config({
-    cloud_name: process.env.CLOUDINARY_CLOUD_NAME.trim(),
-    api_key: process.env.CLOUDINARY_API_KEY.trim(),
-    api_secret: process.env.CLOUDINARY_API_SECRET.trim(),
-    secure: true,
-  });
-
   const { folder = "portfolio", publicId = null } = options;
 
   const uploadOptions = {
@@ -53,6 +46,14 @@ const uploadToCloudinary = async (input, options = {}) => {
     transformation: [
       { quality: "auto:good", fetch_format: "auto", flags: "lossy" },
     ],
+    // Create common delivery sizes after upload so visitors receive CDN-ready
+    // images instead of triggering the first transformation themselves.
+    eager: [
+      { width: 360, crop: "limit", quality: "auto:good", fetch_format: "auto" },
+      { width: 640, crop: "limit", quality: "auto:good", fetch_format: "auto" },
+      { width: 900, crop: "limit", quality: "auto:good", fetch_format: "auto" },
+    ],
+    eager_async: true,
   };
 
   if (publicId) {
@@ -99,5 +100,4 @@ module.exports = {
   isCloudinaryConfigured,
   uploadToCloudinary,
 };
-
 

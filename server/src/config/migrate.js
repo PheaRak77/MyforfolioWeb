@@ -71,6 +71,15 @@ async function ensureDatabaseSchema() {
       created_at TIMESTAMP WITH TIME ZONE DEFAULT CURRENT_TIMESTAMP
     );
 
+    CREATE TABLE IF NOT EXISTS contact_messages (
+      id SERIAL PRIMARY KEY,
+      name VARCHAR(255) NOT NULL,
+      email VARCHAR(255) NOT NULL,
+      subject VARCHAR(255) NOT NULL,
+      message TEXT NOT NULL,
+      created_at TIMESTAMP WITH TIME ZONE DEFAULT CURRENT_TIMESTAMP
+    );
+
     -- MIGRATIONS: Safely add missing columns to any existing tables
     ALTER TABLE skills ADD COLUMN IF NOT EXISTS display_order INTEGER DEFAULT 0;
     ALTER TABLE skills ADD COLUMN IF NOT EXISTS level VARCHAR(50) DEFAULT 'Advanced';
@@ -106,6 +115,7 @@ async function ensureDatabaseSchema() {
     CREATE INDEX IF NOT EXISTS idx_skills_category ON skills(category);
     CREATE INDEX IF NOT EXISTS idx_skills_display_order ON skills(display_order);
     CREATE INDEX IF NOT EXISTS idx_password_resets_lookup ON password_resets(user_id, token_hash);
+    CREATE INDEX IF NOT EXISTS idx_contact_messages_created_at ON contact_messages(created_at DESC);
   `;
 
   try {

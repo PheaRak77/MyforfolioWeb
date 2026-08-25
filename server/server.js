@@ -23,6 +23,7 @@ const contactRoutes = require("./src/routes/contact.routes");
 const { notFound, errorHandler } = require("./src/middleware/error.middleware");
 const { ensureDatabaseSchema } = require("./src/config/migrate");
 const { cacheMiddleware, clearPublicCache } = require("./src/middleware/cache.middleware");
+const { getPublicPortfolio } = require("./src/controllers/portfolio.controller");
 
 
 const app = express();
@@ -183,6 +184,9 @@ app.get("/api/health", async (req, res) => {
   }
 });
 
+// Homepage payload: one cached request instead of four independent API calls.
+app.get("/api/portfolio", apiLimiter, cacheMiddleware(300), getPublicPortfolio);
+
 // Mount Routes — public GET routes get 60-second in-memory cache for speed
 app.use("/api/auth", authLimiter, authRoutes);
 app.use("/api/users", apiLimiter, cacheMiddleware(90), userRoutes);
@@ -201,4 +205,3 @@ const PORT = process.env.PORT || 5000;
 app.listen(PORT, "0.0.0.0", () => {
   console.log(`🚀 Secure portfolio server running on port ${PORT}`);
 });
-

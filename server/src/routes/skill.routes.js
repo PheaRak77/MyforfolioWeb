@@ -9,13 +9,13 @@ const {
   deleteSkill,
 } = require("../controllers/skill.controller");
 
-const { requireAuth } = require("../middleware/auth.middleware");
+const { requireAuth, requireAdmin } = require("../middleware/auth.middleware");
 
 router.get("/", getAllSkills);
-router.get("/my", requireAuth, getMySkills);
+router.get("/my", requireAuth, requireAdmin, getMySkills);
 router.get("/:id", getSkillById);
-router.post("/", requireAuth, createSkill);
-router.put("/:id", requireAuth, updateSkill);
-router.delete("/:id", requireAuth, deleteSkill);
+router.post("/", requireAuth, requireAdmin, createSkill);
+router.put("/:id", requireAuth, requireAdmin, updateSkill);
+router.delete("/:id", requireAuth, requireAdmin, deleteSkill);
 
 module.exports = router;

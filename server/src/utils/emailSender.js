@@ -1,6 +1,12 @@
 const nodemailer = require("nodemailer");
 
 let transporterInstance = null;
+const escapeHtml = (value = "") => String(value)
+  .replace(/&/g, "&amp;")
+  .replace(/</g, "&lt;")
+  .replace(/>/g, "&gt;")
+  .replace(/"/g, "&quot;")
+  .replace(/'/g, "&#039;");
 
 const getTransporter = () => {
   if (transporterInstance) {
@@ -66,6 +72,9 @@ const sendContactEmail = async ({
   recipientEmail,
 }) => {
   const mailTransporter = getTransporter();
+  const safeName = escapeHtml(senderName);
+  const safeEmail = escapeHtml(senderEmail);
+  const safeSubject = escapeHtml(subject);
 
   const html = `
 <!DOCTYPE html>
@@ -94,17 +103,17 @@ const sendContactEmail = async ({
         <tr>
           <td style="background:#0f172a;border:1px solid #1e3a5f;border-radius:10px;padding:12px 16px;width:50%;">
             <div style="font-size:10px;text-transform:uppercase;letter-spacing:1px;color:#64748b;font-weight:700;margin-bottom:4px;">From</div>
-            <div style="font-size:15px;font-weight:700;color:#e2e8f0;">${senderName}</div>
+            <div style="font-size:15px;font-weight:700;color:#e2e8f0;">${safeName}</div>
           </td>
           <td style="background:#0f172a;border:1px solid #1e3a5f;border-radius:10px;padding:12px 16px;width:50%;">
             <div style="font-size:10px;text-transform:uppercase;letter-spacing:1px;color:#64748b;font-weight:700;margin-bottom:4px;">Reply To</div>
-            <div style="font-size:15px;font-weight:700;color:#60a5fa;">${senderEmail}</div>
+            <div style="font-size:15px;font-weight:700;color:#60a5fa;">${safeEmail}</div>
           </td>
         </tr>
         <tr>
           <td colspan="2" style="background:#0f172a;border:1px solid #1e3a5f;border-radius:10px;padding:12px 16px;">
             <div style="font-size:10px;text-transform:uppercase;letter-spacing:1px;color:#64748b;font-weight:700;margin-bottom:4px;">Subject</div>
-            <div style="font-size:15px;font-weight:700;color:#e2e8f0;">${subject}</div>
+            <div style="font-size:15px;font-weight:700;color:#e2e8f0;">${safeSubject}</div>
           </td>
         </tr>
       </table>
@@ -114,7 +123,7 @@ const sendContactEmail = async ({
     <div style="padding:24px 36px 32px;">
       <div style="font-size:10px;text-transform:uppercase;letter-spacing:1px;color:#64748b;font-weight:700;margin-bottom:12px;">Message</div>
       <div style="background:#0f172a;border:1px solid #334155;border-radius:12px;padding:20px;color:#cbd5e1;font-size:14px;line-height:1.75;white-space:pre-line;">
-        ${message.replace(/&/g, "&amp;").replace(/</g, "&lt;").replace(/>/g, "&gt;")}
+        ${escapeHtml(message)}
       </div>
     </div>
 
@@ -150,4 +159,17 @@ const sendContactEmail = async ({
   });
 };
 
-module.exports = { sendContactEmail };
+const sendPasswordResetEmail = async ({ recipientEmail, resetLink }) => {
+  const mailTransporter = getTransporter();
+  const safeLink = escapeHtml(resetLink);
+
+  await mailTransporter.sendMail({
+    from: `"Portfolio Security" <${process.env.SMTP_EMAIL}>`,
+    to: recipientEmail,
+    subject: "Reset your portfolio password",
+    text: `Use this link to reset your password. It expires in one hour: ${resetLink}`,
+    html: `<p>We received a password reset request.</p><p><a href="${safeLink}">Reset your password</a></p><p>This link expires in one hour. If you did not request it, you can ignore this email.</p>`,
+  });
+};
+
+module.exports = { sendContactEmail, sendPasswordResetEmail };

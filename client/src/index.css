@@ -718,6 +718,22 @@ html {
   contain-intrinsic-size: auto 720px;
 }
 
+/* Keep decorative motion inexpensive on small/touch screens. The design stays
+   intact, but avoids continuously compositing large blurred layers. */
+@media (max-width: 640px), (pointer: coarse) {
+  .animate-aurora-1,
+  .animate-aurora-2,
+  .animate-name-gradient,
+  .animate-greeting-shimmer {
+    animation: none;
+  }
+
+  .apple-nav-blur {
+    backdrop-filter: blur(14px) saturate(150%);
+    -webkit-backdrop-filter: blur(14px) saturate(150%);
+  }
+}
+
 /* Lighter ambient glows on mobile — blur is GPU-heavy */
 .ambient-glow {
   @apply blur-xl sm:blur-2xl lg:blur-3xl pointer-events-none;

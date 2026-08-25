@@ -1,10 +1,10 @@
 import api from "../api/axios";
-import { compressImageFile, compressImageFileToBlob } from "./imageCompressor";
+import { compressImageFileToBlob } from "./imageCompressor";
 
 /**
  * Uploads an image file to Cloudinary via backend upload API.
  * Automatically pre-compresses large files for instant network transfer.
- * Falls back to compressed Base64 data URL if network/server is unavailable.
+ * Keeps image files on Cloudinary so the database never stores slow Base64 blobs.
  * 
  * @param {File} file - Selected image file
  * @param {string} endpoint - Backend upload route (e.g. "/uploads/certificate-image")
@@ -53,17 +53,5 @@ export const uploadMediaImage = async (
     console.warn("Backend Cloudinary upload failed, falling back to local base64:", err?.message);
   }
 
-  // 3. Fallback: Compress to client-side base64 data URL
-  const base64Url = await compressImageFile(
-    file,
-    options.maxWidth || 1200,
-    options.maxHeight || 1200,
-    options.quality || 0.85
-  );
-
-  return {
-    url: base64Url,
-    provider: "base64",
-  };
+  throw new Error("Image upload failed. Please check your connection and try again.");
 };
-

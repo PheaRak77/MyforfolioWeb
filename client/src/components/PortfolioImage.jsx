@@ -1,6 +1,7 @@
-import { useEffect, useState } from "react";
+import { useState } from "react";
 import {
   getFullImageUrl,
+  getCloudinarySrcSet,
   isBrokenImageUrl,
 } from "../utils/imageUrl";
 import { getImagePlaceholder } from "../utils/imagePlaceholder";
@@ -25,13 +26,7 @@ export default function PortfolioImage({
   onLoad: externalOnLoad,
   ...props
 }) {
-  const [failed, setFailed] = useState(false);
-  const [loaded, setLoaded] = useState(false);
-
-  useEffect(() => {
-    setFailed(false);
-    setLoaded(false);
-  }, [src]);
+  const [failedSource, setFailedSource] = useState(null);
 
   if (!src || typeof src !== "string" || !src.trim()) {
     return fallback;
@@ -54,7 +49,7 @@ export default function PortfolioImage({
 
   const resolvedSrc = getFullImageUrl(src, { label: alt, variant });
 
-  if (!resolvedSrc || failed) {
+  if (!resolvedSrc || failedSource === resolvedSrc) {
     return fallback;
   }
 
@@ -65,24 +60,22 @@ export default function PortfolioImage({
   return (
     <img
       src={resolvedSrc}
+      srcSet={getCloudinarySrcSet(src, { variant })}
+      sizes={props.sizes || "(max-width: 640px) 100vw, (max-width: 1024px) 50vw, 900px"}
       alt={alt}
       loading={effectiveLoading}
       decoding={effectiveDecoding}
       fetchPriority={effectiveFetchPriority}
       referrerPolicy="no-referrer"
-      className={`${className} transition-opacity duration-300 ${
-        loaded ? "opacity-100" : "opacity-90"
-      }`}
+      className={className}
       onLoad={(event) => {
-        setLoaded(true);
         externalOnLoad?.(event);
       }}
       onError={(event) => {
-        setFailed(true);
+        setFailedSource(resolvedSrc);
         externalOnError?.(event);
       }}
       {...props}
     />
   );
 }
-
