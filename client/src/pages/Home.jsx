@@ -1,48 +1,63 @@
-import { useEffect, useState } from "react";
+import {
+  lazy,
+  Suspense,
+  useCallback,
+  useEffect,
+  useMemo,
+  useState,
+} from "react";
 import { Link } from "react-router-dom";
 import publicApi from "../api/publicApi";
-import api from "../api/axios";
 import { useAuth } from "../context/AuthContext";
 import useScrollReveal from "../hooks/useScrollReveal";
 import PortfolioImage from "../components/PortfolioImage";
-import ProjectCardImage from "../components/ProjectCardImage";
 import VerifiedBadge, { VerifiedName } from "../components/VerifiedBadge";
-import CvModal from "../components/CvModal";
 import MotionBackground from "../components/MotionBackground";
 import ThemeToggle from "../components/ThemeToggle";
+import ProjectCard from "../components/ProjectCard";
+import CertificateCard from "../components/CertificateCard";
 import {
   fetchPublicPortfolioData,
   hydrateFromCache,
 } from "../utils/publicDataCache";
-import {
-  keepPermanentImages,
-  normalizeProjectImages,
-} from "../utils/projectImages";
+import { getProjectValidImages } from "../utils/projectImages";
+import { formatDisplayDate } from "../utils/formatDate";
+
+// The CV modal statically imports a full-page CV render. Nobody sees it until
+// they click "Look CV", so it stays out of the first-load bundle.
+const CvModal = lazy(() => import("../components/CvModal"));
+
+// One synchronous storage read for the whole page instead of one per useState
+// initialiser — readCache touches both localStorage and sessionStorage per key.
+const cached = hydrateFromCache();
 
 const Home = () => {
   const { user: authUser, isAuthenticated, logout } = useAuth();
 
   const [profile, setProfile] = useState(
-    () => hydrateFromCache().portfolio?.user ?? hydrateFromCache().profile?.user ?? null,
+    () => cached.portfolio?.user ?? cached.profile?.user ?? null,
   );
   const [projects, setProjects] = useState(
-    () => hydrateFromCache().portfolio?.projects ?? hydrateFromCache().projects?.projects ?? [],
+    () => cached.portfolio?.projects ?? cached.projects?.projects ?? [],
   );
   const [certificates, setCertificates] = useState(
-    () => hydrateFromCache().portfolio?.certificates ?? hydrateFromCache().certificates?.certificates ?? [],
+    () =>
+      cached.portfolio?.certificates ?? cached.certificates?.certificates ?? [],
   );
   const [skills, setSkills] = useState(
-    () => hydrateFromCache().portfolio?.skills ?? hydrateFromCache().skills?.skills ?? [],
+    () => cached.portfolio?.skills ?? cached.skills?.skills ?? [],
   );
-  const [loading, setLoading] = useState(() => !hydrateFromCache().portfolio && !hydrateFromCache().profile);
-  const [error, setError] = useState("");
+  const [loading, setLoading] = useState(
+    () => !cached.portfolio && !cached.profile,
+  );
+  const [_error, setError] = useState("");
 
   // Scroll Reveal Hooks for each section
-  const revealAbout = useScrollReveal({ threshold: 0.1 });
-  const revealSkills = useScrollReveal({ threshold: 0.08 });
-  const revealProjects = useScrollReveal({ threshold: 0.06 });
-  const revealCerts = useScrollReveal({ threshold: 0.06 });
-  const revealContact = useScrollReveal({ threshold: 0.08 });
+  const [revealAboutRef, isAboutVisible] = useScrollReveal({ threshold: 0.1 });
+  const [revealSkillsRef, isSkillsVisible] = useScrollReveal({ threshold: 0.08 });
+  const [revealProjectsRef, isProjectsVisible] = useScrollReveal({ threshold: 0.06 });
+  const [revealCertsRef, isCertsVisible] = useScrollReveal({ threshold: 0.06 });
+  const [revealContactRef, isContactVisible] = useScrollReveal({ threshold: 0.08 });
 
   // Filter and Modal States
   const [selectedTech, setSelectedTech] = useState("all");
@@ -67,22 +82,22 @@ const Home = () => {
   const [headerImgError, setHeaderImgError] = useState(false);
   const [contactApiError, setContactApiError] = useState("");
 
-  const handleCopy = (text, fieldName) => {
+  const handleCopy = useCallback((text, fieldName) => {
     navigator.clipboard.writeText(text);
     setCopiedField(fieldName);
     setTimeout(() => setCopiedField(""), 2500);
-  };
+  }, []);
 
-  const handleNavClick = (e, targetId) => {
+  const handleNavClick = useCallback((e, targetId) => {
     e.preventDefault();
     setMobileMenuOpen(false);
     const element = document.querySelector(targetId);
     if (element) {
       element.scrollIntoView({ behavior: "smooth", block: "start" });
     }
-  };
+  }, []);
 
-  const validateContact = () => {
+  const validateContact = useCallback(() => {
     const errors = {};
     if (!contactForm.name.trim()) {
       errors.name = "Please enter your name";
@@ -108,47 +123,50 @@ const Home = () => {
 
     setContactErrors(errors);
     return Object.keys(errors).length === 0;
-  };
+  }, [contactForm]);
 
-  const handleContactFocus = () => {
+  const handleContactFocus = useCallback(() => {
     // Silently pre-warm Render API when user starts typing
     publicApi.get("/health").catch(() => {});
-  };
+  }, []);
 
-  const handleContactSubmit = async (e) => {
-    e.preventDefault();
-    if (!validateContact()) return;
+  const handleContactSubmit = useCallback(
+    async (e) => {
+      e.preventDefault();
+      if (!validateContact()) return;
 
-    setSendingMessage(true);
-    setContactApiError("");
+      setSendingMessage(true);
+      setContactApiError("");
 
-    try {
-      const { data } = await publicApi.post("/contact", {
-        name: contactForm.name.trim(),
-        email: contactForm.email.trim(),
-        subject: contactForm.subject.trim(),
-        message: contactForm.message.trim(),
-      });
+      try {
+        const { data } = await publicApi.post("/contact", {
+          name: contactForm.name.trim(),
+          email: contactForm.email.trim(),
+          subject: contactForm.subject.trim(),
+          message: contactForm.message.trim(),
+        });
 
-      if (data.success) {
-        setContactSubmitted(true);
-        setContactForm({ name: "", email: "", subject: "", message: "" });
-        setContactErrors({});
-      } else {
+        if (data.success) {
+          setContactSubmitted(true);
+          setContactForm({ name: "", email: "", subject: "", message: "" });
+          setContactErrors({});
+        } else {
+          setContactApiError(
+            data.message || "Failed to send message. Please try again.",
+          );
+        }
+      } catch (err) {
+        const serverMessage = err.response?.data?.message;
         setContactApiError(
-          data.message || "Failed to send message. Please try again.",
+          serverMessage ||
+            "Something went wrong. Please try again or contact directly via email.",
         );
+      } finally {
+        setSendingMessage(false);
       }
-    } catch (err) {
-      const serverMessage = err.response?.data?.message;
-      setContactApiError(
-        serverMessage ||
-          "Something went wrong. Please try again or contact directly via email.",
-      );
-    } finally {
-      setSendingMessage(false);
-    }
-  };
+    },
+    [contactForm, validateContact],
+  );
 
   useEffect(() => {
     const fetchPublicData = async () => {
@@ -207,65 +225,56 @@ const Home = () => {
   const displayUser = profile;
 
   // Extract all unique tech stack tags from projects
-  const allTechStacks = Array.from(
-    new Set(
-      projects.flatMap((p) =>
-        Array.isArray(p.tech_stack) ? p.tech_stack : [],
+  const allTechStacks = useMemo(
+    () =>
+      Array.from(
+        new Set(
+          projects.flatMap((p) =>
+            Array.isArray(p.tech_stack) ? p.tech_stack : [],
+          ),
+        ),
       ),
-    ),
+    [projects],
   );
 
   // Extract all unique categories from skills
-  const skillCategories = Array.from(
-    new Set(skills.map((s) => s.category).filter(Boolean)),
+  const skillCategories = useMemo(
+    () => Array.from(new Set(skills.map((s) => s.category).filter(Boolean))),
+    [skills],
   );
 
   // Filter skills by category
-  const filteredSkills =
-    selectedSkillCategory === "all"
-      ? skills
-      : selectedSkillCategory === "featured"
-        ? skills.filter((s) => s.is_featured)
-        : skills.filter((s) => s.category === selectedSkillCategory);
+  const filteredSkills = useMemo(
+    () =>
+      selectedSkillCategory === "all"
+        ? skills
+        : selectedSkillCategory === "featured"
+          ? skills.filter((s) => s.is_featured)
+          : skills.filter((s) => s.category === selectedSkillCategory),
+    [skills, selectedSkillCategory],
+  );
 
   // Filter projects by tech
-  const filteredProjects =
-    selectedTech === "all"
-      ? projects
-      : selectedTech === "featured"
-        ? projects.filter((p) => p.is_featured)
-        : projects.filter((p) => p.tech_stack?.includes(selectedTech));
+  const filteredProjects = useMemo(
+    () =>
+      selectedTech === "all"
+        ? projects
+        : selectedTech === "featured"
+          ? projects.filter((p) => p.is_featured)
+          : projects.filter((p) => p.tech_stack?.includes(selectedTech)),
+    [projects, selectedTech],
+  );
 
-  const formatDisplayDate = (dateStr) => {
-    if (!dateStr) return "";
-    try {
-      const d = new Date(dateStr);
-      return d.toLocaleDateString(undefined, {
-        year: "numeric",
-        month: "short",
-        day: "numeric",
-      });
-    } catch {
-      return dateStr;
-    }
-  };
-
-  const getProjectValidImages = (project) => {
-    if (!project?.images) return [];
-    return normalizeProjectImages(project.images).filter(
-      (url) =>
-        typeof url === "string" &&
-        url.trim() &&
-        !url.endsWith(".git") &&
-        !url.includes("github.com/"),
-    );
-  };
-
-  const getProjectMainImage = (project) => {
-    const validImages = getProjectValidImages(project);
-    const permanent = keepPermanentImages(validImages);
-    return permanent[0] || validImages[0] || null;
-  };
+  // Stable identities so the memoised cards below don't re-render when
+  // unrelated page state (contact form, theme, modals) changes.
+  const handleSelectProject = useCallback(
+    (project) => setSelectedProject(project),
+    [],
+  );
+  const handleSelectCertificate = useCallback(
+    (cert) => setSelectedCertificate(cert),
+    [],
+  );
 
   return (
     <div className="portfolio-page relative min-h-screen bg-slate-50 text-slate-900 dark:bg-[#070b14] dark:text-slate-100 selection:bg-amber-400 selection:text-black font-sans antialiased overflow-x-hidden transition-colors duration-500">
@@ -1036,8 +1045,8 @@ const Home = () => {
         {/* ABOUT & SKILLS SUMMARY */}
         <section
           id="about"
-          ref={revealAbout.ref}
-          className={`scroll-mt-24 sm:scroll-mt-28 space-y-8 reveal reveal-up reveal-slow ${revealAbout.isVisible ? "visible" : ""}`}
+          ref={revealAboutRef}
+          className={`scroll-mt-24 sm:scroll-mt-28 space-y-8 reveal reveal-up reveal-slow ${isAboutVisible ? "visible" : ""}`}
         >
           <div className="border-b border-slate-200/80 dark:border-slate-800/80 pb-4 flex items-center justify-between">
             <div>
@@ -1057,9 +1066,9 @@ const Home = () => {
             <div
               className="relative p-6 sm:p-7 rounded-3xl bg-white/80 dark:bg-slate-900/60 backdrop-blur-xl border border-slate-200/80 dark:border-slate-800/80 hover:border-blue-500/50 hover:shadow-xl hover:shadow-blue-500/10 transition-all duration-300 group hover:-translate-y-1 reveal reveal-scale reveal-delay-1"
               style={{
-                opacity: revealAbout.isVisible ? 1 : 0,
-                transform: revealAbout.isVisible ? "none" : "scale(0.88)",
-                filter: revealAbout.isVisible ? "none" : "blur(4px)",
+                opacity: isAboutVisible ? 1 : 0,
+                transform: isAboutVisible ? "none" : "scale(0.88)",
+                filter: isAboutVisible ? "none" : "blur(4px)",
                 transitionProperty: "opacity, transform, filter",
                 transitionTimingFunction: "cubic-bezier(0.22, 1, 0.36, 1)",
                 transitionDuration: "700ms",
@@ -1094,8 +1103,8 @@ const Home = () => {
             <div
               className="relative p-6 sm:p-7 rounded-3xl bg-white/80 dark:bg-slate-900/60 backdrop-blur-xl border border-slate-200/80 dark:border-slate-800/80 hover:border-indigo-500/50 hover:shadow-xl hover:shadow-indigo-500/10 transition-all duration-300 group hover:-translate-y-1"
               style={{
-                opacity: revealAbout.isVisible ? 1 : 0,
-                transform: revealAbout.isVisible
+                opacity: isAboutVisible ? 1 : 0,
+                transform: isAboutVisible
                   ? "none"
                   : "scale(0.88) translateY(24px)",
                 transitionProperty: "opacity, transform",
@@ -1132,8 +1141,8 @@ const Home = () => {
             <div
               className="relative p-6 sm:p-7 rounded-3xl bg-white/80 dark:bg-slate-900/60 backdrop-blur-xl border border-slate-200/80 dark:border-slate-800/80 hover:border-purple-500/50 hover:shadow-xl hover:shadow-purple-500/10 transition-all duration-300 group hover:-translate-y-1"
               style={{
-                opacity: revealAbout.isVisible ? 1 : 0,
-                transform: revealAbout.isVisible
+                opacity: isAboutVisible ? 1 : 0,
+                transform: isAboutVisible
                   ? "none"
                   : "scale(0.88) translateY(24px)",
                 transitionProperty: "opacity, transform",
@@ -1250,8 +1259,8 @@ const Home = () => {
         {/* TECHNICAL SKILLS SECTION */}
         <section
           id="skills"
-          ref={revealSkills.ref}
-          className={`scroll-mt-24 sm:scroll-mt-28 space-y-8 reveal reveal-up ${revealSkills.isVisible ? "visible" : ""}`}
+          ref={revealSkillsRef}
+          className={`scroll-mt-24 sm:scroll-mt-28 space-y-8 reveal reveal-up ${isSkillsVisible ? "visible" : ""}`}
         >
           <div className="flex flex-col md:flex-row md:items-end justify-between gap-4 border-b border-slate-200/80 dark:border-slate-800/80 pb-4">
             <div>
@@ -1327,8 +1336,8 @@ const Home = () => {
                   key={skill.id}
                   className="portfolio-scroll-card portfolio-reveal-item p-3.5 sm:p-5 rounded-2xl sm:rounded-3xl bg-white/80 dark:bg-white/[0.04] backdrop-blur-xl border border-black/[0.06] dark:border-white/[0.08] hover:border-amber-400/60 dark:hover:border-amber-400/50 hover:shadow-2xl hover:shadow-amber-500/10 transition-all duration-300 group flex flex-col justify-between hover:-translate-y-1"
                   style={{
-                    opacity: revealSkills.isVisible ? 1 : 0,
-                    transform: revealSkills.isVisible
+                    opacity: isSkillsVisible ? 1 : 0,
+                    transform: isSkillsVisible
                       ? "none"
                       : "translateY(32px) scale(0.95)",
                     transitionProperty: "opacity, transform",
@@ -1389,7 +1398,7 @@ const Home = () => {
                       <div
                         className="h-full bg-gradient-to-r from-amber-400 via-yellow-400 to-amber-500 rounded-full transition-all duration-1000 ease-out shadow-sm"
                         style={{
-                          width: revealSkills.isVisible
+                          width: isSkillsVisible
                             ? `${skill.percentage || 80}%`
                             : "0%",
                         }}
@@ -1405,8 +1414,8 @@ const Home = () => {
         {/* PROJECTS SECTION */}
         <section
           id="projects"
-          ref={revealProjects.ref}
-          className={`scroll-mt-24 sm:scroll-mt-28 space-y-8 reveal reveal-up ${revealProjects.isVisible ? "visible" : ""}`}
+          ref={revealProjectsRef}
+          className={`scroll-mt-24 sm:scroll-mt-28 space-y-8 reveal reveal-up ${isProjectsVisible ? "visible" : ""}`}
         >
           <div className="flex flex-col md:flex-row md:items-end justify-between gap-4 border-b border-slate-200/80 dark:border-slate-800/80 pb-4">
             <div>
@@ -1417,11 +1426,12 @@ const Home = () => {
                 Featured Projects
               </h2>
               <p className="text-slate-500 dark:text-slate-400 text-sm mt-1">
-                Explore live applications, source code, and tech stacks.
+                Real-world web applications, production systems, and engineering
+                work.
               </p>
             </div>
 
-            {/* Filter Pills (Apple-Grade Rounded Pills) */}
+            {/* Tech Stack Filter Pills */}
             <div className="flex flex-wrap items-center gap-2">
               <button
                 onClick={() => setSelectedTech("all")}
@@ -1447,7 +1457,7 @@ const Home = () => {
                 </button>
               )}
 
-              {allTechStacks.slice(0, 5).map((tech) => (
+              {allTechStacks.map((tech) => (
                 <button
                   key={tech}
                   onClick={() => setSelectedTech(tech)}
@@ -1492,145 +1502,15 @@ const Home = () => {
             </div>
           ) : (
             <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-6">
-              {filteredProjects.map((project, index) => {
-                const mainImage = getProjectMainImage(project);
-                const validImages = getProjectValidImages(project);
-
-                return (
-                  <div
-                    key={project.id}
-                    className="portfolio-scroll-card group rounded-3xl bg-white/80 dark:bg-slate-900/60 backdrop-blur-xl border border-slate-200/80 dark:border-slate-800/80 hover:border-blue-500/50 hover:shadow-2xl hover:shadow-blue-500/10 transition-all duration-300 flex flex-col overflow-hidden hover:-translate-y-1.5"
-                  >
-                    {/* Project Image Preview — no opacity animation (fixes lazy-load black box) */}
-                    <div
-                      onClick={() => setSelectedProject(project)}
-                      className="relative w-full h-52 min-h-[13rem] bg-slate-100 dark:bg-slate-950 overflow-hidden cursor-pointer"
-                    >
-                      {mainImage ? (
-                        <ProjectCardImage src={mainImage} alt={project.title} />
-                      ) : (
-                        <div className="absolute inset-0 flex flex-col items-center justify-center bg-gradient-to-br from-slate-100 to-slate-200 dark:from-slate-800 dark:to-slate-900 text-slate-400 dark:text-slate-500 p-4">
-                          <svg
-                            className="w-10 h-10 mb-2 opacity-50 text-blue-500"
-                            fill="none"
-                            stroke="currentColor"
-                            viewBox="0 0 24 24"
-                          >
-                            <path
-                              strokeLinecap="round"
-                              strokeLinejoin="round"
-                              strokeWidth={1.5}
-                              d="M4 16l4.586-4.586a2 2 0 012.828 0L16 16m-2-2l1.586-1.586a2 2 0 012.828 0L20 14m-6-6h.01M6 20h12a2 2 0 002-2V6a2 2 0 00-2-2H6a2 2 0 00-2 2v12a2 2 0 002 2z"
-                            />
-                          </svg>
-                          <span className="text-xs uppercase tracking-wider font-semibold">
-                            {project.title}
-                          </span>
-                        </div>
-                      )}
-
-                      {project.is_featured && (
-                        <span className="absolute top-3 right-3 z-10 px-3 py-1 rounded-full bg-gradient-to-r from-blue-600 to-indigo-600 backdrop-blur-md text-white text-[11px] font-extrabold shadow-lg shadow-blue-500/30">
-                          ★ Featured
-                        </span>
-                      )}
-
-                      {validImages.length > 1 && (
-                        <span className="absolute bottom-3 right-3 z-10 px-2.5 py-1 rounded-lg bg-black/70 backdrop-blur-md text-slate-200 text-[10px] font-bold">
-                          +{validImages.length - 1} photos
-                        </span>
-                      )}
-                    </div>
-
-                    {/* Project Content — scroll reveal animation */}
-                    <div
-                      className="portfolio-reveal-item p-6 flex-1 flex flex-col justify-between space-y-4"
-                      style={{
-                        opacity: revealProjects.isVisible ? 1 : 0,
-                        transform: revealProjects.isVisible
-                          ? "none"
-                          : "translateY(24px)",
-                        transitionProperty: "opacity, transform",
-                        transitionTimingFunction:
-                          "cubic-bezier(0.22, 1, 0.36, 1)",
-                        transitionDuration: "650ms",
-                        transitionDelay: `${Math.min(index * 100, 500)}ms`,
-                      }}
-                    >
-                      <div>
-                        <h3
-                          onClick={() => setSelectedProject(project)}
-                          className="text-xl font-extrabold text-slate-900 dark:text-white hover:text-blue-600 dark:hover:text-cyan-400 transition-colors cursor-pointer"
-                        >
-                          {project.title}
-                        </h3>
-
-                        <p className="text-slate-600 dark:text-slate-400 text-sm mt-2 line-clamp-3 leading-relaxed">
-                          {project.description ||
-                            "No project description provided."}
-                        </p>
-                      </div>
-
-                      {/* Tech Stack Pills */}
-                      {project.tech_stack && project.tech_stack.length > 0 && (
-                        <div className="flex flex-wrap gap-1.5 pt-2">
-                          {project.tech_stack.map((tech) => (
-                            <span
-                              key={tech}
-                              className="px-2.5 py-1 rounded-lg bg-blue-500/10 border border-blue-500/20 text-blue-600 dark:text-blue-300 text-xs font-semibold"
-                            >
-                              {tech}
-                            </span>
-                          ))}
-                        </div>
-                      )}
-
-                      {/* Project Links (Read-Only) */}
-                      <div className="pt-4 border-t border-slate-100 dark:border-slate-800/80 flex flex-wrap items-center justify-between gap-2">
-                        <div className="flex flex-wrap gap-3">
-                          {project.links && project.links.length > 0 ? (
-                            project.links.map((link, idx) => (
-                              <a
-                                key={idx}
-                                href={link.url}
-                                target="_blank"
-                                rel="noopener noreferrer"
-                                className="inline-flex items-center gap-1.5 text-xs font-bold text-blue-600 dark:text-cyan-400 hover:text-blue-500 transition-colors"
-                              >
-                                <span>{link.label}</span>
-                                <svg
-                                  className="w-3.5 h-3.5"
-                                  fill="none"
-                                  stroke="currentColor"
-                                  viewBox="0 0 24 24"
-                                >
-                                  <path
-                                    strokeLinecap="round"
-                                    strokeLinejoin="round"
-                                    strokeWidth={2}
-                                    d="M10 6H6a2 2 0 00-2 2v10a2 2 0 002 2h10a2 2 0 002-2v-4M14 4h6m0 0v6m0-6L10 14"
-                                  />
-                                </svg>
-                              </a>
-                            ))
-                          ) : (
-                            <span className="text-xs text-slate-400 dark:text-slate-500">
-                              No external links
-                            </span>
-                          )}
-                        </div>
-
-                        <button
-                          onClick={() => setSelectedProject(project)}
-                          className="text-xs font-bold text-slate-500 dark:text-slate-400 hover:text-slate-900 dark:hover:text-white transition-colors"
-                        >
-                          Details &rarr;
-                        </button>
-                      </div>
-                    </div>
-                  </div>
-                );
-              })}
+              {filteredProjects.map((project, index) => (
+                <ProjectCard
+                  key={project.id}
+                  project={project}
+                  index={index}
+                  isRevealed={isProjectsVisible}
+                  onSelect={handleSelectProject}
+                />
+              ))}
             </div>
           )}
         </section>
@@ -1638,8 +1518,8 @@ const Home = () => {
         {/* CERTIFICATES SECTION */}
         <section
           id="certificates"
-          ref={revealCerts.ref}
-          className={`scroll-mt-24 sm:scroll-mt-28 space-y-8 reveal reveal-up ${revealCerts.isVisible ? "visible" : ""}`}
+          ref={revealCertsRef}
+          className={`scroll-mt-24 sm:scroll-mt-28 space-y-8 reveal reveal-up ${isCertsVisible ? "visible" : ""}`}
         >
           <div className="border-b border-slate-200/80 dark:border-slate-800/80 pb-4">
             <div className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-purple-500/10 text-purple-600 dark:text-purple-400 text-xs font-semibold mb-2">
@@ -1684,143 +1564,13 @@ const Home = () => {
           ) : (
             <div className="grid sm:grid-cols-2 lg:grid-cols-3 gap-6">
               {certificates.map((cert, index) => (
-                <div
+                <CertificateCard
                   key={cert.id}
-                  className="portfolio-scroll-card portfolio-reveal-item rounded-3xl bg-white/80 dark:bg-slate-900/60 backdrop-blur-xl border border-slate-200/80 dark:border-slate-800/80 hover:border-purple-500/50 hover:shadow-2xl hover:shadow-purple-500/10 transition-all duration-300 flex flex-col overflow-hidden group hover:-translate-y-1.5"
-                  style={{
-                    opacity: revealCerts.isVisible ? 1 : 0,
-                    transform: revealCerts.isVisible
-                      ? "none"
-                      : "translateY(40px)",
-                    transitionProperty: "opacity, transform",
-                    transitionTimingFunction: "cubic-bezier(0.22, 1, 0.36, 1)",
-                    transitionDuration: "650ms",
-                    transitionDelay: `${Math.min(index * 100, 500)}ms`,
-                  }}
-                >
-                  {/* Certificate Image Preview */}
-                  <div
-                    onClick={() => setSelectedCertificate(cert)}
-                    className="relative w-full h-48 bg-slate-100 dark:bg-slate-950 overflow-hidden cursor-pointer"
-                  >
-                    {cert.image ? (
-                      <PortfolioImage
-                        src={cert.image}
-                        alt={cert.course}
-                        variant="certificate"
-                        className="w-full h-full object-cover transition-transform duration-500 group-hover:scale-105"
-                        fallback={
-                          <div className="w-full h-full flex flex-col items-center justify-center bg-gradient-to-br from-purple-100 to-indigo-100 dark:from-slate-800 dark:to-indigo-950 text-purple-500 dark:text-purple-400 p-4 text-center">
-                            <svg
-                              className="w-12 h-12 mb-2 opacity-60"
-                              fill="none"
-                              stroke="currentColor"
-                              viewBox="0 0 24 24"
-                            >
-                              <path
-                                strokeLinecap="round"
-                                strokeLinejoin="round"
-                                strokeWidth={1.5}
-                                d="M9 12l2 2 4-4M7.835 4.697a3.42 3.42 0 001.946-.806 3.42 3.42 0 014.438 0 3.42 3.42 0 001.946.806 3.42 3.42 0 013.138 3.138 3.42 3.42 0 00.806 1.946 3.42 3.42 0 010 4.438 3.42 3.42 0 00-.806 1.946 3.42 3.42 0 01-3.138 3.138 3.42 3.42 0 00-1.946.806 3.42 3.42 0 01-4.438 0 3.42 3.42 0 00-1.946-.806 3.42 3.42 0 01-3.138-3.138z"
-                              />
-                            </svg>
-                            <span className="text-xs uppercase tracking-wider font-bold text-slate-600 dark:text-slate-300">
-                              Certificate
-                            </span>
-                          </div>
-                        }
-                      />
-                    ) : (
-                      <div className="w-full h-full flex flex-col items-center justify-center bg-gradient-to-br from-purple-100 to-indigo-100 dark:from-slate-800 dark:to-indigo-950 text-purple-500 dark:text-purple-400 p-4 text-center">
-                        <svg
-                          className="w-12 h-12 mb-2 opacity-60"
-                          fill="none"
-                          stroke="currentColor"
-                          viewBox="0 0 24 24"
-                        >
-                          <path
-                            strokeLinecap="round"
-                            strokeLinejoin="round"
-                            strokeWidth={1.5}
-                            d="M9 12l2 2 4-4M7.835 4.697a3.42 3.42 0 001.946-.806 3.42 3.42 0 014.438 0 3.42 3.42 0 001.946.806 3.42 3.42 0 013.138 3.138 3.42 3.42 0 00.806 1.946 3.42 3.42 0 010 4.438 3.42 3.42 0 00-.806 1.946 3.42 3.42 0 01-3.138 3.138 3.42 3.42 0 00-1.946.806 3.42 3.42 0 01-4.438 0 3.42 3.42 0 00-1.946-.806 3.42 3.42 0 01-3.138-3.138z"
-                          />
-                        </svg>
-                        <span className="text-xs uppercase tracking-wider font-bold text-slate-600 dark:text-slate-300">
-                          Certificate
-                        </span>
-                      </div>
-                    )}
-
-                    <div className="absolute inset-0 bg-black/40 opacity-0 group-hover:opacity-100 transition-opacity flex items-center justify-center">
-                      <span className="px-4 py-1.5 rounded-full bg-slate-900/90 text-white text-xs font-bold flex items-center gap-1.5 shadow-lg">
-                        <svg
-                          className="w-3.5 h-3.5"
-                          fill="none"
-                          stroke="currentColor"
-                          viewBox="0 0 24 24"
-                        >
-                          <path
-                            strokeLinecap="round"
-                            strokeLinejoin="round"
-                            strokeWidth={2}
-                            d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0zM10 7v3m0 0v3m0-3h3m-3 0H7"
-                          />
-                        </svg>
-                        Click to Zoom
-                      </span>
-                    </div>
-                  </div>
-
-                  {/* Certificate Content */}
-                  <div className="p-6 flex-1 flex flex-col justify-between space-y-4">
-                    <div>
-                      <h3
-                        onClick={() => setSelectedCertificate(cert)}
-                        className="text-lg font-extrabold text-slate-900 dark:text-white hover:text-purple-600 dark:hover:text-purple-400 transition-colors cursor-pointer"
-                      >
-                        {cert.course}
-                      </h3>
-
-                      {cert.instructor && (
-                        <p className="text-xs font-bold text-purple-600 dark:text-purple-400 mt-1 flex items-center gap-1.5">
-                          <svg
-                            className="w-3.5 h-3.5"
-                            fill="none"
-                            stroke="currentColor"
-                            viewBox="0 0 24 24"
-                          >
-                            <path
-                              strokeLinecap="round"
-                              strokeLinejoin="round"
-                              strokeWidth={2}
-                              d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z"
-                            />
-                          </svg>
-                          <span>Instructor / Org: {cert.instructor}</span>
-                        </p>
-                      )}
-
-                      <p className="text-slate-600 dark:text-slate-400 text-sm mt-2 line-clamp-3 leading-relaxed">
-                        {cert.description || "Course certificate completed."}
-                      </p>
-                    </div>
-
-                    <div className="pt-3 border-t border-slate-100 dark:border-slate-800/80 flex items-center justify-between text-xs text-slate-500 dark:text-slate-400">
-                      {cert.issued_on ? (
-                        <span>Issued: {formatDisplayDate(cert.issued_on)}</span>
-                      ) : (
-                        <span>Verified Credential</span>
-                      )}
-
-                      <button
-                        onClick={() => setSelectedCertificate(cert)}
-                        className="text-purple-600 dark:text-purple-400 hover:text-purple-500 font-bold"
-                      >
-                        View Full &rarr;
-                      </button>
-                    </div>
-                  </div>
-                </div>
+                  cert={cert}
+                  index={index}
+                  isRevealed={isCertsVisible}
+                  onSelect={handleSelectCertificate}
+                />
               ))}
             </div>
           )}
@@ -1829,8 +1579,8 @@ const Home = () => {
         {/* CONTACT SECTION (100% Smartphone Responsive) */}
         <section
           id="contact"
-          ref={revealContact.ref}
-          className={`scroll-mt-24 sm:scroll-mt-28 reveal reveal-scale-up ${revealContact.isVisible ? "visible" : ""}`}
+          ref={revealContactRef}
+          className={`scroll-mt-24 sm:scroll-mt-28 reveal reveal-scale-up ${isContactVisible ? "visible" : ""}`}
         >
           <div className="rounded-2xl sm:rounded-3xl bg-gradient-to-br from-white/90 via-slate-50/80 to-amber-50/30 dark:from-[#0b1120]/90 dark:via-[#111827]/85 dark:to-[#1e1b4b]/80 border border-black/[0.06] dark:border-white/[0.08] p-4 sm:p-8 lg:p-12 relative overflow-hidden shadow-2xl backdrop-blur-xl">
             <div className="absolute top-0 right-0 w-72 sm:w-96 h-72 sm:h-96 bg-amber-400/15 rounded-full blur-3xl pointer-events-none" />
@@ -2351,11 +2101,15 @@ const Home = () => {
       )}
 
       {/* CURRICULUM VITAE (CV) VIEWER & DOWNLOAD MODAL */}
-      <CvModal
-        isOpen={cvModalOpen}
-        onClose={() => setCvModalOpen(false)}
-        user={displayUser}
-      />
+      {cvModalOpen && (
+        <Suspense fallback={null}>
+          <CvModal
+            isOpen={cvModalOpen}
+            onClose={() => setCvModalOpen(false)}
+            user={displayUser}
+          />
+        </Suspense>
+      )}
     </div>
   );
 };

@@ -1,8 +1,10 @@
-import axios from "axios";
-
 /**
- * Public API client — no Authorization header.
- * Prevents auth token from affecting public read endpoints and improves cacheability.
+ * Public API client — no Authorization header, no axios.
+ *
+ * Deliberately built on `fetch` so the landing page does not pay for axios on the
+ * critical path. The surface mirrors the small slice of the axios API its callers
+ * use: `get`/`post` resolve to `{ data }`, and failures throw an error carrying
+ * `response: { status, data }` so `err.response?.data?.message` keeps working.
  */
 const getBaseUrl = () => {
   if (import.meta.env.VITE_API_URL) return import.meta.env.VITE_API_URL;
@@ -16,15 +18,32 @@ const getBaseUrl = () => {
   return "http://localhost:5000/api";
 };
 
-const publicApi = axios.create({
-  baseURL: getBaseUrl(),
-  timeout: 30000,
-});
+const BASE_URL = getBaseUrl();
+const TIMEOUT_MS = 30000;
+const SLOW_AFTER_MS = 3000;
 
 let activeRequests = 0;
 let slowTimer = null;
 
-const finishRequest = () => {
+/** Health pings are background noise — they must not drive the status animation. */
+const isTracked = (url, config) => !config?.silent && !url.includes("/health");
+
+const startTracking = () => {
+  activeRequests += 1;
+  if (activeRequests === 1) {
+    slowTimer = window.setTimeout(() => {
+      if (activeRequests > 0) {
+        window.dispatchEvent(
+          new CustomEvent("app:slow-network", {
+            detail: { message: "Connecting to the portfolio server…" },
+          }),
+        );
+      }
+    }, SLOW_AFTER_MS);
+  }
+};
+
+const finishTracking = () => {
   activeRequests = Math.max(0, activeRequests - 1);
   if (activeRequests === 0) {
     window.clearTimeout(slowTimer);
@@ -32,33 +51,62 @@ const finishRequest = () => {
   }
 };
 
-// Public portfolio requests are the ones visitors notice most. Surface a calm
-// status animation only when one truly takes a while (such as a Render wake-up).
-publicApi.interceptors.request.use((config) => {
-  if (!config.silent && !config.url?.includes("/health")) {
-    activeRequests += 1;
-    if (activeRequests === 1) {
-      slowTimer = window.setTimeout(() => {
-        if (activeRequests > 0) {
-          window.dispatchEvent(new CustomEvent("app:slow-network", {
-            detail: { message: "Connecting to the portfolio server…" },
-          }));
-        }
-      }, 3000);
-    }
-  }
-  return config;
-}, (error) => Promise.reject(error));
+const buildError = (message, { status = 0, data = null } = {}) => {
+  const error = new Error(message);
+  // Match the axios error shape the callers already destructure.
+  error.response = status ? { status, data } : undefined;
+  return error;
+};
 
-publicApi.interceptors.response.use(
-  (response) => {
-    if (!response.config.silent && !response.config.url?.includes("/health")) finishRequest();
-    return response;
-  },
-  (error) => {
-    if (!error.config?.silent && !error.config?.url?.includes("/health")) finishRequest();
-    return Promise.reject(error);
-  },
-);
+const parseBody = async (response) => {
+  const contentType = response.headers.get("content-type") || "";
+  try {
+    if (contentType.includes("application/json")) return await response.json();
+    const text = await response.text();
+    return text || null;
+  } catch {
+    return null;
+  }
+};
+
+const request = async (method, path, body, config = {}) => {
+  const url = `${BASE_URL}${path}`;
+  const tracked = isTracked(url, config);
+
+  if (tracked) startTracking();
+
+  try {
+    const response = await fetch(url, {
+      method,
+      mode: "cors",
+      signal: AbortSignal.timeout(config.timeout ?? TIMEOUT_MS),
+      headers: body ? { "Content-Type": "application/json" } : undefined,
+      body: body ? JSON.stringify(body) : undefined,
+    });
+
+    const data = await parseBody(response);
+
+    if (!response.ok) {
+      throw buildError(`Request failed with status code ${response.status}`, {
+        status: response.status,
+        data,
+      });
+    }
+
+    return { data, status: response.status };
+  } catch (error) {
+    if (error.name === "TimeoutError" || error.name === "AbortError") {
+      throw buildError(`timeout of ${config.timeout ?? TIMEOUT_MS}ms exceeded`);
+    }
+    throw error;
+  } finally {
+    if (tracked) finishTracking();
+  }
+};
+
+const publicApi = {
+  get: (path, config) => request("GET", path, undefined, config),
+  post: (path, body, config) => request("POST", path, body, config),
+};
 
 export default publicApi;

@@ -67,7 +67,10 @@ const useScrollReveal = ({
     };
   }, [threshold, rootMargin, once]);
 
-  return { ref, isVisible };
+  const tuple = [ref, isVisible];
+  tuple.ref = ref;
+  tuple.isVisible = isVisible;
+  return tuple;
 };
 
 export default useScrollReveal;

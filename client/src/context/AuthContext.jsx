@@ -1,8 +1,10 @@
 import { createContext, useContext, useEffect, useState } from "react";
 
-import api from "../api/axios";
-
 const AuthContext = createContext(null);
+
+// The authenticated client pulls in axios. Anonymous visitors never reach any of
+// the calls below, so it is loaded on demand instead of on the critical path.
+const getApi = () => import("../api/axios").then((m) => m.default);
 
 export const AuthProvider = ({ children }) => {
   const [user, setUser] = useState(() => {
@@ -48,8 +50,8 @@ export const AuthProvider = ({ children }) => {
           }
 
           // Refresh profile in background — do not block public portfolio rendering
-          api
-            .get("/auth/me")
+          getApi()
+            .then((api) => api.get("/auth/me"))
             .then(({ data }) => {
               setUser(data.user);
               localStorage.setItem("user", JSON.stringify(data.user));
@@ -77,6 +79,7 @@ export const AuthProvider = ({ children }) => {
   }, []);
 
   const login = async (identifier, password) => {
+    const api = await getApi();
     const { data } = await api.post("/auth/login", {
       identifier,
       password,
@@ -92,6 +95,7 @@ export const AuthProvider = ({ children }) => {
   };
 
   const register = async (payload) => {
+    const api = await getApi();
     const { data } = await api.post("/auth/register", payload);
 
     localStorage.setItem("token", data.token);

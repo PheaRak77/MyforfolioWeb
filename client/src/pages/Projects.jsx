@@ -4,11 +4,9 @@ import DashboardNav from "../components/DashboardNav";
 import ConfirmModal from "../components/ConfirmModal";
 import Toast from "../components/Toast";
 import { uploadMediaImage } from "../utils/imageUploader";
-import { isLegacyDiskUrl } from "../utils/imageUrl";
 import {
   hasLegacyProjectImages,
   keepPermanentImages,
-  normalizeProjectImages,
 } from "../utils/projectImages";
 import PortfolioImage from "../components/PortfolioImage";
 import { clearPublicDataCache } from "../utils/publicDataCache";

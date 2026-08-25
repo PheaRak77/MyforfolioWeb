@@ -52,7 +52,7 @@ export default function AnimatedBackground() {
         this.hue = Math.random() > 0.5 ? 220 : 260; // blue or violet
         this.pulse = Math.random() * Math.PI * 2;
       }
-      update(t) {
+      update() {
         this.x += this.speedX;
         this.y += this.speedY;
         this.pulse += 0.02;

@@ -1,14 +1,12 @@
 import { useState } from "react";
 import { Link, useLocation, useNavigate } from "react-router-dom";
 import { useAuth } from "../context/AuthContext";
-import { useTheme } from "../context/ThemeContext";
 import PortfolioImage from "./PortfolioImage";
 import VerifiedBadge, { VerifiedName } from "./VerifiedBadge";
 import ThemeToggle from "./ThemeToggle";
 
 const DashboardNav = () => {
   const { user, logout } = useAuth();
-  const { isDark, toggleTheme } = useTheme();
   const navigate = useNavigate();
   const location = useLocation();
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);

@@ -21,9 +21,12 @@ const readCache = (key) => {
 
 const writeCache = (key, data, ttlMs = DEFAULT_TTL_MS) => {
   try {
-    const payload = JSON.stringify({ data, expiry: Date.now() + ttlMs });
-    localStorage.setItem(`${CACHE_PREFIX}${key}`, payload);
-    sessionStorage.setItem(`${CACHE_PREFIX}${key}`, payload);
+    // localStorage only: readCache checks it first, so a second sessionStorage
+    // copy just paid to serialise the whole payload twice.
+    localStorage.setItem(
+      `${CACHE_PREFIX}${key}`,
+      JSON.stringify({ data, expiry: Date.now() + ttlMs }),
+    );
   } catch {
     // ignore quota errors
   }
@@ -35,10 +38,12 @@ export const setCachedPublicData = (key, data, ttlMs) => writeCache(key, data, t
 
 export const clearPublicDataCache = () => {
   try {
-    Object.keys(sessionStorage).forEach((storageKey) => {
-      if (storageKey.startsWith(CACHE_PREFIX)) {
-        sessionStorage.removeItem(storageKey);
-      }
+    // Clear both stores: readCache still falls back to sessionStorage, so
+    // dropping only one would leave stale data visible after an admin edit.
+    [localStorage, sessionStorage].forEach((store) => {
+      Object.keys(store)
+        .filter((storageKey) => storageKey.startsWith(CACHE_PREFIX))
+        .forEach((storageKey) => store.removeItem(storageKey));
     });
   } catch {
     // ignore

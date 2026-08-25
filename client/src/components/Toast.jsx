@@ -1,4 +1,4 @@
-import React, { useEffect } from "react";
+import { useEffect } from "react";
 
 const Toast = ({
   type = "success", // "success" | "error" | "info"

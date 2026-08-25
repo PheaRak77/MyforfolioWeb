@@ -21,3 +21,22 @@ export const hasLegacyProjectImages = (images) =>
 
 export const keepPermanentImages = (images) =>
   normalizeProjectImages(images).filter((img) => !isLegacyDiskUrl(img));
+
+/** Displayable project images: drops repo links that were saved into the images field. */
+export const getProjectValidImages = (project) => {
+  if (!project?.images) return [];
+  return normalizeProjectImages(project.images).filter(
+    (url) =>
+      typeof url === "string" &&
+      url.trim() &&
+      !url.endsWith(".git") &&
+      !url.includes("github.com/"),
+  );
+};
+
+/** Preferred thumbnail: a permanent (non-legacy-disk) image when one exists. */
+export const getProjectMainImage = (project) => {
+  const validImages = getProjectValidImages(project);
+  const permanent = keepPermanentImages(validImages);
+  return permanent[0] || validImages[0] || null;
+};

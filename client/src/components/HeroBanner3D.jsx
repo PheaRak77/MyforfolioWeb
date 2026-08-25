@@ -171,8 +171,6 @@ export default function HeroBanner3D() {
           x = ry.x; z = ry.z;
 
           const p = project(x, y, z, 500, cx, cy);
-          const depth = (p.scale - 0.3) / 0.7;
-          const alpha = Math.max(0.03, depth * 0.3);
 
           if (i === 0) {
             ctx.moveTo(p.x, p.y);
@@ -193,7 +191,7 @@ export default function HeroBanner3D() {
     // DNA / HELIX STRANDS
     // =============================================
     const HELIX_NODES = isMobile ? 20 : 32;
-    const drawHelix = (t, cx, cy) => {
+    const drawHelix = (t) => {
       const hx = W * 0.88;
       const hy = H * 0.5;
       const height = Math.min(H * 0.7, 340);
@@ -330,7 +328,7 @@ export default function HeroBanner3D() {
 
       drawRings(t, cx, cy);
       drawSphere(t, cx, cy);
-      if (!isMobile) drawHelix(t, cx, cy);
+      if (!isMobile) drawHelix(t);
       drawShootingStars();
 
       animRef.current = requestAnimationFrame(render);
