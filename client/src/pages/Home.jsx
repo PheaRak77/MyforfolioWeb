@@ -275,11 +275,11 @@ const Home = () => {
             className="flex items-center gap-3 group transition-transform hover:scale-105 flex-shrink-0"
           >
             <div className="relative flex-shrink-0">
-              <div className="absolute -inset-1 bg-gradient-to-r from-amber-400 via-yellow-400 to-amber-500 rounded-2xl blur-sm opacity-70 group-hover:opacity-100 transition duration-300" />
+              <div className="absolute -inset-1 bg-gradient-to-r from-amber-400 via-yellow-400 to-amber-500 rounded-full blur-sm opacity-70 group-hover:opacity-100 transition duration-300" />
               <img
-                src="/logo.png"
+                src="/favicon.svg?v=2026_circle"
                 alt="RAK Logo"
-                className="relative w-9 h-9 sm:w-10 sm:h-10 rounded-xl object-contain bg-black/90 dark:bg-white/10 p-1 ring-2 ring-amber-400/50 shadow-md"
+                className="relative w-9 h-9 sm:w-10 sm:h-10 rounded-full object-cover ring-2 ring-amber-400/60 shadow-lg shadow-amber-500/20 group-hover:scale-105 transition-transform duration-300"
               />
             </div>
             <div className="min-w-0 flex flex-col justify-center">
