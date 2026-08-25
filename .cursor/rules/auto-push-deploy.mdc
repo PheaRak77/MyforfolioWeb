@@ -1,0 +1,15 @@
+---
+description: After finishing work, commit, push main, and rely on Vercel auto-deploy
+alwaysApply: true
+---
+
+# Auto push and deploy
+
+When a task is done and there are real code changes the user would want live:
+
+1. Commit with a short message that explains why (HEREDOC, no `--no-verify`).
+2. `git push origin HEAD` to `main` (this GitHub remote). Never force-push.
+3. Vercel deploys from `main` automatically — no extra CLI unless push failed.
+4. Tell the user the live URL: https://myportfolio-web-xi.vercel.app
+
+Do this without waiting to be asked again. Skip only if there is nothing to commit, the user said not to ship, or the change is local-only (rules, notes).

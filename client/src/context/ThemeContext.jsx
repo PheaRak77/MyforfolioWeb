@@ -1,8 +1,8 @@
 import { createContext, useCallback, useContext, useLayoutEffect, useState } from "react";
-import { flushSync } from "react-dom";
 
 const ThemeContext = createContext();
 const STORAGE_KEY = "portfolio_theme";
+const THEME_FADE_MS = 560;
 
 function readStoredTheme() {
   try {
@@ -42,73 +42,40 @@ export const ThemeProvider = ({ children }) => {
 
   const commitTheme = (nextTheme) => {
     applyThemeToDocument(nextTheme);
-    flushSync(() => {
-      setThemeState(nextTheme);
-    });
+    setThemeState(nextTheme);
   };
 
-  const toggleTheme = useCallback(
-    (event) => {
-      const nextTheme = theme === "dark" ? "light" : "dark";
+  const toggleTheme = useCallback(() => {
+    const nextTheme = theme === "dark" ? "light" : "dark";
+    const root = document.documentElement;
+    const reduceMotion = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
 
-      const canViewTransition =
-        typeof document !== "undefined" &&
-        "startViewTransition" in document &&
-        !window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+    if (reduceMotion) {
+      commitTheme(nextTheme);
+      return;
+    }
 
-      if (!canViewTransition) {
-        document.documentElement.classList.add("theme-transitioning");
-        commitTheme(nextTheme);
-        window.setTimeout(() => {
-          document.documentElement.classList.remove("theme-transitioning");
-        }, 520);
-        return;
-      }
+    root.classList.add("theme-transitioning");
+    root.classList.toggle("theme-to-light", nextTheme === "light");
+    root.classList.toggle("theme-to-dark", nextTheme === "dark");
+    root.classList.add("theme-veil-active");
 
-      const x = event?.clientX ?? window.innerWidth / 2;
-      const y = event?.clientY ?? window.innerHeight / 2;
-      const endRadius = Math.hypot(
-        Math.max(x, window.innerWidth - x),
-        Math.max(y, window.innerHeight - y)
+    commitTheme(nextTheme);
+
+    window.setTimeout(() => {
+      root.classList.remove(
+        "theme-transitioning",
+        "theme-veil-active",
+        "theme-to-light",
+        "theme-to-dark"
       );
+    }, THEME_FADE_MS);
+  }, [theme]);
 
-      const expandClip = [
-        `circle(0px at ${x}px ${y}px)`,
-        `circle(${endRadius}px at ${x}px ${y}px)`,
-      ];
-
-      document.documentElement.classList.add("theme-vt-active");
-
-      const transition = document.startViewTransition(() => {
-        commitTheme(nextTheme);
-      });
-
-      const cleanup = () => {
-        document.documentElement.classList.remove("theme-vt-active");
-      };
-
-      transition.ready
-        .then(() => {
-          document.documentElement.animate(
-            { clipPath: expandClip },
-            {
-              duration: 560,
-              easing: "cubic-bezier(0.22, 1, 0.36, 1)",
-              pseudoElement: "::view-transition-new(root)",
-            }
-          );
-        })
-        .catch(() => {});
-
-      transition.finished.then(cleanup).catch(cleanup);
-    },
-    [theme]
-  );
-
-  const setTheme = (newTheme, event) => {
+  const setTheme = (newTheme) => {
     if (newTheme !== "dark" && newTheme !== "light") return;
     if (newTheme === theme) return;
-    toggleTheme(event);
+    toggleTheme();
   };
 
   return (

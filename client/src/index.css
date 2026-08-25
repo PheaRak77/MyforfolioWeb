@@ -7,7 +7,6 @@ html {
   text-rendering: optimizeLegibility;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
-  view-transition-name: root;
 }
 
 html.dark {
@@ -24,42 +23,65 @@ body {
   overflow-x: hidden;
 }
 
-/* Seamless Theme Transition Effect */
+/* Soft day/night fade — colors ease, no expanding circle */
 .theme-transitioning,
 .theme-transitioning * {
-  transition: background-color 0.4s cubic-bezier(0.16, 1, 0.3, 1),
-              border-color 0.4s cubic-bezier(0.16, 1, 0.3, 1),
-              color 0.4s cubic-bezier(0.16, 1, 0.3, 1),
-              box-shadow 0.4s cubic-bezier(0.16, 1, 0.3, 1),
-              fill 0.4s cubic-bezier(0.16, 1, 0.3, 1),
-              stroke 0.4s cubic-bezier(0.16, 1, 0.3, 1) !important;
+  transition: background-color 0.55s cubic-bezier(0.4, 0, 0.2, 1),
+              border-color 0.55s cubic-bezier(0.4, 0, 0.2, 1),
+              color 0.55s cubic-bezier(0.4, 0, 0.2, 1),
+              box-shadow 0.55s cubic-bezier(0.4, 0, 0.2, 1),
+              fill 0.55s cubic-bezier(0.4, 0, 0.2, 1),
+              stroke 0.55s cubic-bezier(0.4, 0, 0.2, 1) !important;
 }
 
-/* View Transition API — circular reveal (clip-path is applied in JS) */
-::view-transition-old(root),
-::view-transition-new(root) {
-  mix-blend-mode: normal;
-  animation-duration: 0s;
+html.theme-veil-active::after {
+  content: "";
+  position: fixed;
+  inset: 0;
+  z-index: 99999;
+  pointer-events: none;
+  animation: theme-sky-veil 0.56s cubic-bezier(0.4, 0, 0.2, 1) both;
 }
 
-::view-transition-old(root) {
-  z-index: 1;
+html.theme-to-light::after {
+  background: radial-gradient(
+    ellipse 80% 60% at 50% 35%,
+    rgba(255, 236, 179, 0.28),
+    rgba(250, 250, 250, 0.08) 55%,
+    transparent 75%
+  );
 }
 
-::view-transition-new(root) {
-  z-index: 9999;
+html.theme-to-dark::after {
+  background: radial-gradient(
+    ellipse 80% 60% at 50% 35%,
+    rgba(15, 23, 42, 0.32),
+    rgba(7, 11, 20, 0.12) 55%,
+    transparent 75%
+  );
 }
 
-/* Prevent CSS color transitions from fighting the clip-path reveal */
-.theme-vt-active,
-.theme-vt-active * {
-  transition: none !important;
+@keyframes theme-sky-veil {
+  0% {
+    opacity: 0;
+  }
+  40% {
+    opacity: 1;
+  }
+  100% {
+    opacity: 0;
+  }
 }
 
 @media (prefers-reduced-motion: reduce) {
-  ::view-transition-old(root),
-  ::view-transition-new(root) {
-    animation: none !important;
+  .theme-transitioning,
+  .theme-transitioning * {
+    transition: none !important;
+  }
+
+  html.theme-veil-active::after {
+    animation: none;
+    content: none;
   }
 }
 
