@@ -322,21 +322,21 @@ const Home = () => {
               onClick={(e) => handleNavClick(e, "#skills")}
               className="px-3.5 py-1.5 rounded-full hover:bg-black/5 dark:hover:bg-white/10 hover:text-neutral-900 dark:hover:text-white transition-all"
             >
-              Skills ({skills.length})
+              Skills
             </a>
             <a
               href="#projects"
               onClick={(e) => handleNavClick(e, "#projects")}
               className="px-3.5 py-1.5 rounded-full hover:bg-black/5 dark:hover:bg-white/10 hover:text-neutral-900 dark:hover:text-white transition-all"
             >
-              Projects ({projects.length})
+              Projects
             </a>
             <a
               href="#certificates"
               onClick={(e) => handleNavClick(e, "#certificates")}
               className="px-3.5 py-1.5 rounded-full hover:bg-black/5 dark:hover:bg-white/10 hover:text-neutral-900 dark:hover:text-white transition-all"
             >
-              Certificates ({certificates.length})
+              Certificates
             </a>
             <a
               href="#contact"
@@ -463,9 +463,7 @@ const Home = () => {
                 className="animate-menu-item-2 px-4 py-3 rounded-2xl text-neutral-800 dark:text-neutral-200 hover:bg-black/5 dark:hover:bg-white/10 transition-colors flex items-center justify-between"
               >
                 <span>Skills & Technologies</span>
-                <span className="text-xs px-2.5 py-0.5 rounded-full bg-amber-500/15 text-amber-600 dark:text-amber-300 font-bold">
-                  {skills.length}
-                </span>
+                <span className="text-xs text-neutral-400 font-bold">&rarr;</span>
               </a>
               <a
                 href="#projects"
@@ -473,9 +471,7 @@ const Home = () => {
                 className="animate-menu-item-3 px-4 py-3 rounded-2xl text-neutral-800 dark:text-neutral-200 hover:bg-black/5 dark:hover:bg-white/10 transition-colors flex items-center justify-between"
               >
                 <span>Featured Projects</span>
-                <span className="text-xs px-2.5 py-0.5 rounded-full bg-blue-500/15 text-blue-600 dark:text-blue-300 font-bold">
-                  {projects.length}
-                </span>
+                <span className="text-xs text-neutral-400 font-bold">&rarr;</span>
               </a>
               <a
                 href="#certificates"
@@ -483,9 +479,7 @@ const Home = () => {
                 className="animate-menu-item-4 px-4 py-3 rounded-2xl text-neutral-800 dark:text-neutral-200 hover:bg-black/5 dark:hover:bg-white/10 transition-colors flex items-center justify-between"
               >
                 <span>Certificates</span>
-                <span className="text-xs px-2.5 py-0.5 rounded-full bg-purple-500/15 text-purple-600 dark:text-purple-300 font-bold">
-                  {certificates.length}
-                </span>
+                <span className="text-xs text-neutral-400 font-bold">&rarr;</span>
               </a>
               <a
                 href="#contact"
