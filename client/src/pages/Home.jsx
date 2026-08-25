@@ -275,29 +275,12 @@ const Home = () => {
             className="flex items-center gap-3 group transition-transform hover:scale-105 flex-shrink-0"
           >
             <div className="relative flex-shrink-0">
-              <div className="absolute -inset-1 bg-gradient-to-r from-amber-400 via-yellow-400 to-amber-500 rounded-full blur-sm opacity-70 group-hover:opacity-100 transition duration-300" />
-              {displayUser?.profile_image && !headerImgError ? (
-                <PortfolioImage
-                  src={displayUser.profile_image}
-                  alt={displayUser.name || "Portfolio"}
-                  variant="profile"
-                  onError={() => setHeaderImgError(true)}
-                  className="relative w-9 h-9 sm:w-10 sm:h-10 rounded-full object-cover ring-2 ring-white dark:ring-slate-900 shadow-md"
-                  fallback={
-                    <div className="relative w-9 h-9 sm:w-10 sm:h-10 rounded-full bg-gradient-to-tr from-amber-500 via-orange-500 to-yellow-500 flex items-center justify-center font-bold text-slate-900 shadow-md text-base">
-                      {displayUser?.name
-                        ? displayUser.name.charAt(0).toUpperCase()
-                        : "P"}
-                    </div>
-                  }
-                />
-              ) : (
-                <div className="relative w-9 h-9 sm:w-10 sm:h-10 rounded-full bg-gradient-to-tr from-amber-500 via-orange-500 to-yellow-500 flex items-center justify-center font-bold text-slate-900 shadow-md text-base">
-                  {displayUser?.name
-                    ? displayUser.name.charAt(0).toUpperCase()
-                    : "P"}
-                </div>
-              )}
+              <div className="absolute -inset-1 bg-gradient-to-r from-amber-400 via-yellow-400 to-amber-500 rounded-2xl blur-sm opacity-70 group-hover:opacity-100 transition duration-300" />
+              <img
+                src="/logo.png"
+                alt="RAK Logo"
+                className="relative w-9 h-9 sm:w-10 sm:h-10 rounded-xl object-contain bg-black/90 dark:bg-white/10 p-1 ring-2 ring-amber-400/50 shadow-md"
+              />
             </div>
             <div className="min-w-0 flex flex-col justify-center">
               <div className="flex items-center gap-1.5 min-w-0">
