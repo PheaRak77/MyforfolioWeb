@@ -30,61 +30,105 @@ const app = express();
 // Trust reverse proxy on cloud deployments (Render, Vercel, Heroku)
 app.set("trust proxy", 1);
 
-// Security Headers
+// Security Headers — hardened with strict CSP and XSS protections
 app.use(
   helmet({
     crossOriginResourcePolicy: { policy: "cross-origin" },
     crossOriginEmbedderPolicy: false,
+    contentSecurityPolicy: {
+      directives: {
+        defaultSrc: ["'self'"],
+        scriptSrc: ["'self'", "'unsafe-inline'"],
+        styleSrc: ["'self'", "'unsafe-inline'", "https://fonts.googleapis.com"],
+        fontSrc: ["'self'", "https://fonts.gstatic.com"],
+        imgSrc: ["'self'", "data:", "https://res.cloudinary.com", "https://lh3.googleusercontent.com", "blob:"],
+        connectSrc: ["'self'", process.env.CLIENT_URL || "http://localhost:5173"],
+        frameSrc: ["'none'"],
+        objectSrc: ["'none'"],
+        upgradeInsecureRequests: process.env.NODE_ENV === "production" ? [] : null,
+      },
+    },
+    hsts: {
+      maxAge: 63072000,
+      includeSubDomains: true,
+      preload: true,
+    },
+    noSniff: true,
+    xssFilter: true,
+    referrerPolicy: { policy: "strict-origin-when-cross-origin" },
+    permittedCrossDomainPolicies: false,
   }),
 );
+
+// Hide server fingerprint
+app.disable("x-powered-by");
 
 // Payload Compression for high-performance response times
 app.use(compression());
 
-// CORS configuration
+// CORS configuration — strict whitelist, only allow known production/dev origins
 const allowedOrigins = [
-  process.env.CLIENT_URL || "http://localhost:5173",
+  process.env.CLIENT_URL,
   "http://localhost:5173",
   "http://127.0.0.1:5173",
-];
+  "https://myportfolio-web-xi.vercel.app",
+].filter(Boolean);
 
 app.use(
   cors({
     origin: (origin, callback) => {
-      // Allow requests with no origin (like mobile apps, curl) or allowed origins
+      // Allow no-origin requests (mobile apps, health checks) and whitelisted origins
       if (!origin || allowedOrigins.includes(origin)) {
         callback(null, true);
       } else {
-        callback(null, true); // Permissive in dev, or specify allowed list
+        callback(new Error(`CORS policy: origin '${origin}' not allowed`));
       }
     },
     credentials: true,
+    methods: ["GET", "POST", "PUT", "PATCH", "DELETE", "OPTIONS"],
+    allowedHeaders: ["Content-Type", "Authorization"],
   }),
 );
 
-// Body Parser with payload limit
-app.use(express.json({ limit: "5mb" }));
-app.use(express.urlencoded({ extended: true, limit: "5mb" }));
+// Body Parser with reduced payload limit for security
+app.use(express.json({ limit: "2mb" }));
+app.use(express.urlencoded({ extended: true, limit: "2mb" }));
 
-// Rate Limiter for Auth endpoints (relaxed with skipSuccessfulRequests)
+// Rate Limiter for Auth endpoints — strict brute-force protection
 const authLimiter = rateLimit({
-  windowMs: 5 * 60 * 1000, // 5 minutes
-  max: 150, // Allow up to 150 requests per 5 minutes
+  windowMs: 15 * 60 * 1000, // 15 minutes
+  max: 20, // Max 20 attempts per 15 min per IP
   standardHeaders: true,
   legacyHeaders: false,
-  skipSuccessfulRequests: true, // Successful logins/registrations don't get penalized
+  skipSuccessfulRequests: true, // Only count failed attempts
   message: {
     success: false,
-    message: "Too many authentication attempts. Please try again in a few moments.",
+    message: "Too many authentication attempts. Please wait 15 minutes and try again.",
+  },
+});
+
+// Contact form rate limiter — prevent spam
+const contactLimiter = rateLimit({
+  windowMs: 60 * 60 * 1000, // 1 hour
+  max: 5, // Max 5 contact form submissions per hour per IP
+  standardHeaders: true,
+  legacyHeaders: false,
+  message: {
+    success: false,
+    message: "Too many messages sent. Please wait an hour before sending again.",
   },
 });
 
 // General API rate limiter
 const apiLimiter = rateLimit({
   windowMs: 5 * 60 * 1000,
-  max: 1000,
+  max: 500,
   standardHeaders: true,
   legacyHeaders: false,
+  message: {
+    success: false,
+    message: "Too many requests. Please slow down.",
+  },
 });
 
 if (process.env.NODE_ENV !== "production") {
@@ -146,7 +190,7 @@ app.use("/api/projects", apiLimiter, cacheMiddleware(60), projectRoutes);
 app.use("/api/certificates", apiLimiter, cacheMiddleware(60), certificateRoutes);
 app.use("/api/skills", apiLimiter, cacheMiddleware(60), skillRoutes);
 app.use("/api/uploads", apiLimiter, uploadRoutes);
-app.use("/api/contact", apiLimiter, contactRoutes);
+app.use("/api/contact", contactLimiter, contactRoutes);
 
 // Error Handling
 app.use(notFound);
