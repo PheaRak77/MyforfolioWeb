@@ -812,6 +812,17 @@ html {
     transition-property: opacity, transform, border-color !important;
     transition-duration: 180ms !important;
   }
+
+  /* On touch screens, showing content immediately is more important than a
+     delayed entrance animation. It avoids empty sections during fast flicks. */
+  .portfolio-page .reveal,
+  .portfolio-page .reveal.visible,
+  .portfolio-page .portfolio-reveal-item {
+    opacity: 1 !important;
+    transform: none !important;
+    filter: none !important;
+    transition: none !important;
+  }
 }
 
 /* Touch devices do not have hover. Avoid promoting every card/image into a
