@@ -1,4 +1,4 @@
-import { useEffect, useState } from "react";
+import { useEffect, useMemo, useState } from "react";
 import { Link } from "react-router-dom";
 import api from "../api/axios";
 import DashboardNav from "../components/DashboardNav";
@@ -6,6 +6,83 @@ import { useAuth } from "../context/AuthContext";
 import { isLegacyDiskUrl } from "../utils/imageUrl";
 import { hasLegacyProjectImages } from "../utils/projectImages";
 import VerifiedBadge, { isVerifiedUser } from "../components/VerifiedBadge";
+
+const MONTH_FORMATTER = new Intl.DateTimeFormat("en", { month: "short" });
+
+function buildActivityData(projects, certificates) {
+  const months = Array.from({ length: 6 }, (_, index) => {
+    const date = new Date();
+    date.setDate(1);
+    date.setMonth(date.getMonth() - (5 - index));
+    return { label: MONTH_FORMATTER.format(date), year: date.getFullYear(), month: date.getMonth(), projects: 0, certificates: 0 };
+  });
+
+  const addItems = (items, key) => {
+    items.forEach((item) => {
+      const date = item.created_at ? new Date(item.created_at) : null;
+      if (date && !Number.isNaN(date.getTime())) {
+        const bucket = months.find((entry) => entry.year === date.getFullYear() && entry.month === date.getMonth());
+        if (bucket) bucket[key] += 1;
+      }
+    });
+  };
+
+  addItems(projects, "projects");
+  addItems(certificates, "certificates");
+  return months;
+}
+
+function ActivityChart({ data, loading }) {
+  const width = 620;
+  const height = 220;
+  const padding = { top: 22, right: 16, bottom: 32, left: 12 };
+  const max = Math.max(1, ...data.flatMap((item) => [item.projects, item.certificates]));
+  const graphWidth = width - padding.left - padding.right;
+  const graphHeight = height - padding.top - padding.bottom;
+  const point = (value, index) => ({
+    x: padding.left + (graphWidth / Math.max(data.length - 1, 1)) * index,
+    y: padding.top + graphHeight - (value / max) * graphHeight,
+  });
+  const toPoints = (key) => data.map((item, index) => {
+    const { x, y } = point(item[key], index);
+    return `${x},${y}`;
+  }).join(" ");
+
+  return (
+    <div className="relative h-56 sm:h-64 mt-5" aria-label="Content publishing activity chart">
+      {loading ? (
+        <div className="h-full animate-pulse rounded-2xl bg-slate-800/50" />
+      ) : (
+        <svg className="w-full h-full overflow-visible" viewBox={`0 0 ${width} ${height}`} role="img">
+          <defs>
+            <linearGradient id="project-area" x1="0" x2="0" y1="0" y2="1">
+              <stop offset="0%" stopColor="#3b82f6" stopOpacity="0.32" />
+              <stop offset="100%" stopColor="#3b82f6" stopOpacity="0" />
+            </linearGradient>
+          </defs>
+          {[0, 0.5, 1].map((step) => {
+            const y = padding.top + graphHeight * step;
+            return <line key={step} x1={padding.left} x2={width - padding.right} y1={y} y2={y} stroke="#334155" strokeOpacity="0.65" strokeDasharray="4 5" />;
+          })}
+          <polygon points={`${padding.left},${height - padding.bottom} ${toPoints("projects")} ${width - padding.right},${height - padding.bottom}`} fill="url(#project-area)" />
+          <polyline points={toPoints("projects")} fill="none" stroke="#60a5fa" strokeWidth="3.5" strokeLinecap="round" strokeLinejoin="round" />
+          <polyline points={toPoints("certificates")} fill="none" stroke="#c084fc" strokeWidth="3.5" strokeLinecap="round" strokeLinejoin="round" />
+          {data.map((item, index) => {
+            const projectPoint = point(item.projects, index);
+            const certificatePoint = point(item.certificates, index);
+            return (
+              <g key={item.label}>
+                <circle cx={projectPoint.x} cy={projectPoint.y} r="4" fill="#0f172a" stroke="#60a5fa" strokeWidth="2.5" />
+                <circle cx={certificatePoint.x} cy={certificatePoint.y} r="4" fill="#0f172a" stroke="#c084fc" strokeWidth="2.5" />
+                <text x={projectPoint.x} y={height - 8} textAnchor="middle" fill="#64748b" fontSize="12" fontWeight="600">{item.label}</text>
+              </g>
+            );
+          })}
+        </svg>
+      )}
+    </div>
+  );
+}
 
 const Dashboard = () => {
   const { user } = useAuth();
@@ -16,6 +93,7 @@ const Dashboard = () => {
     brokenImages: 0,
   });
   const [loading, setLoading] = useState(true);
+  const [content, setContent] = useState({ projects: [], certificates: [], skills: [] });
 
   useEffect(() => {
     const fetchCounts = async () => {
@@ -44,6 +122,11 @@ const Dashboard = () => {
           skills: sRes.status === "fulfilled" ? sRes.value.data?.skills?.length || 0 : 0,
           brokenImages: brokenProjects + brokenCerts + brokenProfile,
         });
+        setContent({
+          projects,
+          certificates,
+          skills: sRes.status === "fulfilled" ? sRes.value.data?.skills || [] : [],
+        });
       } catch (err) {
         console.error("Failed to load dashboard stats:", err);
       } finally {
@@ -53,6 +136,18 @@ const Dashboard = () => {
 
     fetchCounts();
   }, []);
+
+  const activityData = useMemo(
+    () => buildActivityData(content.projects, content.certificates),
+    [content.certificates, content.projects]
+  );
+
+  const topSkills = useMemo(
+    () => [...content.skills]
+      .sort((first, second) => Number(second.percentage || 0) - Number(first.percentage || 0))
+      .slice(0, 5),
+    [content.skills]
+  );
 
   const cards = [
     {
@@ -220,6 +315,61 @@ const Dashboard = () => {
             </div>
           ))}
         </div>
+
+        {/* Portfolio Analytics */}
+        <section className="grid xl:grid-cols-5 gap-6" aria-labelledby="analytics-heading">
+          <div className="xl:col-span-3 rounded-3xl bg-slate-900/70 border border-slate-800 shadow-xl shadow-black/10 p-5 sm:p-7 overflow-hidden">
+            <div className="flex flex-col sm:flex-row sm:items-start justify-between gap-4">
+              <div>
+                <div className="flex items-center gap-2 text-blue-400 mb-2">
+                  <span className="w-2 h-2 rounded-full bg-blue-400 shadow-[0_0_12px_rgba(96,165,250,0.9)]" />
+                  <span className="text-[11px] font-bold uppercase tracking-[0.16em]">Portfolio analytics</span>
+                </div>
+                <h2 id="analytics-heading" className="text-xl font-bold text-white">Publishing activity</h2>
+                <p className="mt-1 text-sm text-slate-400">Projects and certificates added over the last six months.</p>
+              </div>
+              <div className="flex items-center gap-4 text-xs font-semibold shrink-0">
+                <span className="flex items-center gap-1.5 text-slate-300"><i className="w-2.5 h-2.5 rounded-full bg-blue-400" /> Projects</span>
+                <span className="flex items-center gap-1.5 text-slate-300"><i className="w-2.5 h-2.5 rounded-full bg-purple-400" /> Certificates</span>
+              </div>
+            </div>
+            <ActivityChart data={activityData} loading={loading} />
+          </div>
+
+          <div className="xl:col-span-2 rounded-3xl bg-slate-900/70 border border-slate-800 shadow-xl shadow-black/10 p-5 sm:p-7">
+            <div className="flex items-start justify-between gap-4">
+              <div>
+                <p className="text-[11px] font-bold uppercase tracking-[0.16em] text-emerald-400">Capability overview</p>
+                <h2 className="mt-2 text-xl font-bold text-white">Top skills</h2>
+              </div>
+              <Link to="/skills" className="text-xs font-semibold text-blue-400 hover:text-blue-300 transition-colors">Manage →</Link>
+            </div>
+
+            <div className="mt-6 space-y-4">
+              {loading ? [...Array(4)].map((_, index) => (
+                <div key={index} className="animate-pulse space-y-2">
+                  <div className="flex justify-between"><span className="h-3 w-24 rounded bg-slate-800" /><span className="h-3 w-8 rounded bg-slate-800" /></div>
+                  <div className="h-2 rounded-full bg-slate-800" />
+                </div>
+              )) : topSkills.length ? topSkills.map((skill) => {
+                const percentage = Math.max(0, Math.min(100, Number(skill.percentage || 0)));
+                return (
+                  <div key={skill.id || skill.name}>
+                    <div className="flex items-center justify-between gap-3 text-sm mb-2">
+                      <span className="font-semibold text-slate-200 truncate">{skill.name}</span>
+                      <span className="font-mono text-xs text-slate-400">{percentage}%</span>
+                    </div>
+                    <div className="h-2 rounded-full bg-slate-800 overflow-hidden">
+                      <div className="h-full rounded-full bg-gradient-to-r from-emerald-400 to-cyan-400 shadow-[0_0_12px_rgba(45,212,191,0.42)] transition-all duration-700" style={{ width: `${percentage}%` }} />
+                    </div>
+                  </div>
+                );
+              }) : (
+                <div className="py-7 text-center rounded-2xl border border-dashed border-slate-700 text-sm text-slate-500">Add skills to see your capability chart.</div>
+              )}
+            </div>
+          </div>
+        </section>
 
         {/* Quick Action Shortcuts */}
         <div className="rounded-3xl bg-slate-900/50 border border-slate-800/60 p-6 sm:p-8 space-y-4">
