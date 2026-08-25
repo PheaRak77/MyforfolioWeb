@@ -20,50 +20,68 @@ html.light {
 
 body {
   font-family: "Poppins", system-ui, -apple-system, sans-serif;
-  @apply bg-[#fafafa] text-neutral-900 dark:bg-[#070b14] dark:text-slate-100 transition-colors duration-300 antialiased;
+  @apply bg-[#fafafa] text-neutral-900 dark:bg-[#070b14] dark:text-slate-100 antialiased;
   overflow-x: hidden;
 }
 
 /* =====================================================
-   VIEW TRANSITION API (Ultra-Smooth Circular Theme Reveal)
+   VIEW TRANSITION API (Ultra-Smooth on All Devices)
    ===================================================== */
-::view-transition-old(root),
-::view-transition-new(root) {
-  animation: none;
-  mix-blend-mode: normal;
-  display: block;
+/* Mobile / touch screens: smooth native GPU cross-fade (60-120 FPS, 0 lag) */
+@media (max-width: 768px), (pointer: coarse) {
+  ::view-transition-old(root),
+  ::view-transition-new(root) {
+    animation-duration: 240ms;
+    animation-timing-function: cubic-bezier(0.22, 1, 0.36, 1);
+  }
+
+  ::view-transition-old(root) {
+    animation-name: mobile-theme-fade-out;
+  }
+
+  ::view-transition-new(root) {
+    animation-name: mobile-theme-fade-in;
+  }
 }
 
-::view-transition-old(root) {
-  z-index: 1;
+@keyframes mobile-theme-fade-out {
+  from { opacity: 1; }
+  to { opacity: 0; }
 }
 
-::view-transition-new(root) {
-  z-index: 99999;
+@keyframes mobile-theme-fade-in {
+  from { opacity: 0; }
+  to { opacity: 1; }
 }
 
-/* Fallback smooth color morph for devices / browsers without View Transitions */
+/* Desktop: Circular ripple bloom */
+@media (min-width: 769px) and (pointer: fine) {
+  ::view-transition-old(root),
+  ::view-transition-new(root) {
+    animation: none;
+    mix-blend-mode: normal;
+    display: block;
+  }
+
+  ::view-transition-old(root) {
+    z-index: 1;
+  }
+
+  ::view-transition-new(root) {
+    z-index: 99999;
+  }
+}
+
+/* Fallback smooth color morph for devices without View Transitions */
 .theme-transitioning,
 .theme-transitioning body,
 .theme-transitioning header,
 .theme-transitioning nav,
 .theme-transitioning section,
 .theme-transitioning main,
-.theme-transitioning footer,
-.theme-transitioning div,
-.theme-transitioning a,
-.theme-transitioning button,
-.theme-transitioning p,
-.theme-transitioning h1,
-.theme-transitioning h2,
-.theme-transitioning h3,
-.theme-transitioning span,
-.theme-transitioning input,
-.theme-transitioning textarea {
+.theme-transitioning footer {
   transition: background-color var(--theme-transition-duration) cubic-bezier(0.22, 1, 0.36, 1),
-              border-color var(--theme-transition-duration) cubic-bezier(0.22, 1, 0.36, 1),
-              color var(--theme-transition-duration) cubic-bezier(0.22, 1, 0.36, 1),
-              box-shadow var(--theme-transition-duration) cubic-bezier(0.22, 1, 0.36, 1) !important;
+              color var(--theme-transition-duration) cubic-bezier(0.22, 1, 0.36, 1) !important;
 }
 
 @media (max-width: 640px), (pointer: coarse) {

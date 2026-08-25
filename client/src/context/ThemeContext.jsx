@@ -58,27 +58,30 @@ export const ThemeProvider = ({ children }) => {
       return;
     }
 
-    // Modern View Transition API with circular reveal from click/touch coordinates
+    // Modern View Transition API
     if (typeof document.startViewTransition === "function") {
+      const isMobile =
+        window.innerWidth < 768 ||
+        window.matchMedia("(pointer: coarse)").matches;
+
+      // On mobile / touch devices: use ultra-smooth native GPU cross-fade
+      if (isMobile) {
+        document.startViewTransition(() => {
+          commitTheme(nextTheme);
+        });
+        return;
+      }
+
+      // On desktop: use full circular ripple bloom from cursor
       let x = window.innerWidth / 2;
       let y = window.innerHeight / 2;
 
       if (event) {
-        if (event.touches && event.touches[0]) {
-          x = event.touches[0].clientX;
-          y = event.touches[0].clientY;
-        } else if (event.changedTouches && event.changedTouches[0]) {
-          x = event.changedTouches[0].clientX;
-          y = event.changedTouches[0].clientY;
-        } else if (typeof event.clientX === "number" && (event.clientX !== 0 || event.clientY !== 0)) {
+        if (typeof event.clientX === "number" && (event.clientX !== 0 || event.clientY !== 0)) {
           x = event.clientX;
           y = event.clientY;
         } else if (event.currentTarget && typeof event.currentTarget.getBoundingClientRect === "function") {
           const rect = event.currentTarget.getBoundingClientRect();
-          x = rect.left + rect.width / 2;
-          y = rect.top + rect.height / 2;
-        } else if (event.target && typeof event.target.getBoundingClientRect === "function") {
-          const rect = event.target.getBoundingClientRect();
           x = rect.left + rect.width / 2;
           y = rect.top + rect.height / 2;
         }
@@ -104,7 +107,7 @@ export const ThemeProvider = ({ children }) => {
             clipPath: clipPath,
           },
           {
-            duration: 440,
+            duration: 420,
             easing: "cubic-bezier(0.22, 1, 0.36, 1)",
             pseudoElement: "::view-transition-new(root)",
           },
