@@ -10,7 +10,6 @@ import VerifiedBadge, { VerifiedName } from "../components/VerifiedBadge";
 import CvModal from "../components/CvModal";
 import MotionBackground from "../components/MotionBackground";
 import ThemeToggle from "../components/ThemeToggle";
-import { useTheme } from "../context/ThemeContext";
 import {
   fetchPublicPortfolioData,
   hydrateFromCache,
@@ -22,7 +21,6 @@ import {
 
 const Home = () => {
   const { user: authUser, isAuthenticated, logout } = useAuth();
-  const { isDark, toggleTheme } = useTheme();
 
   const [profile, setProfile] = useState(
     () => hydrateFromCache().profile?.user ?? null,
@@ -527,30 +525,7 @@ const Home = () => {
 
             {/* Mobile Auth Actions & Theme Switch */}
             <div className="pt-3 border-t border-black/[0.08] dark:border-white/[0.08] space-y-2">
-              <button
-                type="button"
-                onClick={(e) => toggleTheme(e)}
-                className="w-full py-3 px-4 rounded-xl bg-black/[0.04] dark:bg-white/[0.06] hover:bg-black/[0.08] dark:hover:bg-white/[0.12] text-neutral-800 dark:text-neutral-200 text-xs font-semibold flex items-center justify-between border border-black/[0.06] dark:border-white/[0.08] active:scale-98 transition-all shadow-sm group"
-              >
-                <div className="flex items-center gap-2.5">
-                  <span className="text-neutral-500 dark:text-neutral-400">Theme</span>
-                  <span className="font-bold text-neutral-900 dark:text-white">
-                    {isDark ? "Dark Charcoal" : "Clean Light"}
-                  </span>
-                </div>
-                <div className="w-8 h-8 rounded-full bg-black/5 dark:bg-white/10 flex items-center justify-center text-amber-500 dark:text-amber-300">
-                  {isDark ? (
-                    <svg className="w-4 h-4 text-amber-300 animate-theme-pop drop-shadow-[0_0_8px_rgba(252,211,77,0.7)]" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                      <circle cx="12" cy="12" r="4" strokeWidth="2.2" stroke="currentColor" fill="currentColor" fillOpacity="0.2" />
-                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2.2" d="M12 2v2m0 16v2M4.93 4.93l1.41 1.41m11.32 11.32l1.41 1.41M2 12h2m16 0h2M6.34 17.66l-1.41 1.41M19.07 4.93l-1.41 1.41" />
-                    </svg>
-                  ) : (
-                    <svg className="w-4 h-4 text-neutral-800 animate-theme-pop" fill="currentColor" viewBox="0 0 24 24">
-                      <path d="M20.354 15.354A9 9 0 018.646 3.646 9.003 9.003 0 0012 21a9.003 9.003 0 008.354-5.646z" />
-                    </svg>
-                  )}
-                </div>
-              </button>
+              <ThemeToggle variant="row" />
 
               {isAuthenticated ? (
                 <>

@@ -25,6 +25,19 @@
       rel="stylesheet"
     />
     <title>Y-Pheareak_Portfolio</title>
+    <script>
+      (function () {
+        try {
+          var t = localStorage.getItem("portfolio_theme") || "dark";
+          var isLight = t === "light";
+          document.documentElement.classList.toggle("dark", !isLight);
+          document.documentElement.classList.toggle("light", isLight);
+          document.documentElement.style.colorScheme = isLight ? "light" : "dark";
+        } catch (e) {
+          document.documentElement.classList.add("dark");
+        }
+      })();
+    </script>
     <meta
       name="description"
       content="Portfolio of Yorn Pheareak — Full-Stack Developer showcasing projects, verified certificates, and technical skills."
