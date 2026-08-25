@@ -26,12 +26,19 @@ body {
 /* Soft day/night fade — colors ease, no expanding circle */
 .theme-transitioning,
 .theme-transitioning * {
-  transition: background-color 0.7s cubic-bezier(0.22, 1, 0.36, 1),
-              border-color 0.7s cubic-bezier(0.22, 1, 0.36, 1),
-              color 0.7s cubic-bezier(0.22, 1, 0.36, 1),
-              box-shadow 0.7s cubic-bezier(0.22, 1, 0.36, 1),
-              fill 0.7s cubic-bezier(0.22, 1, 0.36, 1),
-              stroke 0.7s cubic-bezier(0.22, 1, 0.36, 1) !important;
+  transition: background-color 0.42s cubic-bezier(0.22, 1, 0.36, 1),
+              border-color 0.42s cubic-bezier(0.22, 1, 0.36, 1),
+              color 0.42s cubic-bezier(0.22, 1, 0.36, 1),
+              box-shadow 0.42s cubic-bezier(0.22, 1, 0.36, 1),
+              fill 0.42s cubic-bezier(0.22, 1, 0.36, 1),
+              stroke 0.42s cubic-bezier(0.22, 1, 0.36, 1) !important;
+}
+
+/* Chrome and other modern browsers transition a single page layer instead of
+   repainting every component. The regular rule above remains the fallback. */
+html.theme-view-transitioning,
+html.theme-view-transitioning * {
+  transition: none !important;
 }
 
 html.theme-veil-active::after {
@@ -40,7 +47,8 @@ html.theme-veil-active::after {
   inset: 0;
   z-index: 99999;
   pointer-events: none;
-  animation: theme-sky-veil 0.56s cubic-bezier(0.4, 0, 0.2, 1) both;
+  animation: theme-sky-veil 0.42s cubic-bezier(0.22, 1, 0.36, 1) both;
+  will-change: opacity;
 }
 
 html.theme-to-light::after {
@@ -73,10 +81,32 @@ html.theme-to-dark::after {
   }
 }
 
+html.theme-view-transitioning::view-transition-old(root) {
+  animation: theme-page-out 0.18s ease-out both;
+}
+
+html.theme-view-transitioning::view-transition-new(root) {
+  animation: theme-page-in 0.42s cubic-bezier(0.22, 1, 0.36, 1) both;
+}
+
+@keyframes theme-page-out {
+  to { opacity: 0; }
+}
+
+@keyframes theme-page-in {
+  from { opacity: 0; }
+  to { opacity: 1; }
+}
+
 @media (prefers-reduced-motion: reduce) {
   .theme-transitioning,
   .theme-transitioning * {
     transition: none !important;
+  }
+
+  html.theme-view-transitioning::view-transition-old(root),
+  html.theme-view-transitioning::view-transition-new(root) {
+    animation: none;
   }
 
   html.theme-veil-active::after {

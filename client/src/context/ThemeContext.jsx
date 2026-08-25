@@ -2,7 +2,7 @@ import { createContext, useCallback, useContext, useLayoutEffect, useRef, useSta
 
 const ThemeContext = createContext();
 const STORAGE_KEY = "portfolio_theme";
-const THEME_FADE_MS = 700;
+const THEME_FADE_MS = 420;
 
 function readStoredTheme() {
   try {
@@ -63,13 +63,19 @@ export const ThemeProvider = ({ children }) => {
     root.classList.toggle("theme-to-dark", nextTheme === "dark");
     root.classList.add("theme-veil-active");
 
-    // The animation belongs to the page, so the colours gently blend across
-    // the full interface instead of turning the control itself into an effect.
-    commitTheme(nextTheme);
+    // Let capable browsers animate one composited page snapshot. This is much
+    // smoother than asking every card and text node to repaint independently.
+    if (typeof document.startViewTransition === "function") {
+      root.classList.add("theme-view-transitioning");
+      document.startViewTransition(() => commitTheme(nextTheme));
+    } else {
+      commitTheme(nextTheme);
+    }
 
     cleanupTimer.current = window.setTimeout(() => {
       root.classList.remove(
         "theme-transitioning",
+        "theme-view-transitioning",
         "theme-veil-active",
         "theme-to-light",
         "theme-to-dark"
