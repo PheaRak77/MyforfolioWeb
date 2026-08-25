@@ -9,6 +9,7 @@ import ProjectCardImage from "../components/ProjectCardImage";
 import VerifiedBadge, { VerifiedName } from "../components/VerifiedBadge";
 import CvModal from "../components/CvModal";
 import MotionBackground from "../components/MotionBackground";
+import ThemeToggle from "../components/ThemeToggle";
 import { useTheme } from "../context/ThemeContext";
 import {
   fetchPublicPortfolioData,
@@ -379,46 +380,8 @@ const Home = () => {
 
           {/* Right Action / Mobile Hamburger Toggle */}
           <div className="flex items-center gap-2 sm:gap-2.5 flex-shrink-0">
-            {/* Theme Toggle Button (Light / Dark) */}
-            <button
-              type="button"
-              onClick={toggleTheme}
-              className="w-9 h-9 sm:w-10 sm:h-10 rounded-full bg-black/5 hover:bg-black/10 dark:bg-white/10 dark:hover:bg-white/15 text-neutral-700 dark:text-amber-300 border border-black/5 dark:border-white/10 transition-all flex items-center justify-center shadow-sm active:scale-85 hover:scale-105"
-              title={isDark ? "Switch to Light Mode" : "Switch to Dark Mode"}
-              aria-label="Toggle Theme Mode"
-            >
-              {isDark ? (
-                <svg
-                  key="sun-icon"
-                  className="w-4 h-4 text-amber-300 drop-shadow-[0_0_8px_rgba(252,211,77,0.6)] animate-theme-pop"
-                  fill="none"
-                  stroke="currentColor"
-                  viewBox="0 0 24 24"
-                >
-                  <path
-                    strokeLinecap="round"
-                    strokeLinejoin="round"
-                    strokeWidth={2}
-                    d="M12 3v1m0 16v1m9-9h-1M4 12H3m15.364 6.364l-.707-.707M6.343 6.343l-.707-.707m12.728 0l-.707.707M6.343 17.657l-.707.707M16 12a4 4 0 11-8 0 4 4 0 018 0z"
-                  />
-                </svg>
-              ) : (
-                <svg
-                  key="moon-icon"
-                  className="w-4 h-4 text-neutral-800 animate-theme-pop"
-                  fill="none"
-                  stroke="currentColor"
-                  viewBox="0 0 24 24"
-                >
-                  <path
-                    strokeLinecap="round"
-                    strokeLinejoin="round"
-                    strokeWidth={2}
-                    d="M20.354 15.354A9 9 0 018.646 3.646 9.003 9.003 0 0012 21a9.003 9.003 0 008.354-5.646z"
-                  />
-                </svg>
-              )}
-            </button>
+            {/* Theme Toggle Button (Light / Dark) with View Transition & Morphing Sun/Moon */}
+            <ThemeToggle size="md" />
 
             {/* Desktop Auth Action */}
             <div className="hidden lg:flex items-center gap-2">
@@ -566,16 +529,27 @@ const Home = () => {
             <div className="pt-3 border-t border-black/[0.08] dark:border-white/[0.08] space-y-2">
               <button
                 type="button"
-                onClick={toggleTheme}
-                className="w-full py-2.5 px-4 rounded-xl bg-black/5 dark:bg-white/10 text-neutral-800 dark:text-neutral-200 text-xs font-semibold flex items-center justify-between border border-black/5 dark:border-white/10 active:scale-98 transition-transform"
+                onClick={(e) => toggleTheme(e)}
+                className="w-full py-3 px-4 rounded-xl bg-black/[0.04] dark:bg-white/[0.06] hover:bg-black/[0.08] dark:hover:bg-white/[0.12] text-neutral-800 dark:text-neutral-200 text-xs font-semibold flex items-center justify-between border border-black/[0.06] dark:border-white/[0.08] active:scale-98 transition-all shadow-sm group"
               >
-                <span>Theme: {isDark ? "Dark Mode" : "Light Mode"}</span>
-                <span
-                  key={isDark ? "dark-m" : "light-m"}
-                  className="animate-theme-pop"
-                >
-                  {isDark ? "🌙" : "☀️"}
-                </span>
+                <div className="flex items-center gap-2.5">
+                  <span className="text-neutral-500 dark:text-neutral-400">Theme</span>
+                  <span className="font-bold text-neutral-900 dark:text-white">
+                    {isDark ? "Dark Charcoal" : "Clean Light"}
+                  </span>
+                </div>
+                <div className="w-8 h-8 rounded-full bg-black/5 dark:bg-white/10 flex items-center justify-center text-amber-500 dark:text-amber-300">
+                  {isDark ? (
+                    <svg className="w-4 h-4 text-amber-300 animate-theme-pop drop-shadow-[0_0_8px_rgba(252,211,77,0.7)]" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                      <circle cx="12" cy="12" r="4" strokeWidth="2.2" stroke="currentColor" fill="currentColor" fillOpacity="0.2" />
+                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2.2" d="M12 2v2m0 16v2M4.93 4.93l1.41 1.41m11.32 11.32l1.41 1.41M2 12h2m16 0h2M6.34 17.66l-1.41 1.41M19.07 4.93l-1.41 1.41" />
+                    </svg>
+                  ) : (
+                    <svg className="w-4 h-4 text-neutral-800 animate-theme-pop" fill="currentColor" viewBox="0 0 24 24">
+                      <path d="M20.354 15.354A9 9 0 018.646 3.646 9.003 9.003 0 0012 21a9.003 9.003 0 008.354-5.646z" />
+                    </svg>
+                  )}
+                </div>
               </button>
 
               {isAuthenticated ? (
