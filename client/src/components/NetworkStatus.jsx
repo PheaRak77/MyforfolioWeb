@@ -1,9 +1,26 @@
-import React, { useState } from "react";
+import { useEffect, useState } from "react";
 import { useNetworkStatus } from "../hooks/useNetworkStatus";
 
 export default function NetworkStatus() {
-  const { isOnline, isSlow, slowReason, wasOffline, setIsSlow } = useNetworkStatus();
+  const { isOnline, isSlow, slowReason, slowSince, wasOffline } = useNetworkStatus();
   const [dismissed, setDismissed] = useState(false);
+  const [elapsed, setElapsed] = useState(0);
+
+  useEffect(() => {
+    if (!isSlow || !slowSince) {
+      setElapsed(0);
+      return undefined;
+    }
+
+    const updateElapsed = () => setElapsed(Math.max(1, Math.floor((Date.now() - slowSince) / 1000)));
+    updateElapsed();
+    const timer = window.setInterval(updateElapsed, 1000);
+    return () => window.clearInterval(timer);
+  }, [isSlow, slowSince]);
+
+  useEffect(() => {
+    if (isSlow) setDismissed(false);
+  }, [isSlow]);
 
   // 1. Reconnected Banner
   if (wasOffline && isOnline) {
@@ -53,33 +70,29 @@ export default function NetworkStatus() {
   // 3. Slow Connection / Server Wakeup Animation
   if (isSlow && !dismissed) {
     return (
-      <div className="fixed bottom-6 right-6 z-[9999] animate-slide-up max-w-[380px] w-[calc(100vw-3rem)]">
-        {/* Glowing aura container */}
-        <div className="relative overflow-hidden rounded-2xl bg-slate-900/90 backdrop-blur-xl border border-amber-500/30 p-4 shadow-2xl shadow-amber-500/10 text-slate-200">
+      <div className="fixed bottom-4 sm:bottom-6 right-4 sm:right-6 z-[9999] animate-slide-up max-w-[380px] w-[calc(100vw-2rem)] sm:w-[calc(100vw-3rem)]">
+        <div className="slow-network-card relative overflow-hidden rounded-2xl bg-slate-900/95 backdrop-blur-xl border border-amber-500/30 p-4 shadow-2xl shadow-amber-500/15 text-slate-200">
           
           {/* Top animated laser bar */}
           <div className="absolute top-0 left-0 right-0 h-1 bg-gradient-to-r from-amber-500 via-orange-400 to-amber-500 animate-laser-scan" />
 
           <div className="flex items-start gap-3.5">
-            {/* Animated Signal Radar Icon */}
-            <div className="relative mt-0.5 flex items-center justify-center w-9 h-9 rounded-xl bg-amber-500/15 border border-amber-500/30 text-amber-400 shrink-0">
-              {/* Pulsing radar ring */}
-              <span className="absolute inset-0 rounded-xl bg-amber-400/20 animate-ping opacity-75" />
-              
-              {/* 4 Animated Signal Bars */}
+            <div className="relative mt-0.5 flex items-center justify-center w-10 h-10 rounded-xl bg-amber-500/15 border border-amber-500/30 text-amber-400 shrink-0">
+              <span className="slow-network-orbit absolute -inset-1 rounded-2xl border border-amber-400/30" />
+              <span className="absolute inset-0 rounded-xl bg-amber-400/15 animate-ping opacity-60" />
               <div className="relative flex items-end gap-0.5 h-4">
-                <span className="w-1 bg-amber-400 rounded-full animate-signal-1" style={{ height: "40%" }} />
+                <span className="w-1 bg-amber-300 rounded-full animate-signal-1" style={{ height: "40%" }} />
                 <span className="w-1 bg-amber-400 rounded-full animate-signal-2" style={{ height: "65%" }} />
-                <span className="w-1 bg-amber-400/60 rounded-full animate-signal-3" style={{ height: "85%" }} />
-                <span className="w-1 bg-amber-400/30 rounded-full animate-signal-4" style={{ height: "100%" }} />
+                <span className="w-1 bg-orange-400 rounded-full animate-signal-3" style={{ height: "85%" }} />
+                <span className="w-1 bg-orange-300 rounded-full animate-signal-4" style={{ height: "100%" }} />
               </div>
             </div>
 
             <div className="flex-1 min-w-0">
               <div className="flex items-center justify-between gap-2">
                 <span className="text-xs font-semibold uppercase tracking-wider text-amber-400 flex items-center gap-1.5">
-                  <span className="w-1.5 h-1.5 rounded-full bg-amber-400 animate-pulse" />
-                  Slow Network Detected
+                  <span className="slow-network-dot w-1.5 h-1.5 rounded-full bg-amber-400" />
+                  Connecting
                 </span>
                 <button
                   onClick={() => setDismissed(true)}
@@ -93,6 +106,12 @@ export default function NetworkStatus() {
               <p className="text-xs text-slate-300 mt-1 leading-relaxed">
                 {slowReason || "Connection is slower than usual. Initial data might take a few moments to load."}
               </p>
+
+              <div className="mt-2 flex items-center gap-1 text-[11px] font-medium text-amber-200/80">
+                <span>Still working</span>
+                <span className="slow-network-dots inline-flex gap-0.5"><i /><i /><i /></span>
+                {elapsed > 0 && <span className="ml-auto tabular-nums text-slate-400">{elapsed}s</span>}
+              </div>
 
               {/* Shimmer loading track */}
               <div className="mt-2.5 w-full bg-slate-800/80 rounded-full h-1.5 overflow-hidden relative">

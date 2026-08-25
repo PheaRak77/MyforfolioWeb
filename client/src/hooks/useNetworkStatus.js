@@ -4,6 +4,7 @@ export function useNetworkStatus() {
   const [isOnline, setIsOnline] = useState(navigator.onLine);
   const [isSlow, setIsSlow] = useState(false);
   const [slowReason, setSlowReason] = useState("");
+  const [slowSince, setSlowSince] = useState(null);
   const [wasOffline, setWasOffline] = useState(false);
 
   useEffect(() => {
@@ -16,6 +17,7 @@ export function useNetworkStatus() {
     const handleOffline = () => {
       setIsOnline(false);
       setIsSlow(false);
+      setSlowSince(null);
     };
 
     window.addEventListener("online", handleOnline);
@@ -36,6 +38,7 @@ export function useNetworkStatus() {
 
       if (isSlowType || isHighRtt) {
         setIsSlow(true);
+        setSlowSince((current) => current || Date.now());
         setSlowReason(
           connection.effectiveType === "2g" || connection.effectiveType === "slow-2g"
             ? "Very slow network connection (2G)"
@@ -44,6 +47,7 @@ export function useNetworkStatus() {
       } else {
         setIsSlow(false);
         setSlowReason("");
+        setSlowSince(null);
       }
     };
 
@@ -55,6 +59,7 @@ export function useNetworkStatus() {
     // Custom event listener for slow API calls (e.g. Render server waking up)
     const handleSlowApi = (e) => {
       setIsSlow(true);
+      setSlowSince((current) => current || Date.now());
       setSlowReason(e.detail?.message || "Server taking longer to respond...");
     };
 
@@ -63,6 +68,7 @@ export function useNetworkStatus() {
       if (!connection || (!["slow-2g", "2g"].includes(connection.effectiveType) && (connection.rtt || 0) < 1200)) {
         setIsSlow(false);
         setSlowReason("");
+        setSlowSince(null);
       }
     };
 
@@ -80,5 +86,5 @@ export function useNetworkStatus() {
     };
   }, []);
 
-  return { isOnline, isSlow, slowReason, wasOffline, setIsSlow };
+  return { isOnline, isSlow, slowReason, slowSince, wasOffline, setIsSlow };
 }
