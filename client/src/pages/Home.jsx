@@ -2163,14 +2163,6 @@ const Home = () => {
               </span>
               <span>· All rights reserved.</span>
             </p>
-            <p className="flex items-center gap-1.5">
-              <span>Built with</span>
-              <span className="text-amber-500 font-bold">React</span>
-              <span>+</span>
-              <span className="text-sky-500 font-bold">TailwindCSS</span>
-              <span>+</span>
-              <span className="text-emerald-500 font-bold">Node.js</span>
-            </p>
             {!isAuthenticated && (
               <Link to="/login" className="hover:text-slate-700 dark:hover:text-slate-300 transition-colors">
                 Admin ↗
