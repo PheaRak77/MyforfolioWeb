@@ -26,12 +26,12 @@ body {
 /* Soft day/night fade — colors ease, no expanding circle */
 .theme-transitioning,
 .theme-transitioning * {
-  transition: background-color 0.55s cubic-bezier(0.4, 0, 0.2, 1),
-              border-color 0.55s cubic-bezier(0.4, 0, 0.2, 1),
-              color 0.55s cubic-bezier(0.4, 0, 0.2, 1),
-              box-shadow 0.55s cubic-bezier(0.4, 0, 0.2, 1),
-              fill 0.55s cubic-bezier(0.4, 0, 0.2, 1),
-              stroke 0.55s cubic-bezier(0.4, 0, 0.2, 1) !important;
+  transition: background-color 0.7s cubic-bezier(0.22, 1, 0.36, 1),
+              border-color 0.7s cubic-bezier(0.22, 1, 0.36, 1),
+              color 0.7s cubic-bezier(0.22, 1, 0.36, 1),
+              box-shadow 0.7s cubic-bezier(0.22, 1, 0.36, 1),
+              fill 0.7s cubic-bezier(0.22, 1, 0.36, 1),
+              stroke 0.7s cubic-bezier(0.22, 1, 0.36, 1) !important;
 }
 
 html.theme-veil-active::after {
@@ -44,52 +44,21 @@ html.theme-veil-active::after {
 }
 
 html.theme-to-light::after {
-  background: radial-gradient(
-    ellipse 80% 60% at 50% 35%,
-    rgba(255, 236, 179, 0.28),
-    rgba(250, 250, 250, 0.08) 55%,
-    transparent 75%
+  background: linear-gradient(
+    135deg,
+    rgba(255, 255, 255, 0.62),
+    rgba(255, 244, 194, 0.24) 45%,
+    rgba(250, 250, 250, 0.08)
   );
 }
 
 html.theme-to-dark::after {
-  background: radial-gradient(
-    ellipse 80% 60% at 50% 35%,
-    rgba(15, 23, 42, 0.32),
-    rgba(7, 11, 20, 0.12) 55%,
-    transparent 75%
+  background: linear-gradient(
+    135deg,
+    rgba(7, 11, 20, 0.08),
+    rgba(15, 23, 42, 0.5) 50%,
+    rgba(2, 6, 23, 0.72)
   );
-}
-
-/* Modern browsers reveal the next theme outward from the toggle that was
-   pressed. Browsers without the View Transitions API keep the soft fade above. */
-::view-transition-old(root),
-::view-transition-new(root) {
-  animation-duration: 0.56s;
-  animation-timing-function: cubic-bezier(0.22, 1, 0.36, 1);
-}
-
-html.theme-transitioning::view-transition-old(root) {
-  animation-name: none;
-  z-index: 1;
-}
-
-html.theme-transitioning::view-transition-new(root) {
-  z-index: 2;
-  animation-name: theme-reveal-from-toggle;
-}
-
-html.theme-to-dark::view-transition-new(root) {
-  animation-timing-function: cubic-bezier(0.16, 1, 0.3, 1);
-}
-
-@keyframes theme-reveal-from-toggle {
-  from {
-    clip-path: circle(0 at var(--theme-reveal-x, 50vw) var(--theme-reveal-y, 50vh));
-  }
-  to {
-    clip-path: circle(150vmax at var(--theme-reveal-x, 50vw) var(--theme-reveal-y, 50vh));
-  }
 }
 
 @keyframes theme-sky-veil {
@@ -97,7 +66,7 @@ html.theme-to-dark::view-transition-new(root) {
     opacity: 0;
   }
   40% {
-    opacity: 1;
+    opacity: 0.9;
   }
   100% {
     opacity: 0;
@@ -115,9 +84,6 @@ html.theme-to-dark::view-transition-new(root) {
     content: none;
   }
 
-  html.theme-transitioning::view-transition-new(root) {
-    animation: none;
-  }
 }
 
 /* GPU Accelerated Smooth Composite Layer for 60-120FPS rendering */

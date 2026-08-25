@@ -2,7 +2,7 @@ import { createContext, useCallback, useContext, useLayoutEffect, useRef, useSta
 
 const ThemeContext = createContext();
 const STORAGE_KEY = "portfolio_theme";
-const THEME_FADE_MS = 560;
+const THEME_FADE_MS = 700;
 
 function readStoredTheme() {
   try {
@@ -46,19 +46,11 @@ export const ThemeProvider = ({ children }) => {
     setThemeState(nextTheme);
   };
 
-  const changeTheme = useCallback((nextTheme, trigger) => {
+  const changeTheme = useCallback((nextTheme) => {
     if (nextTheme === theme) return;
 
     const root = document.documentElement;
     const reduceMotion = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
-
-    // Start the reveal at the control the visitor clicked. It also works for
-    // the Settings-row toggle, not only the icon in the navigation.
-    if (trigger?.currentTarget) {
-      const { left, top, width, height } = trigger.currentTarget.getBoundingClientRect();
-      root.style.setProperty("--theme-reveal-x", `${left + width / 2}px`);
-      root.style.setProperty("--theme-reveal-y", `${top + height / 2}px`);
-    }
 
     if (reduceMotion) {
       commitTheme(nextTheme);
@@ -71,14 +63,9 @@ export const ThemeProvider = ({ children }) => {
     root.classList.toggle("theme-to-dark", nextTheme === "dark");
     root.classList.add("theme-veil-active");
 
-    const applyChange = () => commitTheme(nextTheme);
-    // View Transitions gives supported browsers a polished radial day/night
-    // reveal. The existing CSS colour fade remains the fallback everywhere else.
-    if (typeof document.startViewTransition === "function") {
-      document.startViewTransition(applyChange);
-    } else {
-      applyChange();
-    }
+    // The animation belongs to the page, so the colours gently blend across
+    // the full interface instead of turning the control itself into an effect.
+    commitTheme(nextTheme);
 
     cleanupTimer.current = window.setTimeout(() => {
       root.classList.remove(
@@ -91,7 +78,7 @@ export const ThemeProvider = ({ children }) => {
   }, [theme]);
 
   const toggleTheme = useCallback(
-    (trigger) => changeTheme(theme === "dark" ? "light" : "dark", trigger),
+    () => changeTheme(theme === "dark" ? "light" : "dark"),
     [changeTheme, theme]
   );
 
