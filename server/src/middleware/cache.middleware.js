@@ -15,6 +15,8 @@ const cacheMiddleware = (durationSeconds = 60) => {
     const key = req.originalUrl || req.url;
     const cached = cacheStore.get(key);
 
+    res.setHeader("Cache-Control", `public, max-age=${durationSeconds}, s-maxage=${durationSeconds * 2}, stale-while-revalidate=300`);
+
     if (cached && Date.now() < cached.expiry) {
       res.setHeader("X-Cache", "HIT");
       return res.json(cached.data);

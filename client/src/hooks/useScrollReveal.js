@@ -31,8 +31,8 @@ function getSharedObserver(threshold, rootMargin) {
  * Uses a shared observer per threshold/rootMargin pair to reduce overhead.
  */
 const useScrollReveal = ({
-  threshold = 0.12,
-  rootMargin = "-40px",
+  threshold = 0.05,
+  rootMargin = "50px 0px 50px 0px",
   once = true,
 } = {}) => {
   const ref = useRef(null);

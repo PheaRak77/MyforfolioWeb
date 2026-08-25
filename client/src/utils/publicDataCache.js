@@ -3,11 +3,12 @@ const DEFAULT_TTL_MS = 10 * 60 * 1000;
 
 const readCache = (key) => {
   try {
-    const raw = sessionStorage.getItem(`${CACHE_PREFIX}${key}`);
+    const raw = localStorage.getItem(`${CACHE_PREFIX}${key}`) || sessionStorage.getItem(`${CACHE_PREFIX}${key}`);
     if (!raw) return null;
 
     const parsed = JSON.parse(raw);
     if (!parsed?.expiry || Date.now() > parsed.expiry) {
+      localStorage.removeItem(`${CACHE_PREFIX}${key}`);
       sessionStorage.removeItem(`${CACHE_PREFIX}${key}`);
       return null;
     }
@@ -20,10 +21,9 @@ const readCache = (key) => {
 
 const writeCache = (key, data, ttlMs = DEFAULT_TTL_MS) => {
   try {
-    sessionStorage.setItem(
-      `${CACHE_PREFIX}${key}`,
-      JSON.stringify({ data, expiry: Date.now() + ttlMs }),
-    );
+    const payload = JSON.stringify({ data, expiry: Date.now() + ttlMs });
+    localStorage.setItem(`${CACHE_PREFIX}${key}`, payload);
+    sessionStorage.setItem(`${CACHE_PREFIX}${key}`, payload);
   } catch {
     // ignore quota errors
   }

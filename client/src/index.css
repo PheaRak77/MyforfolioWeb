@@ -3,7 +3,11 @@
 @tailwind utilities;
 
 html {
-  transition: background-color 0.3s ease, color 0.3s ease;
+  scroll-behavior: smooth;
+  text-rendering: optimizeLegibility;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+  transition: background-color 0.25s ease, color 0.25s ease;
 }
 
 html.dark {
@@ -17,6 +21,15 @@ html.light {
 body {
   font-family: "Poppins", system-ui, -apple-system, sans-serif;
   @apply bg-[#fafafa] text-neutral-900 dark:bg-[#070b14] dark:text-slate-100 transition-colors duration-300 antialiased;
+  overflow-x: hidden;
+}
+
+/* GPU Accelerated Smooth Composite Layer for 60-120FPS rendering */
+.gpu-accelerated {
+  will-change: transform, opacity;
+  transform: translate3d(0, 0, 0);
+  backface-visibility: hidden;
+  perspective: 1000px;
 }
 
 /* =====================================================
