@@ -31,20 +31,15 @@ body {
 ::view-transition-new(root) {
   animation: none;
   mix-blend-mode: normal;
+  display: block;
 }
 
 ::view-transition-old(root) {
   z-index: 1;
 }
+
 ::view-transition-new(root) {
   z-index: 99999;
-}
-
-.dark::view-transition-old(root) {
-  z-index: 99999;
-}
-.dark::view-transition-new(root) {
-  z-index: 1;
 }
 
 /* Fallback smooth color morph for devices / browsers without View Transitions */

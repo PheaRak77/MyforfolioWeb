@@ -64,11 +64,21 @@ export const ThemeProvider = ({ children }) => {
       let y = window.innerHeight / 2;
 
       if (event) {
-        if (event.clientX !== undefined && event.clientY !== undefined) {
+        if (event.touches && event.touches[0]) {
+          x = event.touches[0].clientX;
+          y = event.touches[0].clientY;
+        } else if (event.changedTouches && event.changedTouches[0]) {
+          x = event.changedTouches[0].clientX;
+          y = event.changedTouches[0].clientY;
+        } else if (typeof event.clientX === "number" && (event.clientX !== 0 || event.clientY !== 0)) {
           x = event.clientX;
           y = event.clientY;
-        } else if (event.currentTarget) {
+        } else if (event.currentTarget && typeof event.currentTarget.getBoundingClientRect === "function") {
           const rect = event.currentTarget.getBoundingClientRect();
+          x = rect.left + rect.width / 2;
+          y = rect.top + rect.height / 2;
+        } else if (event.target && typeof event.target.getBoundingClientRect === "function") {
+          const rect = event.target.getBoundingClientRect();
           x = rect.left + rect.width / 2;
           y = rect.top + rect.height / 2;
         }
@@ -78,8 +88,6 @@ export const ThemeProvider = ({ children }) => {
         Math.max(x, window.innerWidth - x),
         Math.max(y, window.innerHeight - y),
       );
-
-      const isGoingDark = nextTheme === "dark";
 
       const transition = document.startViewTransition(() => {
         commitTheme(nextTheme);
@@ -93,14 +101,12 @@ export const ThemeProvider = ({ children }) => {
 
         document.documentElement.animate(
           {
-            clipPath: isGoingDark ? clipPath : [...clipPath].reverse(),
+            clipPath: clipPath,
           },
           {
-            duration: 460,
+            duration: 440,
             easing: "cubic-bezier(0.22, 1, 0.36, 1)",
-            pseudoElement: isGoingDark
-              ? "::view-transition-new(root)"
-              : "::view-transition-old(root)",
+            pseudoElement: "::view-transition-new(root)",
           },
         );
       }).catch(() => {
