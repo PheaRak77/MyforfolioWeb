@@ -769,6 +769,31 @@ html {
     -webkit-backdrop-filter: none !important;
     box-shadow: none;
   }
+
+  /* Backdrop filters are the largest source of scroll jank on phones. Keep
+     the translucent card colours, but remove only the expensive sampling. */
+  .portfolio-page [class*="backdrop-blur"] {
+    backdrop-filter: none !important;
+    -webkit-backdrop-filter: none !important;
+  }
+
+  .portfolio-page .portfolio-scroll-card {
+    transition-property: opacity, transform, border-color !important;
+    transition-duration: 180ms !important;
+  }
+}
+
+/* Touch devices do not have hover. Avoid promoting every card/image into a
+   temporary animation layer while a visitor is scrolling. */
+@media (hover: none) {
+  .portfolio-page .portfolio-scroll-card:hover {
+    transform: none;
+    box-shadow: none;
+  }
+
+  .portfolio-page .portfolio-scroll-card:hover img {
+    transform: none;
+  }
 }
 
 /* Lighter ambient glows on mobile — blur is GPU-heavy */
