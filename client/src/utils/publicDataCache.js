@@ -1,4 +1,4 @@
-const CACHE_PREFIX = "portfolio_public_v2_";
+const CACHE_PREFIX = "portfolio_public_v3_";
 const DEFAULT_TTL_MS = 10 * 60 * 1000;
 
 const readCache = (key) => {
