@@ -33,12 +33,20 @@ export const ThemeProvider = ({ children }) => {
   }, [theme]);
 
   const toggleTheme = () => {
+    document.documentElement.classList.add("theme-transitioning");
     setThemeState((prev) => (prev === "dark" ? "light" : "dark"));
+    setTimeout(() => {
+      document.documentElement.classList.remove("theme-transitioning");
+    }, 300);
   };
 
   const setTheme = (newTheme) => {
     if (newTheme === "dark" || newTheme === "light") {
+      document.documentElement.classList.add("theme-transitioning");
       setThemeState(newTheme);
+      setTimeout(() => {
+        document.documentElement.classList.remove("theme-transitioning");
+      }, 300);
     }
   };
 

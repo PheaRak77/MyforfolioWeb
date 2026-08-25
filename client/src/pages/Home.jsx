@@ -74,6 +74,15 @@ const Home = () => {
     setTimeout(() => setCopiedField(""), 2500);
   };
 
+  const handleNavClick = (e, targetId) => {
+    e.preventDefault();
+    setMobileMenuOpen(false);
+    const element = document.querySelector(targetId);
+    if (element) {
+      element.scrollIntoView({ behavior: "smooth", block: "start" });
+    }
+  };
+
   const validateContact = () => {
     const errors = {};
     if (!contactForm.name.trim()) {
@@ -307,30 +316,35 @@ const Home = () => {
           <nav className="hidden lg:flex items-center gap-1.5 xl:gap-2 text-xs font-semibold text-neutral-600 dark:text-neutral-300">
             <a
               href="#about"
+              onClick={(e) => handleNavClick(e, "#about")}
               className="px-3.5 py-1.5 rounded-full hover:bg-black/5 dark:hover:bg-white/10 hover:text-neutral-900 dark:hover:text-white transition-all"
             >
               About
             </a>
             <a
               href="#skills"
+              onClick={(e) => handleNavClick(e, "#skills")}
               className="px-3.5 py-1.5 rounded-full hover:bg-black/5 dark:hover:bg-white/10 hover:text-neutral-900 dark:hover:text-white transition-all"
             >
               Skills ({skills.length})
             </a>
             <a
               href="#projects"
+              onClick={(e) => handleNavClick(e, "#projects")}
               className="px-3.5 py-1.5 rounded-full hover:bg-black/5 dark:hover:bg-white/10 hover:text-neutral-900 dark:hover:text-white transition-all"
             >
               Projects ({projects.length})
             </a>
             <a
               href="#certificates"
+              onClick={(e) => handleNavClick(e, "#certificates")}
               className="px-3.5 py-1.5 rounded-full hover:bg-black/5 dark:hover:bg-white/10 hover:text-neutral-900 dark:hover:text-white transition-all"
             >
               Certificates ({certificates.length})
             </a>
             <a
               href="#contact"
+              onClick={(e) => handleNavClick(e, "#contact")}
               className="px-3.5 py-1.5 rounded-full hover:bg-black/5 dark:hover:bg-white/10 hover:text-neutral-900 dark:hover:text-white transition-all"
             >
               Contact
@@ -441,7 +455,7 @@ const Home = () => {
             <nav className="flex flex-col space-y-2 text-sm font-semibold">
               <a
                 href="#about"
-                onClick={() => setMobileMenuOpen(false)}
+                onClick={(e) => handleNavClick(e, "#about")}
                 className="animate-menu-item-1 px-4 py-3 rounded-2xl text-neutral-800 dark:text-neutral-200 hover:bg-black/5 dark:hover:bg-white/10 transition-colors flex items-center justify-between"
               >
                 <span>About & Overview</span>
@@ -449,7 +463,7 @@ const Home = () => {
               </a>
               <a
                 href="#skills"
-                onClick={() => setMobileMenuOpen(false)}
+                onClick={(e) => handleNavClick(e, "#skills")}
                 className="animate-menu-item-2 px-4 py-3 rounded-2xl text-neutral-800 dark:text-neutral-200 hover:bg-black/5 dark:hover:bg-white/10 transition-colors flex items-center justify-between"
               >
                 <span>Skills & Technologies</span>
@@ -459,7 +473,7 @@ const Home = () => {
               </a>
               <a
                 href="#projects"
-                onClick={() => setMobileMenuOpen(false)}
+                onClick={(e) => handleNavClick(e, "#projects")}
                 className="animate-menu-item-3 px-4 py-3 rounded-2xl text-neutral-800 dark:text-neutral-200 hover:bg-black/5 dark:hover:bg-white/10 transition-colors flex items-center justify-between"
               >
                 <span>Featured Projects</span>
@@ -469,7 +483,7 @@ const Home = () => {
               </a>
               <a
                 href="#certificates"
-                onClick={() => setMobileMenuOpen(false)}
+                onClick={(e) => handleNavClick(e, "#certificates")}
                 className="animate-menu-item-4 px-4 py-3 rounded-2xl text-neutral-800 dark:text-neutral-200 hover:bg-black/5 dark:hover:bg-white/10 transition-colors flex items-center justify-between"
               >
                 <span>Certificates</span>
@@ -479,7 +493,7 @@ const Home = () => {
               </a>
               <a
                 href="#contact"
-                onClick={() => setMobileMenuOpen(false)}
+                onClick={(e) => handleNavClick(e, "#contact")}
                 className="animate-menu-item-5 px-4 py-3 rounded-2xl text-neutral-800 dark:text-neutral-200 hover:bg-black/5 dark:hover:bg-white/10 transition-colors flex items-center justify-between"
               >
                 <span>Contact Me</span>
