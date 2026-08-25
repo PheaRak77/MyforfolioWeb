@@ -61,6 +61,37 @@ html.theme-to-dark::after {
   );
 }
 
+/* Modern browsers reveal the next theme outward from the toggle that was
+   pressed. Browsers without the View Transitions API keep the soft fade above. */
+::view-transition-old(root),
+::view-transition-new(root) {
+  animation-duration: 0.56s;
+  animation-timing-function: cubic-bezier(0.22, 1, 0.36, 1);
+}
+
+html.theme-transitioning::view-transition-old(root) {
+  animation-name: none;
+  z-index: 1;
+}
+
+html.theme-transitioning::view-transition-new(root) {
+  z-index: 2;
+  animation-name: theme-reveal-from-toggle;
+}
+
+html.theme-to-dark::view-transition-new(root) {
+  animation-timing-function: cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+@keyframes theme-reveal-from-toggle {
+  from {
+    clip-path: circle(0 at var(--theme-reveal-x, 50vw) var(--theme-reveal-y, 50vh));
+  }
+  to {
+    clip-path: circle(150vmax at var(--theme-reveal-x, 50vw) var(--theme-reveal-y, 50vh));
+  }
+}
+
 @keyframes theme-sky-veil {
   0% {
     opacity: 0;
@@ -82,6 +113,10 @@ html.theme-to-dark::after {
   html.theme-veil-active::after {
     animation: none;
     content: none;
+  }
+
+  html.theme-transitioning::view-transition-new(root) {
+    animation: none;
   }
 }
 

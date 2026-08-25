@@ -1,4 +1,4 @@
-import { createContext, useCallback, useContext, useLayoutEffect, useState } from "react";
+import { createContext, useCallback, useContext, useLayoutEffect, useRef, useState } from "react";
 
 const ThemeContext = createContext();
 const STORAGE_KEY = "portfolio_theme";
@@ -35,6 +35,7 @@ function applyThemeToDocument(theme) {
 
 export const ThemeProvider = ({ children }) => {
   const [theme, setThemeState] = useState(readStoredTheme);
+  const cleanupTimer = useRef();
 
   useLayoutEffect(() => {
     applyThemeToDocument(theme);
@@ -45,24 +46,41 @@ export const ThemeProvider = ({ children }) => {
     setThemeState(nextTheme);
   };
 
-  const toggleTheme = useCallback(() => {
-    const nextTheme = theme === "dark" ? "light" : "dark";
+  const changeTheme = useCallback((nextTheme, trigger) => {
+    if (nextTheme === theme) return;
+
     const root = document.documentElement;
     const reduceMotion = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+
+    // Start the reveal at the control the visitor clicked. It also works for
+    // the Settings-row toggle, not only the icon in the navigation.
+    if (trigger?.currentTarget) {
+      const { left, top, width, height } = trigger.currentTarget.getBoundingClientRect();
+      root.style.setProperty("--theme-reveal-x", `${left + width / 2}px`);
+      root.style.setProperty("--theme-reveal-y", `${top + height / 2}px`);
+    }
 
     if (reduceMotion) {
       commitTheme(nextTheme);
       return;
     }
 
+    window.clearTimeout(cleanupTimer.current);
     root.classList.add("theme-transitioning");
     root.classList.toggle("theme-to-light", nextTheme === "light");
     root.classList.toggle("theme-to-dark", nextTheme === "dark");
     root.classList.add("theme-veil-active");
 
-    commitTheme(nextTheme);
+    const applyChange = () => commitTheme(nextTheme);
+    // View Transitions gives supported browsers a polished radial day/night
+    // reveal. The existing CSS colour fade remains the fallback everywhere else.
+    if (typeof document.startViewTransition === "function") {
+      document.startViewTransition(applyChange);
+    } else {
+      applyChange();
+    }
 
-    window.setTimeout(() => {
+    cleanupTimer.current = window.setTimeout(() => {
       root.classList.remove(
         "theme-transitioning",
         "theme-veil-active",
@@ -72,10 +90,14 @@ export const ThemeProvider = ({ children }) => {
     }, THEME_FADE_MS);
   }, [theme]);
 
+  const toggleTheme = useCallback(
+    (trigger) => changeTheme(theme === "dark" ? "light" : "dark", trigger),
+    [changeTheme, theme]
+  );
+
   const setTheme = (newTheme) => {
     if (newTheme !== "dark" && newTheme !== "light") return;
-    if (newTheme === theme) return;
-    toggleTheme();
+    changeTheme(newTheme);
   };
 
   return (
