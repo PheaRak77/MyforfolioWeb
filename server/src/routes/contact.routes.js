@@ -68,34 +68,28 @@ router.post("/", async (req, res, next) => {
       recipientEmail = rows[0]?.email;
     }
 
-    // 3. Send email notification if SMTP credentials are provided
-    let emailSent = false;
+    // 3. Dispatch email notification in background (non-blocking for lightning-fast user response)
     if (process.env.SMTP_EMAIL && process.env.SMTP_PASSWORD && recipientEmail) {
-      console.log(`[Contact] Sending notification from ${process.env.SMTP_EMAIL} to ${recipientEmail}...`);
-      try {
-        await sendContactEmail({
+      setImmediate(() => {
+        sendContactEmail({
           senderName: name.trim(),
           senderEmail: email.trim().toLowerCase(),
           subject: subject.trim(),
           message: message.trim(),
           recipientEmail,
-        });
-        emailSent = true;
-        console.log(`[Contact] ✅ Email delivered to ${recipientEmail} successfully!`);
-      } catch (emailErr) {
-        console.error("[Contact Email Error]:", emailErr.message);
-      }
-    } else {
-      console.log("[Contact] ⚠ SMTP credentials or recipient missing:", {
-        hasSmtpEmail: !!process.env.SMTP_EMAIL,
-        hasSmtpPassword: !!process.env.SMTP_PASSWORD,
-        recipientEmail,
+        })
+          .then(() => {
+            console.log(`[Contact] ✅ Background email delivered to ${recipientEmail} successfully!`);
+          })
+          .catch((emailErr) => {
+            console.error("[Contact Email Error]:", emailErr.message);
+          });
       });
     }
 
+    // 4. Return instant HTTP 200 response to client
     return res.json({
       success: true,
-      emailSent,
       message: "Message sent successfully! Thank you for reaching out.",
     });
   } catch (err) {

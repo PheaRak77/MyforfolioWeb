@@ -107,15 +107,15 @@ const authLimiter = rateLimit({
   },
 });
 
-// Contact form rate limiter — prevent spam
+// Contact form rate limiter — generous for testing while preventing bot floods
 const contactLimiter = rateLimit({
-  windowMs: 60 * 60 * 1000, // 1 hour
-  max: 5, // Max 5 contact form submissions per hour per IP
+  windowMs: 15 * 60 * 1000, // 15 minutes
+  max: 30, // Max 30 messages per 15 min per IP
   standardHeaders: true,
   legacyHeaders: false,
   message: {
     success: false,
-    message: "Too many messages sent. Please wait an hour before sending again.",
+    message: "Too many messages sent. Please wait a few minutes before sending again.",
   },
 });
 

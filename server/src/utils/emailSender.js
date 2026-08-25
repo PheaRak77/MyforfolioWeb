@@ -1,14 +1,23 @@
 const nodemailer = require("nodemailer");
 
-const createTransporter = () => {
+let transporterInstance = null;
+
+const getTransporter = () => {
+  if (transporterInstance) {
+    return transporterInstance;
+  }
+
   const email = (process.env.SMTP_EMAIL || "").trim();
   const rawPass = (process.env.SMTP_PASSWORD || "").trim();
   const pass = rawPass.replace(/\s+/g, ""); // Remove any spaces from app password
 
-  // If using Gmail, 'service: gmail' is the most reliable transport on cloud hosts (Render/Vercel/Heroku)
+  // If using Gmail, 'service: gmail' with connection pooling is the fastest and most reliable
   if (email.endsWith("@gmail.com") || (!process.env.SMTP_HOST && email.includes("@gmail"))) {
-    return nodemailer.createTransport({
+    transporterInstance = nodemailer.createTransport({
       service: "gmail",
+      pool: true, // Reuse open connections
+      maxConnections: 3,
+      maxMessages: 50,
       auth: {
         user: email,
         pass: pass,
@@ -17,13 +26,15 @@ const createTransporter = () => {
         rejectUnauthorized: false,
       },
     });
+    return transporterInstance;
   }
 
   // Generic SMTP fallback for custom domains / other providers
-  return nodemailer.createTransport({
+  transporterInstance = nodemailer.createTransport({
     host: process.env.SMTP_HOST || "smtp.gmail.com",
     port: parseInt(process.env.SMTP_PORT, 10) || 465,
     secure: (process.env.SMTP_PORT || "465") === "465",
+    pool: true,
     auth: {
       user: email,
       pass: pass,
@@ -31,10 +42,11 @@ const createTransporter = () => {
     tls: {
       rejectUnauthorized: false,
     },
-    connectionTimeout: 15000,
-    greetingTimeout: 15000,
-    socketTimeout: 20000,
+    connectionTimeout: 10000,
+    greetingTimeout: 10000,
+    socketTimeout: 15000,
   });
+  return transporterInstance;
 };
 
 /**
@@ -53,7 +65,7 @@ const sendContactEmail = async ({
   message,
   recipientEmail,
 }) => {
-  const mailTransporter = createTransporter();
+  const mailTransporter = getTransporter();
 
   const html = `
 <!DOCTYPE html>
