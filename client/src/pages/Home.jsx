@@ -272,32 +272,11 @@ const Home = () => {
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 h-16 sm:h-18 flex items-center justify-between gap-3 sm:gap-4">
           <a
             href="#hero"
-            className="flex items-center gap-3 group transition-transform hover:scale-105 flex-shrink-0"
+            className="flex items-center gap-2.5 group transition-transform hover:scale-105 flex-shrink-0"
           >
-            <div className="relative flex-shrink-0">
-              <div className="absolute -inset-1 bg-gradient-to-r from-amber-400 via-yellow-400 to-amber-500 rounded-full blur-sm opacity-70 group-hover:opacity-100 transition duration-300" />
-              {displayUser?.profile_image && !headerImgError ? (
-                <PortfolioImage
-                  src={displayUser.profile_image}
-                  alt={displayUser.name || "Portfolio"}
-                  variant="profile"
-                  onError={() => setHeaderImgError(true)}
-                  className="relative w-9 h-9 sm:w-10 sm:h-10 rounded-full object-cover ring-2 ring-amber-400/60 shadow-lg shadow-amber-500/20"
-                  fallback={
-                    <div className="relative w-9 h-9 sm:w-10 sm:h-10 rounded-full bg-gradient-to-tr from-amber-500 via-orange-500 to-yellow-500 flex items-center justify-center font-bold text-slate-900 shadow-md text-base ring-2 ring-amber-400/60">
-                      {displayUser?.name ? displayUser.name.charAt(0).toUpperCase() : "P"}
-                    </div>
-                  }
-                />
-              ) : (
-                <div className="relative w-9 h-9 sm:w-10 sm:h-10 rounded-full bg-gradient-to-tr from-amber-500 via-orange-500 to-yellow-500 flex items-center justify-center font-bold text-slate-900 shadow-md text-base ring-2 ring-amber-400/60">
-                  {displayUser?.name ? displayUser.name.charAt(0).toUpperCase() : "P"}
-                </div>
-              )}
-            </div>
             <div className="min-w-0 flex flex-col justify-center">
               <div className="flex items-center gap-1.5 min-w-0">
-                <span className="font-bold text-sm sm:text-base tracking-tight text-neutral-900 dark:text-white group-hover:text-amber-500 dark:group-hover:text-amber-300 transition-colors truncate max-w-[130px] sm:max-w-[170px]">
+                <span className="font-bold text-sm sm:text-base tracking-tight text-neutral-900 dark:text-white group-hover:text-amber-500 dark:group-hover:text-amber-300 transition-colors truncate max-w-[140px] sm:max-w-[200px]">
                   {displayUser?.name || "Yorn Pheareak"}
                 </span>
                 <VerifiedBadge size="sm" className="flex-shrink-0" />
@@ -2068,12 +2047,7 @@ const Home = () => {
           {/* Top Row: Brand + Nav */}
           <div className="flex flex-col md:flex-row items-center justify-between gap-6 pb-8 border-b border-slate-200/60 dark:border-slate-800/60">
             {/* Brand */}
-            <div className="flex items-center gap-3 group">
-              <img
-                src="/favicon.svg?v=2026_circle"
-                alt="RAK Logo"
-                className="w-10 h-10 rounded-full ring-2 ring-amber-400/50 shadow-md shadow-amber-500/20 object-cover"
-              />
+            <div className="flex items-center gap-2 group">
               <div>
                 <VerifiedName
                   name={displayUser?.name || "Yorn Pheareak"}
