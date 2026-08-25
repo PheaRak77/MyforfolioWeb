@@ -62,7 +62,7 @@ export default function ThemeToggle({
     return (
       <button
         type="button"
-        onClick={toggleTheme}
+        onClick={(e) => toggleTheme(e)}
         className={`w-full py-3 px-4 rounded-xl bg-black/[0.04] dark:bg-white/[0.06] hover:bg-black/[0.08] dark:hover:bg-white/[0.12] text-neutral-800 dark:text-neutral-200 text-xs font-semibold flex items-center justify-between border border-black/[0.06] dark:border-white/[0.08] active:scale-[0.98] transition-all duration-300 shadow-sm group ${className}`}
         aria-label="Toggle Dark and Light Mode"
       >
@@ -88,7 +88,7 @@ export default function ThemeToggle({
   return (
     <button
       type="button"
-      onClick={toggleTheme}
+      onClick={(e) => toggleTheme(e)}
       className={`relative group rounded-full bg-black/[0.04] hover:bg-black/[0.08] dark:bg-white/[0.08] dark:hover:bg-white/[0.14] border border-black/[0.06] dark:border-white/[0.12] transition-all duration-300 flex items-center justify-center shadow-sm active:scale-90 hover:scale-105 overflow-hidden ${
         sizeClasses[size] || sizeClasses.md
       } ${className}`}

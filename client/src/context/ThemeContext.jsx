@@ -47,42 +47,91 @@ export const ThemeProvider = ({ children }) => {
     setThemeState(nextTheme);
   };
 
-  const changeTheme = useCallback((nextTheme) => {
+  const changeTheme = useCallback((nextTheme, event) => {
     if (nextTheme === theme) return;
 
     const root = document.documentElement;
     const reduceMotion = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
-    const compactDevice = window.matchMedia("(max-width: 640px), (pointer: coarse)").matches;
-    const transitionDuration = compactDevice
-      ? COMPACT_THEME_FADE_MS
-      : DESKTOP_THEME_FADE_MS;
 
     if (reduceMotion) {
       commitTheme(nextTheme);
       return;
     }
 
+    // Modern View Transition API with circular reveal from click/touch coordinates
+    if (typeof document.startViewTransition === "function") {
+      let x = window.innerWidth / 2;
+      let y = window.innerHeight / 2;
+
+      if (event) {
+        if (event.clientX !== undefined && event.clientY !== undefined) {
+          x = event.clientX;
+          y = event.clientY;
+        } else if (event.currentTarget) {
+          const rect = event.currentTarget.getBoundingClientRect();
+          x = rect.left + rect.width / 2;
+          y = rect.top + rect.height / 2;
+        }
+      }
+
+      const endRadius = Math.hypot(
+        Math.max(x, window.innerWidth - x),
+        Math.max(y, window.innerHeight - y),
+      );
+
+      const isGoingDark = nextTheme === "dark";
+
+      const transition = document.startViewTransition(() => {
+        commitTheme(nextTheme);
+      });
+
+      transition.ready.then(() => {
+        const clipPath = [
+          `circle(0px at ${x}px ${y}px)`,
+          `circle(${endRadius}px at ${x}px ${y}px)`,
+        ];
+
+        document.documentElement.animate(
+          {
+            clipPath: isGoingDark ? clipPath : [...clipPath].reverse(),
+          },
+          {
+            duration: 460,
+            easing: "cubic-bezier(0.22, 1, 0.36, 1)",
+            pseudoElement: isGoingDark
+              ? "::view-transition-new(root)"
+              : "::view-transition-old(root)",
+          },
+        );
+      }).catch(() => {
+        commitTheme(nextTheme);
+      });
+      return;
+    }
+
+    // Hardware-accelerated fallback for browsers without View Transition API
+    const compactDevice = window.matchMedia("(max-width: 640px), (pointer: coarse)").matches;
+    const transitionDuration = compactDevice
+      ? COMPACT_THEME_FADE_MS
+      : DESKTOP_THEME_FADE_MS;
+
     window.clearTimeout(cleanupTimer.current);
     root.classList.add("theme-transitioning");
-    // Keep the transition focused on the actual UI colours—no screen flash or
-    // extra overlay—so switching themes feels immediate and natural.
     commitTheme(nextTheme);
 
     cleanupTimer.current = window.setTimeout(() => {
-      root.classList.remove(
-        "theme-transitioning"
-      );
+      root.classList.remove("theme-transitioning");
     }, transitionDuration);
   }, [theme]);
 
   const toggleTheme = useCallback(
-    () => changeTheme(theme === "dark" ? "light" : "dark"),
+    (event) => changeTheme(theme === "dark" ? "light" : "dark", event),
     [changeTheme, theme]
   );
 
-  const setTheme = (newTheme) => {
+  const setTheme = (newTheme, event) => {
     if (newTheme !== "dark" && newTheme !== "light") return;
-    changeTheme(newTheme);
+    changeTheme(newTheme, event);
   };
 
   return (

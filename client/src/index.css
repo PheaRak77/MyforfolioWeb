@@ -24,27 +24,56 @@ body {
   overflow-x: hidden;
 }
 
-/* Direct day/night colour morph — quick and calm, with no screen flash. */
-.theme-transitioning,
-.theme-transitioning * {
-  transition: background-color var(--theme-transition-duration) cubic-bezier(0.25, 1, 0.5, 1),
-              border-color var(--theme-transition-duration) cubic-bezier(0.25, 1, 0.5, 1),
-              color var(--theme-transition-duration) cubic-bezier(0.25, 1, 0.5, 1),
-              box-shadow var(--theme-transition-duration) cubic-bezier(0.25, 1, 0.5, 1),
-              fill var(--theme-transition-duration) cubic-bezier(0.25, 1, 0.5, 1),
-              stroke var(--theme-transition-duration) cubic-bezier(0.25, 1, 0.5, 1) !important;
+/* =====================================================
+   VIEW TRANSITION API (Ultra-Smooth Circular Theme Reveal)
+   ===================================================== */
+::view-transition-old(root),
+::view-transition-new(root) {
+  animation: none;
+  mix-blend-mode: normal;
 }
 
-/* Touch devices benefit from a shorter transition: it feels immediate and
-   avoids unnecessary paint work on smaller screens. */
+::view-transition-old(root) {
+  z-index: 1;
+}
+::view-transition-new(root) {
+  z-index: 99999;
+}
+
+.dark::view-transition-old(root) {
+  z-index: 99999;
+}
+.dark::view-transition-new(root) {
+  z-index: 1;
+}
+
+/* Fallback smooth color morph for devices / browsers without View Transitions */
+.theme-transitioning,
+.theme-transitioning body,
+.theme-transitioning header,
+.theme-transitioning nav,
+.theme-transitioning section,
+.theme-transitioning main,
+.theme-transitioning footer,
+.theme-transitioning div,
+.theme-transitioning a,
+.theme-transitioning button,
+.theme-transitioning p,
+.theme-transitioning h1,
+.theme-transitioning h2,
+.theme-transitioning h3,
+.theme-transitioning span,
+.theme-transitioning input,
+.theme-transitioning textarea {
+  transition: background-color var(--theme-transition-duration) cubic-bezier(0.22, 1, 0.36, 1),
+              border-color var(--theme-transition-duration) cubic-bezier(0.22, 1, 0.36, 1),
+              color var(--theme-transition-duration) cubic-bezier(0.22, 1, 0.36, 1),
+              box-shadow var(--theme-transition-duration) cubic-bezier(0.22, 1, 0.36, 1) !important;
+}
+
 @media (max-width: 640px), (pointer: coarse) {
   html {
-    --theme-transition-duration: 260ms;
-  }
-
-  .theme-transitioning,
-  .theme-transitioning * {
-    transition-property: background-color, border-color, color, fill, stroke !important;
+    --theme-transition-duration: 280ms;
   }
 }
 
@@ -53,7 +82,6 @@ body {
   .theme-transitioning * {
     transition: none !important;
   }
-
 }
 
 /* GPU Accelerated Smooth Composite Layer for 60-120FPS rendering */
