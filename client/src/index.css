@@ -3,6 +3,7 @@
 @tailwind utilities;
 
 html {
+  --theme-transition-duration: 380ms;
   scroll-behavior: smooth;
   text-rendering: optimizeLegibility;
   -webkit-font-smoothing: antialiased;
@@ -26,12 +27,25 @@ body {
 /* Direct day/night colour morph — quick and calm, with no screen flash. */
 .theme-transitioning,
 .theme-transitioning * {
-  transition: background-color 0.38s cubic-bezier(0.25, 1, 0.5, 1),
-              border-color 0.38s cubic-bezier(0.25, 1, 0.5, 1),
-              color 0.38s cubic-bezier(0.25, 1, 0.5, 1),
-              box-shadow 0.38s cubic-bezier(0.25, 1, 0.5, 1),
-              fill 0.38s cubic-bezier(0.25, 1, 0.5, 1),
-              stroke 0.38s cubic-bezier(0.25, 1, 0.5, 1) !important;
+  transition: background-color var(--theme-transition-duration) cubic-bezier(0.25, 1, 0.5, 1),
+              border-color var(--theme-transition-duration) cubic-bezier(0.25, 1, 0.5, 1),
+              color var(--theme-transition-duration) cubic-bezier(0.25, 1, 0.5, 1),
+              box-shadow var(--theme-transition-duration) cubic-bezier(0.25, 1, 0.5, 1),
+              fill var(--theme-transition-duration) cubic-bezier(0.25, 1, 0.5, 1),
+              stroke var(--theme-transition-duration) cubic-bezier(0.25, 1, 0.5, 1) !important;
+}
+
+/* Touch devices benefit from a shorter transition: it feels immediate and
+   avoids unnecessary paint work on smaller screens. */
+@media (max-width: 640px), (pointer: coarse) {
+  html {
+    --theme-transition-duration: 260ms;
+  }
+
+  .theme-transitioning,
+  .theme-transitioning * {
+    transition-property: background-color, border-color, color, fill, stroke !important;
+  }
 }
 
 @media (prefers-reduced-motion: reduce) {

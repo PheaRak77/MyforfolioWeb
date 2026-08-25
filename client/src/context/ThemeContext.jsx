@@ -2,7 +2,8 @@ import { createContext, useCallback, useContext, useLayoutEffect, useRef, useSta
 
 const ThemeContext = createContext();
 const STORAGE_KEY = "portfolio_theme";
-const THEME_FADE_MS = 380;
+const DESKTOP_THEME_FADE_MS = 380;
+const COMPACT_THEME_FADE_MS = 260;
 
 function readStoredTheme() {
   try {
@@ -51,6 +52,10 @@ export const ThemeProvider = ({ children }) => {
 
     const root = document.documentElement;
     const reduceMotion = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+    const compactDevice = window.matchMedia("(max-width: 640px), (pointer: coarse)").matches;
+    const transitionDuration = compactDevice
+      ? COMPACT_THEME_FADE_MS
+      : DESKTOP_THEME_FADE_MS;
 
     if (reduceMotion) {
       commitTheme(nextTheme);
@@ -67,7 +72,7 @@ export const ThemeProvider = ({ children }) => {
       root.classList.remove(
         "theme-transitioning"
       );
-    }, THEME_FADE_MS);
+    }, transitionDuration);
   }, [theme]);
 
   const toggleTheme = useCallback(
