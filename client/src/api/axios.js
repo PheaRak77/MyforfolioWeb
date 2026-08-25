@@ -27,18 +27,20 @@ api.interceptors.request.use(
       config.headers.Authorization = `Bearer ${token}`;
     }
 
-    activeRequests++;
-    if (activeRequests === 1) {
-      // If a request takes > 2500ms, trigger slow network animation
-      slowTimer = setTimeout(() => {
-        if (activeRequests > 0) {
-          window.dispatchEvent(
-            new CustomEvent("app:slow-network", {
-              detail: { message: "Cloud server is waking up or connection is slow..." },
-            })
-          );
-        }
-      }, 2500);
+    if (!config.silent && !config.url?.includes("/contact") && !config.url?.includes("/health")) {
+      activeRequests++;
+      if (activeRequests === 1) {
+        // If a request takes > 4000ms, trigger slow network animation
+        slowTimer = setTimeout(() => {
+          if (activeRequests > 0) {
+            window.dispatchEvent(
+              new CustomEvent("app:slow-network", {
+                detail: { message: "Cloud server is waking up or connection is slow..." },
+              })
+            );
+          }
+        }, 4000);
+      }
     }
 
     return config;

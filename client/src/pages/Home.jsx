@@ -111,6 +111,11 @@ const Home = () => {
     return Object.keys(errors).length === 0;
   };
 
+  const handleContactFocus = () => {
+    // Silently pre-warm Render API when user starts typing
+    publicApi.get("/health").catch(() => {});
+  };
+
   const handleContactSubmit = async (e) => {
     e.preventDefault();
     if (!validateContact()) return;
@@ -119,7 +124,7 @@ const Home = () => {
     setContactApiError("");
 
     try {
-      const { data } = await api.post("/contact", {
+      const { data } = await publicApi.post("/contact", {
         name: contactForm.name.trim(),
         email: contactForm.email.trim(),
         subject: contactForm.subject.trim(),
@@ -2031,6 +2036,7 @@ const Home = () => {
                         <input
                           type="text"
                           value={contactForm.name}
+                          onFocus={handleContactFocus}
                           onChange={(e) => {
                             setContactForm({
                               ...contactForm,
@@ -2060,6 +2066,7 @@ const Home = () => {
                         <input
                           type="email"
                           value={contactForm.email}
+                          onFocus={handleContactFocus}
                           onChange={(e) => {
                             setContactForm({
                               ...contactForm,
@@ -2090,6 +2097,7 @@ const Home = () => {
                       <input
                         type="text"
                         value={contactForm.subject}
+                        onFocus={handleContactFocus}
                         onChange={(e) => {
                           setContactForm({
                             ...contactForm,
@@ -2119,6 +2127,7 @@ const Home = () => {
                       <textarea
                         rows={3}
                         value={contactForm.message}
+                        onFocus={handleContactFocus}
                         onChange={(e) => {
                           setContactForm({
                             ...contactForm,
