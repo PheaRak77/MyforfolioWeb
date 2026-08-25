@@ -2067,9 +2067,36 @@ const Home = () => {
       </main>
 
       {/* FOOTER */}
-      <footer className="border-t border-slate-200/80 dark:border-slate-800/80 bg-white/80 dark:bg-[#070b14]/90 backdrop-blur-xl py-8 pb-safe-bottom text-center text-slate-500 dark:text-slate-400 text-sm transition-colors duration-300">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 flex flex-col sm:flex-row items-center justify-between gap-4">
-          <p className="flex items-center justify-center sm:justify-start gap-1.5 flex-wrap">
+      <footer className="border-t border-slate-200/80 dark:border-slate-800/80 bg-white/80 dark:bg-[#070b14]/90 backdrop-blur-xl py-12 sm:py-16 pb-safe-bottom text-center text-slate-500 dark:text-slate-400 text-sm transition-colors duration-300">
+        <div className="max-w-4xl mx-auto px-4 sm:px-6 flex flex-col items-center justify-center gap-5 text-center">
+          {/* Centered Action Links */}
+          <div className="flex flex-wrap items-center justify-center gap-2.5 sm:gap-4 text-xs font-semibold text-neutral-600 dark:text-neutral-300">
+            <button
+              type="button"
+              onClick={() => setCvModalOpen(true)}
+              className="px-4 py-2 rounded-full bg-gradient-to-r from-amber-400/20 via-yellow-400/20 to-amber-500/20 border border-amber-400/30 text-amber-600 dark:text-amber-300 hover:scale-105 transition-all font-bold shadow-sm"
+            >
+              Look CV
+            </button>
+            <a
+              href="#hero"
+              onClick={(e) => handleNavClick(e, "#hero")}
+              className="px-4 py-2 rounded-full bg-black/5 dark:bg-white/10 hover:bg-black/10 dark:hover:bg-white/15 hover:text-slate-900 dark:hover:text-white transition-all"
+            >
+              Back to top &uarr;
+            </a>
+            {!isAuthenticated && (
+              <Link
+                to="/login"
+                className="px-4 py-2 rounded-full bg-black/5 dark:bg-white/10 hover:bg-black/10 dark:hover:bg-white/15 hover:text-amber-600 dark:hover:text-amber-400 transition-all text-neutral-600 dark:text-neutral-400"
+              >
+                Admin Sign In
+              </Link>
+            )}
+          </div>
+
+          {/* Centered Copyright & Verified Name */}
+          <p className="flex items-center justify-center gap-1.5 flex-wrap text-xs sm:text-sm text-neutral-500 dark:text-neutral-400">
             <span>&copy; {new Date().getFullYear()}</span>
             <VerifiedName
               name={displayUser?.name || "Yorn Pheareak"}
@@ -2078,30 +2105,6 @@ const Home = () => {
             />
             <span>. All rights reserved.</span>
           </p>
-          <div className="flex items-center gap-4 text-xs font-semibold">
-            <button
-              type="button"
-              onClick={() => setCvModalOpen(true)}
-              className="text-amber-600 dark:text-amber-400 hover:underline font-bold"
-            >
-              Look CV
-            </button>
-            <a
-              href="#hero"
-              onClick={(e) => handleNavClick(e, "#hero")}
-              className="hover:text-slate-900 dark:hover:text-white transition-colors"
-            >
-              Back to top &uarr;
-            </a>
-            {!isAuthenticated && (
-              <Link
-                to="/login"
-                className="hover:text-amber-600 dark:text-amber-400 transition-colors"
-              >
-                Admin Sign In
-              </Link>
-            )}
-          </div>
         </div>
       </footer>
 
