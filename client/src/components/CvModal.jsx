@@ -78,7 +78,7 @@ export default function CvModal({ isOpen, onClose }) {
             download="Yorn_Pheareak_CV.pdf"
             target="_blank"
             rel="noopener noreferrer"
-            className="inline-flex items-center gap-2 px-4 sm:px-5 py-2.5 rounded-xl bg-gradient-to-r from-blue-600 via-indigo-600 to-purple-600 hover:from-blue-500 hover:to-indigo-500 text-white text-xs sm:text-sm font-bold shadow-lg shadow-blue-500/30 transition-all hover:scale-[1.02] active:scale-[0.98]"
+            className="inline-flex items-center gap-2 px-3.5 sm:px-5 py-2.5 rounded-xl bg-gradient-to-r from-amber-400 via-yellow-400 to-amber-500 hover:from-amber-300 hover:to-yellow-300 text-slate-950 text-xs sm:text-sm font-bold shadow-lg shadow-amber-500/25 transition-all hover:scale-[1.02] active:scale-[0.98]"
           >
             <svg
               className="w-4 h-4"
@@ -89,11 +89,22 @@ export default function CvModal({ isOpen, onClose }) {
               <path
                 strokeLinecap="round"
                 strokeLinejoin="round"
-                strokeWidth={2}
+                strokeWidth={2.2}
                 d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-4l-4 4m0 0l-4-4m4 4V4"
               />
             </svg>
-            <span>Download CV</span>
+            <span>Download PDF</span>
+          </a>
+
+          <a
+            href="/Yorn_Pheareak_CV.png"
+            download="Yorn_Pheareak_CV_HQ.png"
+            target="_blank"
+            rel="noopener noreferrer"
+            className="hidden sm:inline-flex items-center gap-2 px-4 py-2.5 rounded-xl bg-slate-800 hover:bg-slate-700 text-slate-200 hover:text-white border border-slate-700 text-xs sm:text-sm font-semibold transition-all hover:scale-[1.02] active:scale-[0.98]"
+            title="Download Ultra HD PNG (300 DPI)"
+          >
+            <span>PNG (HD)</span>
           </a>
 
           <button
@@ -120,11 +131,12 @@ export default function CvModal({ isOpen, onClose }) {
         </div>
       </div>
 
-      {/* Full-Size CV Document Sheet */}
+      {/* Full-Size CV Document Sheet with Retina/HD srcSet */}
       <div className="w-full max-w-4xl mb-8 flex justify-center">
         <div className="w-full bg-white rounded-2xl sm:rounded-3xl shadow-2xl shadow-black/80 overflow-hidden border border-slate-700/80 ring-1 ring-white/10">
           <img
             src={cvDocumentImg}
+            srcSet={`${cvDocumentImg} 1x, /Yorn_Pheareak_CV.png 2x`}
             alt="Yorn Pheareak Official CV"
             className="w-full h-auto object-contain block select-none"
             loading="eager"
@@ -137,7 +149,7 @@ export default function CvModal({ isOpen, onClose }) {
         <a
           href="/Yorn_Pheareak_CV.pdf"
           download="Yorn_Pheareak_CV.pdf"
-          className="px-6 py-3 rounded-2xl bg-gradient-to-r from-blue-600 via-indigo-600 to-purple-600 hover:from-blue-500 hover:to-indigo-500 text-white font-bold text-sm shadow-2xl shadow-blue-500/40 border border-white/20 transition-all hover:scale-105 active:scale-95 flex items-center gap-2.5"
+          className="px-6 py-3 rounded-2xl bg-gradient-to-r from-amber-400 via-yellow-400 to-amber-500 hover:from-amber-300 hover:to-yellow-300 text-slate-950 font-bold text-sm shadow-2xl shadow-amber-500/30 border border-amber-300/30 transition-all hover:scale-105 active:scale-95 flex items-center gap-2.5"
         >
           <svg
             className="w-5 h-5"
@@ -148,11 +160,18 @@ export default function CvModal({ isOpen, onClose }) {
             <path
               strokeLinecap="round"
               strokeLinejoin="round"
-              strokeWidth={2}
+              strokeWidth={2.2}
               d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-4l-4 4m0 0l-4-4m4 4V4"
             />
           </svg>
           <span>Download CV (PDF)</span>
+        </a>
+        <a
+          href="/Yorn_Pheareak_CV.png"
+          download="Yorn_Pheareak_CV_HQ.png"
+          className="hidden sm:inline-flex px-4 py-3 rounded-2xl bg-slate-900/90 hover:bg-slate-800 text-slate-200 font-semibold text-sm border border-slate-700 shadow-xl backdrop-blur-xl transition-all"
+        >
+          PNG (300 DPI)
         </a>
         <button
           type="button"
