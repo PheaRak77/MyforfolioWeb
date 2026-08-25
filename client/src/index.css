@@ -765,15 +765,6 @@ html {
   transform: translateZ(0);
 }
 
-/* Long project, skill, and certificate grids are expensive when every card is
-   painted during a quick scroll. Let the browser skip cards outside the view. */
-@supports (content-visibility: auto) {
-  .portfolio-scroll-card {
-    content-visibility: auto;
-    contain-intrinsic-size: auto 440px;
-  }
-}
-
 /* Keep decorative motion inexpensive on small/touch screens. The design stays
    intact, but avoids continuously compositing large blurred layers. */
 @media (max-width: 640px), (pointer: coarse) {
