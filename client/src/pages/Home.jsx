@@ -166,6 +166,29 @@ const Home = () => {
           setProjects(portfolio.projects ?? []);
           setCertificates(portfolio.certificates ?? []);
           setSkills(portfolio.skills ?? []);
+        } else {
+          // Keep the public site compatible until the Render service receives
+          // the matching server deployment. Once /portfolio is available this
+          // fallback is not requested at all.
+          const legacy = await fetchPublicPortfolioData(publicApi, {
+            profile: "/users/public-profile",
+            projects: "/projects",
+            certificates: "/certificates",
+            skills: "/skills",
+          });
+
+          if (legacy.profile?.status === "fulfilled") {
+            setProfile(legacy.profile.value.data?.user ?? null);
+          }
+          if (legacy.projects?.status === "fulfilled") {
+            setProjects(legacy.projects.value.data?.projects ?? []);
+          }
+          if (legacy.certificates?.status === "fulfilled") {
+            setCertificates(legacy.certificates.value.data?.certificates ?? []);
+          }
+          if (legacy.skills?.status === "fulfilled") {
+            setSkills(legacy.skills.value.data?.skills ?? []);
+          }
         }
       } catch (err) {
         console.error("Error loading portfolio data:", err);
