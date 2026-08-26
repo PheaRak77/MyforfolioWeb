@@ -37,6 +37,7 @@ function applyThemeToDocument(theme) {
 export const ThemeProvider = ({ children }) => {
   const [theme, setThemeState] = useState(readStoredTheme);
   const cleanupTimer = useRef();
+  const lastSwitchTimeRef = useRef(0);
 
   useLayoutEffect(() => {
     applyThemeToDocument(theme);
@@ -50,29 +51,38 @@ export const ThemeProvider = ({ children }) => {
   const changeTheme = useCallback((nextTheme, event) => {
     if (nextTheme === theme) return;
 
+    // Rate-limit fast spamming to prevent rapid click state collisions during scrolling
+    const now = Date.now();
+    if (now - lastSwitchTimeRef.current < 200) return;
+    lastSwitchTimeRef.current = now;
+
     const root = document.documentElement;
     const reduceMotion = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+    const isMobile =
+      window.innerWidth < 768 ||
+      window.matchMedia("(pointer: coarse)").matches ||
+      /iPhone|iPad|iPod|Android/i.test(navigator.userAgent);
 
     if (reduceMotion) {
       commitTheme(nextTheme);
       return;
     }
 
-    // Modern View Transition API
+    // On mobile smartphones / touch devices: Use lightweight, 100% glitch-free CSS color transition.
+    // This avoids mobile WebKit snapshot tile artifacts (black box glitch) during fast scrolling.
+    if (isMobile) {
+      window.clearTimeout(cleanupTimer.current);
+      root.classList.add("theme-transitioning");
+      commitTheme(nextTheme);
+
+      cleanupTimer.current = window.setTimeout(() => {
+        root.classList.remove("theme-transitioning");
+      }, COMPACT_THEME_FADE_MS);
+      return;
+    }
+
+    // On Desktop: Use modern View Transition API with circular ripple bloom from cursor
     if (typeof document.startViewTransition === "function") {
-      const isMobile =
-        window.innerWidth < 768 ||
-        window.matchMedia("(pointer: coarse)").matches;
-
-      // On mobile / touch devices: use ultra-smooth native GPU cross-fade
-      if (isMobile) {
-        document.startViewTransition(() => {
-          commitTheme(nextTheme);
-        });
-        return;
-      }
-
-      // On desktop: use full circular ripple bloom from cursor
       let x = window.innerWidth / 2;
       let y = window.innerHeight / 2;
 
@@ -118,11 +128,8 @@ export const ThemeProvider = ({ children }) => {
       return;
     }
 
-    // Hardware-accelerated fallback for browsers without View Transition API
-    const compactDevice = window.matchMedia("(max-width: 640px), (pointer: coarse)").matches;
-    const transitionDuration = compactDevice
-      ? COMPACT_THEME_FADE_MS
-      : DESKTOP_THEME_FADE_MS;
+    // Hardware-accelerated fallback for older desktop browsers
+    const transitionDuration = DESKTOP_THEME_FADE_MS;
 
     window.clearTimeout(cleanupTimer.current);
     root.classList.add("theme-transitioning");
