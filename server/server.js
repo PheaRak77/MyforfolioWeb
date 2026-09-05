@@ -43,7 +43,7 @@ app.use(
         styleSrc: ["'self'", "'unsafe-inline'", "https://fonts.googleapis.com"],
         fontSrc: ["'self'", "https://fonts.gstatic.com"],
         imgSrc: ["'self'", "data:", "blob:", "https:", "http:"],
-        connectSrc: ["'self'", process.env.CLIENT_URL || "http://localhost:5173"],
+        connectSrc: ["'self'", process.env.CLIENT_URL || "http://localhost:5173", "https://ypheareak.site", "https://www.ypheareak.site"],
         frameSrc: ["'none'"],
         objectSrc: ["'none'"],
         upgradeInsecureRequests: process.env.NODE_ENV === "production" ? [] : null,
@@ -73,13 +73,25 @@ const allowedOrigins = [
   "http://localhost:5173",
   "http://127.0.0.1:5173",
   "https://myportfolio-web-xi.vercel.app",
+  "https://ypheareak.site",
+  "https://www.ypheareak.site",
+  "http://ypheareak.site",
+  "http://www.ypheareak.site",
 ].filter(Boolean);
+
+const isAllowedOrigin = (origin) => {
+  if (!origin) return true;
+  if (allowedOrigins.includes(origin)) return true;
+  if (/^https?:\/\/([a-z0-9-]+\.)*ypheareak\.site$/i.test(origin)) return true;
+  if (/^https?:\/\/([a-z0-9-]+\.)*vercel\.app$/i.test(origin)) return true;
+  return false;
+};
 
 app.use(
   cors({
     origin: (origin, callback) => {
       // Allow no-origin requests (mobile apps, health checks) and whitelisted origins
-      if (!origin || allowedOrigins.includes(origin)) {
+      if (isAllowedOrigin(origin)) {
         callback(null, true);
       } else {
         callback(new Error(`CORS policy: origin '${origin}' not allowed`));
