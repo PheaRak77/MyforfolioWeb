@@ -305,12 +305,12 @@ const Home = () => {
   );
 
   return (
-    <div className="portfolio-page relative min-h-screen bg-slate-50 text-slate-900 dark:bg-[#070b14] dark:text-slate-100 selection:bg-amber-400 selection:text-black font-sans antialiased overflow-x-clip">
+    <div className="portfolio-page relative min-h-screen bg-slate-50 text-slate-900 dark:bg-[#070b14] dark:text-slate-100 selection:bg-amber-400 selection:text-black font-sans antialiased overflow-x-clip pt-16 sm:pt-[4.5rem]">
       {/* Motion-style Parametric Matrix Wave & Ambient Aurora Glow */}
       <MotionBackground />
 
       {/* Top Apple-Style Glassmorphic Navigation Bar */}
-      <header className="sticky top-0 z-40 w-full apple-nav-blur bg-white/75 dark:bg-[#070b14]/75 border-b border-black/[0.06] dark:border-white/[0.08] pt-safe-top shadow-sm">
+      <header className="fixed inset-x-0 top-0 z-40 w-full apple-nav-blur bg-white/90 dark:bg-[#070b14]/90 border-b border-black/[0.06] dark:border-white/[0.08] pt-safe-top shadow-sm">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 h-16 sm:h-18 flex items-center justify-between gap-3 sm:gap-4">
           <a
             href="#hero"
