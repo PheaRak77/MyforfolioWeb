@@ -662,6 +662,15 @@ body {
   background-size: 32px 32px;
 }
 
+/* Binary Code Matrix Background Utility */
+.bg-binary-code {
+  background-color: #fafafa;
+}
+
+.dark .bg-binary-code {
+  background-color: #070b14;
+}
+
 /* Glassmorphism gradient cards */
 .glass-gradient-card {
   background: linear-gradient(135deg, rgba(255, 255, 255, 0.8) 0%, rgba(255, 255, 255, 0.5) 100%);
