@@ -8,6 +8,7 @@ import { getSkillIconUrl } from "../utils/skillIcons";
 const SkillBar = memo(function SkillBar({ skill, index, isRevealed }) {
   const [iconError, setIconError] = useState(false);
   const iconUrl = !iconError ? getSkillIconUrl(skill.name, skill.icon) : null;
+  const isSimpleIcon = Boolean(iconUrl && iconUrl.includes("simple-icons"));
 
   return (
     <div
@@ -28,9 +29,12 @@ const SkillBar = memo(function SkillBar({ skill, index, isRevealed }) {
               <img
                 src={iconUrl}
                 alt={skill.name}
-                className="w-full h-full max-w-[24px] max-h-[24px] sm:max-w-[28px] sm:max-h-[28px] object-contain dark:invert dark:brightness-200"
+                className={`w-full h-full max-w-[24px] max-h-[24px] sm:max-w-[28px] sm:max-h-[28px] object-contain ${
+                  isSimpleIcon ? "dark:invert dark:brightness-200" : ""
+                }`}
                 loading="lazy"
                 decoding="async"
+                referrerPolicy="no-referrer"
                 onError={() => setIconError(true)}
               />
             ) : (

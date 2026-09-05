@@ -42,7 +42,7 @@ app.use(
         scriptSrc: ["'self'", "'unsafe-inline'"],
         styleSrc: ["'self'", "'unsafe-inline'", "https://fonts.googleapis.com"],
         fontSrc: ["'self'", "https://fonts.gstatic.com"],
-        imgSrc: ["'self'", "data:", "https://res.cloudinary.com", "https://lh3.googleusercontent.com", "blob:"],
+        imgSrc: ["'self'", "data:", "blob:", "https:", "http:"],
         connectSrc: ["'self'", process.env.CLIENT_URL || "http://localhost:5173"],
         frameSrc: ["'none'"],
         objectSrc: ["'none'"],

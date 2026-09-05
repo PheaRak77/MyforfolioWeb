@@ -253,7 +253,15 @@ const Skills = () => {
                   />
                   {form.icon && (
                     <div className="w-11 h-11 p-1.5 rounded-xl border border-slate-800 bg-slate-950 flex items-center justify-center flex-shrink-0">
-                      <img src={form.icon} alt="" className="w-full h-full object-contain" />
+                      <img
+                        src={form.icon}
+                        alt=""
+                        className="w-full h-full object-contain"
+                        referrerPolicy="no-referrer"
+                        onError={(e) => {
+                          e.currentTarget.style.opacity = "0.3";
+                        }}
+                      />
                     </div>
                   )}
                 </div>
@@ -399,7 +407,21 @@ const Skills = () => {
                         <div className="flex items-center gap-3">
                           {skill.icon ? (
                             <div className="w-10 h-10 p-1.5 rounded-xl border border-slate-800 bg-slate-950 flex items-center justify-center flex-shrink-0 group-hover:scale-105 transition-transform">
-                              <img src={skill.icon} alt={skill.name} className="w-full h-full object-contain" />
+                              <img
+                                src={skill.icon}
+                                alt={skill.name}
+                                className="w-full h-full object-contain"
+                                referrerPolicy="no-referrer"
+                                onError={(e) => {
+                                  e.currentTarget.style.display = "none";
+                                  if (e.currentTarget.nextSibling) {
+                                    e.currentTarget.nextSibling.style.display = "flex";
+                                  }
+                                }}
+                              />
+                              <span className="text-blue-400 font-bold text-xs select-none hidden items-center justify-center w-full h-full">
+                                {skill.name?.charAt(0)}
+                              </span>
                             </div>
                           ) : (
                             <div className="w-10 h-10 rounded-xl bg-blue-500/10 text-blue-400 border border-blue-500/20 font-bold flex items-center justify-center flex-shrink-0">
