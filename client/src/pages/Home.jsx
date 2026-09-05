@@ -747,47 +747,47 @@ const Home = () => {
             </div>
           </div>
 
-          {/* Right Circular Avatar Showcase with Rotating Animated Ring */}
+          {/* Right Parallelogram Avatar Showcase (Matching user reference) */}
           <div className="flex-shrink-0 z-10 animate-hero-avatar relative">
             <div className="relative group flex items-center justify-center">
               {/* Full Ambient Golden / Yellow Halo Bloom */}
-              <div className="absolute -inset-6 rounded-full bg-gradient-to-tr from-amber-400/50 via-yellow-400/40 to-amber-500/30 blur-3xl opacity-80 group-hover:opacity-100 group-hover:blur-3xl transition duration-700 pointer-events-none" />
+              <div className="absolute -inset-6 -skew-x-[14deg] rounded-3xl bg-gradient-to-tr from-amber-400/40 via-yellow-400/30 to-amber-500/20 blur-3xl opacity-80 group-hover:opacity-100 transition duration-700 pointer-events-none" />
 
-              {/* Rotating Iridescent Outer Ring */}
-              <div className="absolute -inset-2 rounded-full bg-gradient-to-tr from-amber-400 via-yellow-300 via-indigo-500 to-fuchsia-500 animate-spin-ring opacity-90 group-hover:opacity-100 transition duration-500" />
-
-              {/* Secondary Inner Background Ring */}
-              <div className="absolute -inset-0.5 rounded-full bg-white dark:bg-[#070b14]" />
-
-              {/* Circular Avatar Container */}
-              <div className="relative w-64 h-64 sm:w-80 sm:h-80 md:w-96 md:h-96 lg:w-[26rem] lg:h-[26rem] xl:w-[28rem] xl:h-[28rem] rounded-full overflow-hidden bg-slate-900 border-2 border-white/40 dark:border-slate-700/80 flex items-center justify-center shadow-2xl group-hover:scale-[1.02] transition-transform duration-500">
-                {displayUser?.profile_image && !profileImgError ? (
-                  <PortfolioImage
-                    src={displayUser.profile_image}
-                    alt={displayUser.name || "Profile"}
-                    variant="profile"
-                    priority={true}
-                    onError={() => setProfileImgError(true)}
-                    className="w-full h-full object-cover transition-transform duration-700 group-hover:scale-105"
-                  />
-                ) : (
-                  <div className="text-center p-8">
-                    <div className="w-32 h-32 mx-auto mb-4 rounded-full bg-gradient-to-tr from-amber-500 via-indigo-600 to-purple-600 flex items-center justify-center text-6xl font-bold text-white shadow-inner">
-                      {displayUser?.name
-                        ? displayUser.name.charAt(0).toUpperCase()
-                        : "P"}
-                    </div>
-                    <p className="font-semibold text-xl text-slate-900 dark:text-white flex items-center justify-center gap-1.5">
-                      <VerifiedName
-                        name={displayUser?.name || "Yorn Pheareak"}
-                        badgeSize="lg"
+              {/* Rotating / Glowing Iridescent Border Frame */}
+              <div className="relative -skew-x-[14deg] rounded-3xl p-1.5 sm:p-2 bg-gradient-to-tr from-amber-400 via-yellow-300 via-amber-500 to-yellow-400 shadow-2xl group-hover:scale-[1.02] transition-transform duration-500">
+                {/* Secondary Inner Background Ring */}
+                <div className="rounded-2xl p-1 bg-white dark:bg-[#070b14] border-2 border-black/10 dark:border-white/20">
+                  {/* Parallelogram Avatar Container */}
+                  <div className="relative w-60 h-72 sm:w-72 sm:h-84 md:w-80 md:h-96 lg:w-[22rem] lg:h-[26rem] xl:w-[24rem] xl:h-[28rem] rounded-xl overflow-hidden bg-slate-900 border border-white/40 dark:border-slate-700/80 flex items-center justify-center shadow-inner">
+                    {displayUser?.profile_image && !profileImgError ? (
+                      <PortfolioImage
+                        src={displayUser.profile_image}
+                        alt={displayUser.name || "Profile"}
+                        variant="profile"
+                        priority={true}
+                        onError={() => setProfileImgError(true)}
+                        className="w-full h-full object-cover skew-x-[14deg] scale-125 transition-transform duration-700 group-hover:scale-130"
                       />
-                    </p>
-                    <p className="text-base text-slate-500 dark:text-slate-400 capitalize mt-1">
-                      {displayUser?.role || "Developer"}
-                    </p>
+                    ) : (
+                      <div className="text-center p-8 skew-x-[14deg]">
+                        <div className="w-28 h-28 mx-auto mb-4 rounded-2xl bg-gradient-to-tr from-amber-500 via-indigo-600 to-purple-600 flex items-center justify-center text-5xl font-bold text-white shadow-inner">
+                          {displayUser?.name
+                            ? displayUser.name.charAt(0).toUpperCase()
+                            : "P"}
+                        </div>
+                        <p className="font-semibold text-xl text-slate-900 dark:text-white flex items-center justify-center gap-1.5">
+                          <VerifiedName
+                            name={displayUser?.name || "Yorn Pheareak"}
+                            badgeSize="lg"
+                          />
+                        </p>
+                        <p className="text-base text-slate-500 dark:text-slate-400 capitalize mt-1">
+                          {displayUser?.role || "Developer"}
+                        </p>
+                      </div>
+                    )}
                   </div>
-                )}
+                </div>
               </div>
             </div>
           </div>
