@@ -7,20 +7,22 @@
  * `response: { status, data }` so `err.response?.data?.message` keeps working.
  */
 const getBaseUrl = () => {
-  if (import.meta.env.VITE_API_URL) return import.meta.env.VITE_API_URL;
   if (
     typeof window !== "undefined" &&
     window.location.hostname !== "localhost" &&
     window.location.hostname !== "127.0.0.1"
   ) {
-    // Use relative path so Vercel proxies the request server-side.
-    // This avoids CORS entirely and works for ALL domains (including ypheareak.site).
+    // Always use the same-origin Vercel proxy in production. A stale
+    // VITE_API_URL environment variable can point straight at Render, where
+    // browsers correctly reject a custom-domain request under CORS.
     return "/api";
   }
+  if (import.meta.env.VITE_API_URL) return import.meta.env.VITE_API_URL;
   return "http://localhost:5000/api";
 };
 
 const BASE_URL = getBaseUrl();
+const REQUEST_MODE = BASE_URL.startsWith("/") ? "same-origin" : "cors";
 const TIMEOUT_MS = 30000;
 const SLOW_AFTER_MS = 3000;
 
@@ -80,7 +82,9 @@ const request = async (method, path, body, config = {}) => {
   try {
     const response = await fetch(url, {
       method,
-      mode: "cors",
+      // Production requests use the site's /api rewrite; local development
+      // still calls its separate API server with CORS enabled.
+      mode: REQUEST_MODE,
       // The homepage has its own short-lived local cache for fast first paint.
       // Always revalidate with the API so another browser/domain sees an admin
       // update immediately instead of retaining a CDN/browser response.

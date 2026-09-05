@@ -1,7 +1,6 @@
 import axios from "axios";
 
 const getBaseUrl = () => {
-  if (import.meta.env.VITE_API_URL) return import.meta.env.VITE_API_URL;
   if (
     typeof window !== "undefined" &&
     window.location.hostname !== "localhost" &&
@@ -11,6 +10,7 @@ const getBaseUrl = () => {
     // This avoids CORS entirely and works for ALL domains (ypheareak.site, vercel.app, etc.)
     return "/api";
   }
+  if (import.meta.env.VITE_API_URL) return import.meta.env.VITE_API_URL;
   return "http://localhost:5000/api";
 };
 

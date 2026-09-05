@@ -11,9 +11,6 @@ import { getImagePlaceholder } from "./imagePlaceholder.js";
 const isBrowser = typeof window !== "undefined";
 
 const getApiBaseUrl = () => {
-  if (typeof import.meta !== "undefined" && import.meta.env?.VITE_API_URL) {
-    return import.meta.env.VITE_API_URL.trim().replace(/\/api\/?$/, "");
-  }
   if (
     isBrowser &&
     window.location.hostname !== "localhost" &&
@@ -22,6 +19,9 @@ const getApiBaseUrl = () => {
     // Use relative path — Vercel proxies /api → Render server-side.
     // Works on ypheareak.site, vercel.app, and any future domain.
     return "";
+  }
+  if (typeof import.meta !== "undefined" && import.meta.env?.VITE_API_URL) {
+    return import.meta.env.VITE_API_URL.trim().replace(/\/api\/?$/, "");
   }
   return "http://localhost:5000";
 };
