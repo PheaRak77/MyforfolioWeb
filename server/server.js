@@ -179,7 +179,10 @@ app.get("/api/health", async (req, res) => {
       success: false,
       status: "error",
       database: "disconnected",
-      message: error.message,
+      message:
+        process.env.NODE_ENV === "production"
+          ? "Database service currently unavailable"
+          : error.message,
     });
   }
 });

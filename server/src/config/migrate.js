@@ -108,10 +108,14 @@ async function ensureDatabaseSchema() {
     -- Performance Indexes
     CREATE INDEX IF NOT EXISTS idx_users_email ON users(LOWER(email));
     CREATE INDEX IF NOT EXISTS idx_users_role ON users(role);
+    CREATE INDEX IF NOT EXISTS idx_users_role_admin ON users(role) WHERE role = 'admin';
     CREATE INDEX IF NOT EXISTS idx_projects_user_id ON projects(user_id);
+    CREATE INDEX IF NOT EXISTS idx_projects_user_created ON projects(user_id, created_at DESC);
     CREATE INDEX IF NOT EXISTS idx_projects_featured ON projects(is_featured);
     CREATE INDEX IF NOT EXISTS idx_certificates_user_id ON certificates(user_id);
+    CREATE INDEX IF NOT EXISTS idx_certificates_user_created ON certificates(user_id, created_at DESC);
     CREATE INDEX IF NOT EXISTS idx_skills_user_id ON skills(user_id);
+    CREATE INDEX IF NOT EXISTS idx_skills_user_order ON skills(user_id, display_order ASC, percentage DESC);
     CREATE INDEX IF NOT EXISTS idx_skills_category ON skills(category);
     CREATE INDEX IF NOT EXISTS idx_skills_display_order ON skills(display_order);
     CREATE INDEX IF NOT EXISTS idx_password_resets_lookup ON password_resets(user_id, token_hash);

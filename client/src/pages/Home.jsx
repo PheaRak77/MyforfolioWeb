@@ -82,6 +82,7 @@ const Home = () => {
     email: "",
     subject: "",
     message: "",
+    website_url: "", // Anti-spam honeypot (bots fill this, humans cannot see it)
   });
   const [contactErrors, setContactErrors] = useState({});
   const [sendingMessage, setSendingMessage] = useState(false);
@@ -142,6 +143,13 @@ const Home = () => {
   const handleContactSubmit = useCallback(
     async (e) => {
       e.preventDefault();
+      // Honeypot check: if bot filled this hidden field, fake success and exit immediately
+      if (contactForm.website_url) {
+        setContactSubmitted(true);
+        setContactForm({ name: "", email: "", subject: "", message: "", website_url: "" });
+        return;
+      }
+
       if (!validateContact()) return;
 
       setSendingMessage(true);
@@ -157,7 +165,7 @@ const Home = () => {
 
         if (data.success) {
           setContactSubmitted(true);
-          setContactForm({ name: "", email: "", subject: "", message: "" });
+          setContactForm({ name: "", email: "", subject: "", message: "", website_url: "" });
           setContactErrors({});
         } else {
           setContactApiError(
@@ -179,8 +187,14 @@ const Home = () => {
 
   useEffect(() => {
     const fetchPublicData = async () => {
+      // If we already have initial data (from cache or initial state), do NOT set loading to true!
+      // This eliminates layout shift and provides instant 0ms first paint with stale-while-revalidate.
+      const hasInitialData = Boolean(cached.portfolio || cached.profile);
+
       try {
-        setLoading(true);
+        if (!hasInitialData) {
+          setLoading(true);
+        }
         setError("");
 
         const responses = await fetchPublicPortfolioData(publicApi, {
@@ -189,10 +203,10 @@ const Home = () => {
 
         const portfolio = responses.portfolio?.value?.data;
         if (responses.portfolio?.status === "fulfilled" && portfolio) {
-          setProfile(portfolio.user ?? null);
-          setProjects(portfolio.projects ?? []);
-          setCertificates(portfolio.certificates ?? []);
-          setSkills(portfolio.skills ?? []);
+          if (portfolio.user) setProfile(portfolio.user);
+          if (Array.isArray(portfolio.projects)) setProjects(portfolio.projects);
+          if (Array.isArray(portfolio.certificates)) setCertificates(portfolio.certificates);
+          if (Array.isArray(portfolio.skills)) setSkills(portfolio.skills);
         } else {
           // Keep the public site compatible until the Render service receives
           // the matching server deployment. Once /portfolio is available this
@@ -204,22 +218,25 @@ const Home = () => {
             skills: "/skills",
           });
 
-          if (legacy.profile?.status === "fulfilled") {
-            setProfile(legacy.profile.value.data?.user ?? null);
+          if (legacy.profile?.status === "fulfilled" && legacy.profile.value.data?.user) {
+            setProfile(legacy.profile.value.data.user);
           }
-          if (legacy.projects?.status === "fulfilled") {
-            setProjects(legacy.projects.value.data?.projects ?? []);
+          if (legacy.projects?.status === "fulfilled" && legacy.projects.value.data?.projects) {
+            setProjects(legacy.projects.value.data.projects);
           }
-          if (legacy.certificates?.status === "fulfilled") {
-            setCertificates(legacy.certificates.value.data?.certificates ?? []);
+          if (legacy.certificates?.status === "fulfilled" && legacy.certificates.value.data?.certificates) {
+            setCertificates(legacy.certificates.value.data.certificates);
           }
-          if (legacy.skills?.status === "fulfilled") {
-            setSkills(legacy.skills.value.data?.skills ?? []);
+          if (legacy.skills?.status === "fulfilled" && legacy.skills.value.data?.skills) {
+            setSkills(legacy.skills.value.data.skills);
           }
         }
       } catch (err) {
         console.error("Error loading portfolio data:", err);
-        setError("Unable to load portfolio details at this time.");
+        // Only show error message if we don't even have cached data to display
+        if (!hasInitialData) {
+          setError("Unable to load portfolio details at this time.");
+        }
       } finally {
         setLoading(false);
       }
@@ -799,7 +816,8 @@ const Home = () => {
                   aria-hidden="true"
                   className="absolute inset-0 w-full h-full object-contain pointer-events-none z-10 select-none filter drop-shadow-lg"
                   loading="eager"
-                  decoding="async"
+                  fetchPriority="high"
+                  decoding="sync"
                 />
               </div>
             </div>
@@ -1737,6 +1755,19 @@ const Home = () => {
                     onSubmit={handleContactSubmit}
                     className="space-y-4 sm:space-y-5"
                   >
+                    {/* Anti-spam honeypot field — invisible to real users, traps bots */}
+                    <input
+                      type="text"
+                      name="website_url"
+                      value={contactForm.website_url || ""}
+                      onChange={(e) =>
+                        setContactForm({ ...contactForm, website_url: e.target.value })
+                      }
+                      tabIndex={-1}
+                      autoComplete="off"
+                      aria-hidden="true"
+                      className="hidden pointer-events-none opacity-0 absolute w-0 h-0 -z-50"
+                    />
                     <h3 className="text-lg sm:text-xl font-bold text-neutral-900 dark:text-white mb-2">
                       Send a Message
                     </h3>

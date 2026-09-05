@@ -1,15 +1,28 @@
-const CACHE_PREFIX = "portfolio_public_v3_";
-const DEFAULT_TTL_MS = 10 * 60 * 1000;
+const CACHE_PREFIX = "portfolio_public_v4_";
+const DEFAULT_TTL_MS = 15 * 60 * 1000; // 15 mins fresh
+const MAX_STALE_MS = 7 * 24 * 60 * 60 * 1000; // 7 days stale-while-revalidate grace
 
-const readCache = (key) => {
+const readCache = (key, allowStale = true) => {
   try {
-    const raw = localStorage.getItem(`${CACHE_PREFIX}${key}`) || sessionStorage.getItem(`${CACHE_PREFIX}${key}`);
+    const raw =
+      localStorage.getItem(`${CACHE_PREFIX}${key}`) ||
+      sessionStorage.getItem(`${CACHE_PREFIX}${key}`);
     if (!raw) return null;
 
     const parsed = JSON.parse(raw);
-    if (!parsed?.expiry || Date.now() > parsed.expiry) {
+    if (!parsed?.data) return null;
+
+    const now = Date.now();
+    const isExpired = parsed.expiry && now > parsed.expiry;
+    const isTooOld = parsed.expiry && now > parsed.expiry + MAX_STALE_MS;
+
+    if (isTooOld) {
       localStorage.removeItem(`${CACHE_PREFIX}${key}`);
       sessionStorage.removeItem(`${CACHE_PREFIX}${key}`);
+      return null;
+    }
+
+    if (isExpired && !allowStale) {
       return null;
     }
 
@@ -21,8 +34,6 @@ const readCache = (key) => {
 
 const writeCache = (key, data, ttlMs = DEFAULT_TTL_MS) => {
   try {
-    // localStorage only: readCache checks it first, so a second sessionStorage
-    // copy just paid to serialise the whole payload twice.
     localStorage.setItem(
       `${CACHE_PREFIX}${key}`,
       JSON.stringify({ data, expiry: Date.now() + ttlMs }),

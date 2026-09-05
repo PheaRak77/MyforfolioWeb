@@ -1,4 +1,4 @@
-import { getImagePlaceholder } from "./imagePlaceholder";
+import { getImagePlaceholder } from "./imagePlaceholder.js";
 
 /**
  * Formats image URLs for deployed environments with automatic performance optimizations:
@@ -10,7 +10,8 @@ import { getImagePlaceholder } from "./imagePlaceholder";
 
 const getApiBaseUrl = () =>
   (
-    import.meta.env.VITE_API_URL || "https://myportfolio-api-8b84.onrender.com/api"
+    (typeof import.meta !== "undefined" && import.meta.env?.VITE_API_URL) ||
+    "https://myportfolio-api-8b84.onrender.com/api"
   )
     .trim()
     .replace(/\/api\/?$/, "");
@@ -56,13 +57,15 @@ export const optimizeCloudinaryUrl = (url, options = {}) => {
     gravity,
     quality = "auto:good",
     format = "auto",
+    aspectRatio,
   } = options;
 
   const transforms = [`f_${format}`, `q_${quality}`, "dpr_auto"];
 
-  if (width) transforms.push(`w_${width}`);
-  if (height) transforms.push(`h_${height}`);
-  if (crop && (width || height)) transforms.push(`c_${crop}`);
+  if (aspectRatio) transforms.push(`ar_${aspectRatio}`);
+  if (width) transforms.push(`w_${Math.round(width)}`);
+  if (height) transforms.push(`h_${Math.round(height)}`);
+  if (crop && (width || height || aspectRatio)) transforms.push(`c_${crop}`);
   if (gravity) transforms.push(`g_${gravity}`);
 
   const transformString = transforms.join(",");
@@ -71,12 +74,22 @@ export const optimizeCloudinaryUrl = (url, options = {}) => {
 
 const RESPONSIVE_WIDTHS = {
   avatar: [80, 160, 240],
-  profile: [160, 320, 600],
-  hero: [400, 600, 800],
+  profile: [320, 480, 640, 800, 1000],
+  hero: [400, 600, 800, 1000],
   project: [360, 640, 900],
   certificate: [360, 640, 900],
   "certificate-modal": [800, 1200, 1600],
   default: [480, 800, 1200],
+};
+
+const VARIANT_SIZES = {
+  profile: { width: 800, height: 800, crop: "fill", gravity: "face" },
+  avatar: { width: 240, height: 240, crop: "fill", gravity: "face" },
+  project: { width: 900, crop: "limit" },
+  certificate: { width: 900, crop: "limit" },
+  "certificate-modal": { width: 1600, crop: "limit" },
+  hero: { width: 800, crop: "limit" },
+  default: { width: 1200, crop: "limit" },
 };
 
 export const getCloudinarySrcSet = (url, options = {}) => {
@@ -86,18 +99,15 @@ export const getCloudinarySrcSet = (url, options = {}) => {
   const widths = RESPONSIVE_WIDTHS[variant] || RESPONSIVE_WIDTHS.default;
 
   return widths
-    .map((width) => `${optimizeCloudinaryUrl(url, { ...sizing, width })} ${width}w`)
+    .map((width) => {
+      const widthOptions = { ...sizing, width };
+      // Proportionally scale height if specified, preventing stretched 160x600 distortions
+      if (sizing.width && sizing.height) {
+        widthOptions.height = Math.round((sizing.height / sizing.width) * width);
+      }
+      return `${optimizeCloudinaryUrl(url, widthOptions)} ${width}w`;
+    })
     .join(", ");
-};
-
-const VARIANT_SIZES = {
-  profile: { width: 600, height: 600, crop: "fill", gravity: "face" },
-  avatar: { width: 160, height: 160, crop: "fill", gravity: "face" },
-  project: { width: 900, crop: "limit" },
-  certificate: { width: 900, crop: "limit" },
-  "certificate-modal": { width: 1600, crop: "limit" },
-  hero: { width: 800, crop: "limit" },
-  default: { width: 1200, crop: "limit" },
 };
 
 export const getFullImageUrl = (imagePath, options = {}) => {
