@@ -774,23 +774,13 @@ html {
   }
 }
 
-/* Isolate decorative layers so scrolling does not force the browser to repaint
-   the full page. */
+/* Isolate decorative layers for fast rendering */
 .portfolio-motion-bg {
   contain: paint;
   transform: translateZ(0);
 }
 
-/* Keep decorative motion inexpensive on small/touch screens. The design stays
-   intact, but avoids continuously compositing large blurred layers. */
 @media (max-width: 640px), (pointer: coarse) {
-  /* The fixed decorative background is disabled on touch devices. This avoids
-     mobile browser compositing bugs where it can temporarily cover content
-     during a fast reverse scroll. */
-  .portfolio-motion-bg {
-    display: none;
-  }
-
   .animate-aurora-1,
   .animate-aurora-2,
   .animate-name-gradient,
@@ -801,21 +791,6 @@ html {
   .apple-nav-blur {
     backdrop-filter: blur(8px) saturate(135%);
     -webkit-backdrop-filter: blur(8px) saturate(135%);
-  }
-
-  .portfolio-motion-bg .motion-matrix,
-  .portfolio-motion-bg .motion-deep-glow,
-  .portfolio-motion-bg .motion-grid {
-    display: none;
-  }
-
-  .portfolio-motion-bg .motion-top-glow {
-    height: 390px;
-  }
-
-  .portfolio-motion-bg .motion-aurora {
-    filter: blur(56px);
-    opacity: 0.62;
   }
 
   .portfolio-scroll-card {
