@@ -779,10 +779,11 @@ const Home = () => {
                         className="w-full h-full object-cover skew-x-[14deg] scale-125 transition-transform duration-700 group-hover:scale-130"
                       />
                     ) : (
-                      <div className="relative w-full h-full flex flex-col items-center justify-center p-6 skew-x-[14deg] bg-[#050811] overflow-hidden">
-                        {/* Biometric Cyber Fingerprint Scanner */}
-                        <FingerprintLoader size="md" label="L O A D I N G" />
-                      </div>
+                      <img
+                        src="/profile-photo.png"
+                        alt="Profile"
+                        className="w-full h-full object-cover skew-x-[14deg] scale-110 transition-transform duration-700 group-hover:scale-115"
+                      />
                     )}
                   </div>
                 </div>
