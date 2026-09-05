@@ -763,12 +763,41 @@ const Home = () => {
               {/* Soft ambient floral glow */}
               <div className="absolute -inset-10 rounded-full bg-gradient-to-tr from-amber-200/20 via-emerald-200/15 to-sky-200/20 dark:from-amber-400/10 dark:via-emerald-400/10 dark:to-sky-400/10 blur-3xl opacity-70 group-hover:opacity-100 transition duration-700 pointer-events-none" />
 
-              {/* Circular Floral Frame Avatar */}
+              {/* Circular Floral Frame Avatar (Dynamic with backend photo & fallback) */}
               <div className="relative w-64 h-64 sm:w-72 sm:h-72 md:w-80 md:h-80 lg:w-96 lg:h-96 xl:w-[26rem] xl:h-[26rem] flex items-center justify-center group-hover:scale-[1.02] transition-transform duration-500">
+                {/* Dynamic photo clipped inside circular window */}
+                <div className="absolute w-[68%] h-[68%] rounded-full overflow-hidden z-0 shadow-md">
+                  {displayUser?.profile_image && !profileImgError ? (
+                    <PortfolioImage
+                      src={displayUser.profile_image}
+                      alt={displayUser.name || "Profile"}
+                      variant="profile"
+                      priority={true}
+                      onError={() => setProfileImgError(true)}
+                      className="w-full h-full object-cover"
+                      fallback={
+                        <img
+                          src="/profile-framed.png"
+                          alt={displayUser?.name || "Profile"}
+                          className="w-full h-full object-cover"
+                        />
+                      }
+                    />
+                  ) : (
+                    <img
+                      src="/profile-framed.png"
+                      alt={displayUser?.name || "Profile"}
+                      className="w-full h-full object-cover"
+                    />
+                  )}
+                </div>
+
+                {/* Floral Wreath Overlay on top */}
                 <img
-                  src="/profile-framed.png"
-                  alt={displayUser?.name || "Yorn Pheareak"}
-                  className="w-full h-full object-contain filter drop-shadow-xl select-none"
+                  src="/floral-frame.png"
+                  alt=""
+                  aria-hidden="true"
+                  className="absolute inset-0 w-full h-full object-contain pointer-events-none z-10 select-none filter drop-shadow-lg"
                   loading="eager"
                   decoding="async"
                 />
