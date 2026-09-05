@@ -762,14 +762,6 @@ const Home = () => {
               {/* Full Ambient Golden / Yellow Halo Bloom */}
               <div className="absolute -inset-6 -skew-x-[14deg] rounded-3xl bg-gradient-to-tr from-amber-400/30 via-yellow-400/25 to-indigo-500/20 blur-3xl opacity-75 group-hover:opacity-100 transition duration-700 pointer-events-none" />
 
-              {/* Floating Top Cyber Badge Chip */}
-              <div className="absolute -top-3.5 left-4 z-20 inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-slate-900/90 dark:bg-black/90 text-emerald-400 border border-emerald-500/40 text-[11px] font-bold shadow-lg backdrop-blur-md">
-                <span className="relative flex h-2 w-2">
-                  <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-emerald-400 opacity-75" />
-                  <span className="relative inline-flex rounded-full h-2 w-2 bg-emerald-500" />
-                </span>
-                <span>Available for Work</span>
-              </div>
 
               {/* Glowing Iridescent Border Frame */}
               <div className="relative -skew-x-[14deg] rounded-3xl p-1.5 sm:p-2 bg-gradient-to-tr from-amber-400 via-yellow-300 via-amber-500 to-yellow-400 shadow-2xl group-hover:scale-[1.02] transition-transform duration-500">
@@ -796,11 +788,6 @@ const Home = () => {
                 </div>
               </div>
 
-              {/* Floating Bottom Tech Badge */}
-              <div className="absolute -bottom-3 right-4 z-20 inline-flex items-center gap-2 px-3 py-1.5 rounded-full bg-white/95 dark:bg-slate-900/95 text-neutral-900 dark:text-white border border-black/10 dark:border-white/20 text-[11px] font-bold shadow-xl backdrop-blur-md">
-                <span className="w-2 h-2 rounded-full bg-amber-400" />
-                <span>Full-Stack Engineer</span>
-              </div>
             </div>
           </div>
         </section>
