@@ -586,7 +586,7 @@ const Home = () => {
         {/* HERO / PROFILE SECTION */}
         <section
           id="hero"
-          className="relative pt-6 pb-12 flex flex-col lg:flex-row items-center justify-between gap-12 lg:gap-14 rounded-3xl"
+          className="relative pt-6 pb-12 flex flex-col lg:flex-row items-center justify-between gap-8 lg:gap-10 xl:gap-12 rounded-3xl"
         >
           {/* Left Text Column */}
           <div className="flex-1 space-y-6 text-center lg:text-left z-10 w-full">
@@ -609,8 +609,8 @@ const Home = () => {
                 </span>
               </span>{" "}
               <br className="hidden sm:inline" />
-              <span className="relative inline-flex items-center gap-3 sm:gap-4 mt-2 sm:mt-3 flex-wrap">
-                <span className="animate-name-gradient font-black text-4xl sm:text-5xl lg:text-6xl xl:text-7xl tracking-tight drop-shadow-sm">
+              <span className="relative inline-flex items-center gap-3 sm:gap-4 mt-2 sm:mt-3 flex-nowrap">
+                <span className="animate-name-gradient font-black text-4xl sm:text-5xl lg:text-6xl xl:text-7xl tracking-tight drop-shadow-sm whitespace-nowrap">
                   {displayUser?.name || "Yorn Pheareak"}
                 </span>
                 <VerifiedBadge
@@ -764,7 +764,7 @@ const Home = () => {
               <div className="absolute -inset-10 rounded-full bg-gradient-to-tr from-amber-200/20 via-emerald-200/15 to-sky-200/20 dark:from-amber-400/10 dark:via-emerald-400/10 dark:to-sky-400/10 blur-3xl opacity-70 group-hover:opacity-100 transition duration-700 pointer-events-none" />
 
               {/* Circular Floral Frame Avatar (Dynamic with backend photo & fallback) */}
-              <div className="relative w-64 h-64 sm:w-72 sm:h-72 md:w-80 md:h-80 lg:w-96 lg:h-96 xl:w-[26rem] xl:h-[26rem] flex items-center justify-center group-hover:scale-[1.02] transition-transform duration-500">
+              <div className="relative w-72 h-72 sm:w-80 sm:h-80 md:w-96 md:h-96 lg:w-[26rem] lg:h-[26rem] xl:w-[30rem] xl:h-[30rem] 2xl:w-[34rem] 2xl:h-[34rem] flex items-center justify-center group-hover:scale-[1.02] transition-transform duration-500">
                 {/* Dynamic photo clipped inside circular window */}
                 <div className="absolute w-[68%] h-[68%] rounded-full overflow-hidden z-0 shadow-md">
                   {displayUser?.profile_image && !profileImgError ? (
