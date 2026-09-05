@@ -35,7 +35,15 @@ const Home = () => {
   const { user: authUser, isAuthenticated, logout } = useAuth();
 
   const [profile, setProfile] = useState(
-    () => cached.portfolio?.user ?? cached.profile?.user ?? null,
+    () =>
+      cached.portfolio?.user ??
+      cached.profile?.user ?? {
+        name: "Yorn Pheareak",
+        role: "Full-Stack Developer",
+        email: "renpearak6666@gmail.com",
+        phone: "0883930493",
+        bio: "Full-Stack Developer passionate about building high-performance, modern web applications.",
+      },
   );
   const [projects, setProjects] = useState(
     () => cached.portfolio?.projects ?? cached.projects?.projects ?? [],
@@ -751,9 +759,18 @@ const Home = () => {
           <div className="flex-shrink-0 z-10 animate-hero-avatar relative">
             <div className="relative group flex items-center justify-center">
               {/* Full Ambient Golden / Yellow Halo Bloom */}
-              <div className="absolute -inset-6 -skew-x-[14deg] rounded-3xl bg-gradient-to-tr from-amber-400/40 via-yellow-400/30 to-amber-500/20 blur-3xl opacity-80 group-hover:opacity-100 transition duration-700 pointer-events-none" />
+              <div className="absolute -inset-6 -skew-x-[14deg] rounded-3xl bg-gradient-to-tr from-amber-400/30 via-yellow-400/25 to-indigo-500/20 blur-3xl opacity-75 group-hover:opacity-100 transition duration-700 pointer-events-none" />
 
-              {/* Rotating / Glowing Iridescent Border Frame */}
+              {/* Floating Top Cyber Badge Chip */}
+              <div className="absolute -top-3.5 left-4 z-20 inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-slate-900/90 dark:bg-black/90 text-emerald-400 border border-emerald-500/40 text-[11px] font-bold shadow-lg backdrop-blur-md">
+                <span className="relative flex h-2 w-2">
+                  <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-emerald-400 opacity-75" />
+                  <span className="relative inline-flex rounded-full h-2 w-2 bg-emerald-500" />
+                </span>
+                <span>Available for Work</span>
+              </div>
+
+              {/* Glowing Iridescent Border Frame */}
               <div className="relative -skew-x-[14deg] rounded-3xl p-1.5 sm:p-2 bg-gradient-to-tr from-amber-400 via-yellow-300 via-amber-500 to-yellow-400 shadow-2xl group-hover:scale-[1.02] transition-transform duration-500">
                 {/* Secondary Inner Background Ring */}
                 <div className="rounded-2xl p-1 bg-white dark:bg-[#070b14] border-2 border-black/10 dark:border-white/20">
@@ -769,25 +786,38 @@ const Home = () => {
                         className="w-full h-full object-cover skew-x-[14deg] scale-125 transition-transform duration-700 group-hover:scale-130"
                       />
                     ) : (
-                      <div className="text-center p-8 skew-x-[14deg]">
-                        <div className="w-28 h-28 mx-auto mb-4 rounded-2xl bg-gradient-to-tr from-amber-500 via-indigo-600 to-purple-600 flex items-center justify-center text-5xl font-bold text-white shadow-inner">
-                          {displayUser?.name
-                            ? displayUser.name.charAt(0).toUpperCase()
-                            : "P"}
+                      <div className="relative w-full h-full flex flex-col items-center justify-center p-8 skew-x-[14deg] bg-gradient-to-b from-slate-900/80 to-slate-950/95 overflow-hidden">
+                        {/* High-tech HUD grid lines inside placeholder */}
+                        <div className="absolute inset-0 bg-grid-mesh opacity-20 pointer-events-none" />
+                        <div className="relative z-10 flex flex-col items-center">
+                          <div className="w-24 h-24 sm:w-28 sm:h-28 mx-auto mb-4 rounded-2xl bg-gradient-to-tr from-amber-500 via-indigo-600 to-purple-600 flex items-center justify-center text-4xl sm:text-5xl font-extrabold text-white shadow-xl ring-2 ring-white/20">
+                            {displayUser?.name
+                              ? displayUser.name.charAt(0).toUpperCase()
+                              : "P"}
+                          </div>
+                          <p className="font-bold text-lg sm:text-xl text-white flex items-center justify-center gap-1.5">
+                            <VerifiedName
+                              name={displayUser?.name || "Yorn Pheareak"}
+                              badgeSize="md"
+                            />
+                          </p>
+                          <p className="text-xs sm:text-sm text-slate-400 capitalize mt-1 font-mono">
+                            {displayUser?.role || "Full-Stack Developer"}
+                          </p>
+                          <div className="mt-4 flex items-center gap-1.5 px-2.5 py-1 rounded-full bg-white/10 text-[11px] text-amber-300 font-mono">
+                            <span>// 2026 Portfolio</span>
+                          </div>
                         </div>
-                        <p className="font-semibold text-xl text-slate-900 dark:text-white flex items-center justify-center gap-1.5">
-                          <VerifiedName
-                            name={displayUser?.name || "Yorn Pheareak"}
-                            badgeSize="lg"
-                          />
-                        </p>
-                        <p className="text-base text-slate-500 dark:text-slate-400 capitalize mt-1">
-                          {displayUser?.role || "Developer"}
-                        </p>
                       </div>
                     )}
                   </div>
                 </div>
+              </div>
+
+              {/* Floating Bottom Tech Badge */}
+              <div className="absolute -bottom-3 right-4 z-20 inline-flex items-center gap-2 px-3 py-1.5 rounded-full bg-white/95 dark:bg-slate-900/95 text-neutral-900 dark:text-white border border-black/10 dark:border-white/20 text-[11px] font-bold shadow-xl backdrop-blur-md">
+                <span className="w-2 h-2 rounded-full bg-amber-400" />
+                <span>Full-Stack Engineer</span>
               </div>
             </div>
           </div>
