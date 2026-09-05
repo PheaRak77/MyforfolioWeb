@@ -81,6 +81,10 @@ const request = async (method, path, body, config = {}) => {
     const response = await fetch(url, {
       method,
       mode: "cors",
+      // The homepage has its own short-lived local cache for fast first paint.
+      // Always revalidate with the API so another browser/domain sees an admin
+      // update immediately instead of retaining a CDN/browser response.
+      cache: "no-store",
       signal: AbortSignal.timeout(config.timeout ?? TIMEOUT_MS),
       headers: body ? { "Content-Type": "application/json" } : undefined,
       body: body ? JSON.stringify(body) : undefined,

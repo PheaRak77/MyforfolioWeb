@@ -5,6 +5,7 @@ import Home from "./pages/Home";
 
 import AdminRoute from "./routes/AdminRoute";
 import NetworkStatus from "./components/NetworkStatus";
+import CanonicalUrlRedirect from "./components/CanonicalUrlRedirect";
 
 const Login = lazy(() => import("./pages/Login"));
 const Register = lazy(() => import("./pages/Register"));
@@ -28,6 +29,7 @@ const PageLoader = () => (
 export default function App() {
   return (
     <>
+      <CanonicalUrlRedirect />
       <NetworkStatus />
       <Routes>
         <Route path="/" element={<Home />} />

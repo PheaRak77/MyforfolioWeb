@@ -33,7 +33,12 @@ const Login = () => {
     }
   };
 
-  const apiUrl = import.meta.env.VITE_API_URL || "http://localhost:5000/api";
+  // Relative in production so Google starts on the current deployment. This
+  // avoids the old localhost/legacy API URL being opened from the new domain.
+  const apiUrl = import.meta.env.VITE_API_URL ||
+    (window.location.hostname === "localhost" || window.location.hostname === "127.0.0.1"
+      ? "http://localhost:5000/api"
+      : "/api");
 
   return (
     <div className="min-h-screen bg-slate-950 text-slate-100 flex flex-col justify-center items-center px-4 py-12 relative overflow-hidden selection:bg-blue-600 selection:text-white">

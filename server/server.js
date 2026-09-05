@@ -199,8 +199,10 @@ app.get("/api/health", async (req, res) => {
   }
 });
 
-// Homepage payload: one cached request instead of four independent API calls.
-app.get("/api/portfolio", apiLimiter, cacheMiddleware(300), getPublicPortfolio);
+// Homepage payload: one request replaces four independent API calls. Do not put
+// it in a shared cache: a mutation can be handled by another instance and must
+// be visible on the public domain immediately.
+app.get("/api/portfolio", apiLimiter, getPublicPortfolio);
 
 // Mount Routes — public GET routes get 60-second in-memory cache for speed
 app.use("/api/auth", authLimiter, authRoutes);

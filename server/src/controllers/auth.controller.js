@@ -262,9 +262,23 @@ const googleCallback = asyncHandler(async (req, res) => {
   const safeUser = sanitizeUser(user);
 
   const userJson = encodeURIComponent(JSON.stringify(safeUser));
+  const configuredClientUrl = "https://www.ypheareak.site";
+
+  // `state` is set only after validation in auth.routes.js. Validate it again
+  // here because it is returned by an external OAuth provider.
+  let clientUrl = configuredClientUrl;
+  try {
+    const stateUrl = new URL(req.query.state);
+    const isCanonicalDomain = stateUrl.hostname === "www.ypheareak.site";
+    if (stateUrl.protocol === "https:" && isCanonicalDomain) {
+      clientUrl = stateUrl.origin;
+    }
+  } catch {
+    // No valid state: retain the server's configured fallback.
+  }
 
   res.redirect(
-    `${process.env.CLIENT_URL}/login?token=${token}&user=${userJson}`,
+    `${clientUrl}/login?token=${token}&user=${userJson}`,
   );
 });
 

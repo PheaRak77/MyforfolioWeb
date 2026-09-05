@@ -2,6 +2,7 @@ import { useEffect, useMemo, useState } from "react";
 import { Link } from "react-router-dom";
 import api from "../api/axios";
 import DashboardNav from "../components/DashboardNav";
+import { getLivePortfolioUrl } from "../config/site";
 import { useAuth } from "../context/AuthContext";
 import { isLegacyDiskUrl } from "../utils/imageUrl";
 import { hasLegacyProjectImages } from "../utils/projectImages";
@@ -241,8 +242,8 @@ const Dashboard = () => {
             </div>
 
             <div className="flex flex-wrap items-center gap-3">
-              <Link
-                to="/"
+              <a
+                href={getLivePortfolioUrl()}
                 target="_blank"
                 rel="noopener noreferrer"
                 className="px-5 py-3 rounded-xl bg-blue-600 text-white font-semibold shadow-lg shadow-blue-500/25 hover:bg-blue-500 hover:shadow-blue-500/40 hover:-translate-y-0.5 transition-all text-sm flex items-center gap-2"
@@ -252,7 +253,7 @@ const Dashboard = () => {
                   <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z" />
                 </svg>
                 View Live Portfolio
-              </Link>
+              </a>
             </div>
           </div>
         </div>

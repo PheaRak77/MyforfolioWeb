@@ -8,8 +8,10 @@ const sanitizeUser = require("../utils/sanitizeUser");
 const asyncHandler = require("../utils/asyncHandler");
 
 const getPublicPortfolio = asyncHandler(async (req, res) => {
-  // One request replaces four homepage requests. Queries run concurrently and
-  // the response is cached at the HTTP layer by the surrounding middleware.
+  // One request replaces four homepage requests. Public updates should be
+  // visible straight away, including when the dashboard and custom domain hit
+  // different deployment instances.
+  res.setHeader("Cache-Control", "no-store, max-age=0");
   const [profileResult, projectsResult, certificatesResult, skillsResult] = await Promise.all([
     pool.query(`
       SELECT id, name, email, phone, dob, profile_image, role, created_at

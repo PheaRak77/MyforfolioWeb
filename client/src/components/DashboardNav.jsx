@@ -1,6 +1,7 @@
 import { useState } from "react";
 import { Link, useLocation, useNavigate } from "react-router-dom";
 import { useAuth } from "../context/AuthContext";
+import { getLivePortfolioUrl } from "../config/site";
 import PortfolioImage from "./PortfolioImage";
 import VerifiedBadge, { VerifiedName } from "./VerifiedBadge";
 import ThemeToggle from "./ThemeToggle";
@@ -70,8 +71,8 @@ const DashboardNav = () => {
 
         {/* Desktop Navigation Actions */}
         <nav className="hidden md:flex items-center gap-1.5 sm:gap-2">
-          <Link
-            to="/"
+          <a
+            href={getLivePortfolioUrl()}
             target="_blank"
             rel="noopener noreferrer"
             className="px-3.5 py-2 rounded-xl bg-blue-500/10 border border-blue-500/30 text-blue-400 text-xs font-semibold hover:bg-blue-500 hover:text-white transition-all flex items-center gap-1.5 shadow-sm hover:shadow-blue-500/25"
@@ -90,7 +91,7 @@ const DashboardNav = () => {
               />
             </svg>
             <span>Live Portfolio</span>
-          </Link>
+          </a>
 
           {navLinks.map((link) => {
             const isActive = location.pathname === link.to;
@@ -143,8 +144,8 @@ const DashboardNav = () => {
       {mobileMenuOpen && (
         <div className="md:hidden bg-slate-900/95 backdrop-blur-xl border-b border-slate-800 px-4 pt-2 pb-6 space-y-3 shadow-2xl animate-in slide-in-from-top-2 duration-200">
           <div className="flex flex-col space-y-1 text-sm font-medium">
-            <Link
-              to="/"
+            <a
+              href={getLivePortfolioUrl()}
               target="_blank"
               rel="noopener noreferrer"
               onClick={() => setMobileMenuOpen(false)}
@@ -152,7 +153,7 @@ const DashboardNav = () => {
             >
               <span>View Live Portfolio</span>
               <span>&nearr;</span>
-            </Link>
+            </a>
 
             {navLinks.map((link) => {
               const isActive = location.pathname === link.to;
