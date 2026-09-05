@@ -768,23 +768,12 @@ const Home = () => {
                 {/* Secondary Inner Background Ring */}
                 <div className="rounded-2xl p-1 bg-white dark:bg-[#070b14] border-2 border-black/10 dark:border-white/20">
                   {/* Parallelogram Avatar Container */}
-                  <div className="relative w-60 h-72 sm:w-72 sm:h-84 md:w-80 md:h-96 lg:w-[22rem] lg:h-[26rem] xl:w-[24rem] xl:h-[28rem] rounded-xl overflow-hidden bg-slate-900 border border-white/40 dark:border-slate-700/80 flex items-center justify-center shadow-inner">
-                    {displayUser?.profile_image && !profileImgError ? (
-                      <PortfolioImage
-                        src={displayUser.profile_image}
-                        alt={displayUser.name || "Profile"}
-                        variant="profile"
-                        priority={true}
-                        onError={() => setProfileImgError(true)}
-                        className="w-full h-full object-cover skew-x-[14deg] scale-125 transition-transform duration-700 group-hover:scale-130"
-                      />
-                    ) : (
-                      <img
-                        src="/profile-photo.png"
-                        alt="Profile"
-                        className="w-full h-full object-cover skew-x-[14deg] scale-110 transition-transform duration-700 group-hover:scale-115"
-                      />
-                    )}
+                  <div className="relative w-60 h-72 sm:w-72 sm:h-84 md:w-80 md:h-96 lg:w-[22rem] lg:h-[26rem] xl:w-[24rem] xl:h-[28rem] rounded-xl overflow-hidden bg-white dark:bg-white flex items-center justify-center shadow-inner">
+                    <img
+                      src="/profile-photo.png"
+                      alt="Profile"
+                      className="w-full h-full object-contain skew-x-[14deg] scale-110 transition-transform duration-700 group-hover:scale-115"
+                    />
                   </div>
                 </div>
               </div>
