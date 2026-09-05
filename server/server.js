@@ -68,6 +68,11 @@ app.disable("x-powered-by");
 app.use(compression());
 
 // CORS configuration — strict whitelist, only allow known production/dev origins
+const CANONICAL_WEB_ORIGINS = new Set([
+  "https://ypheareak.site",
+  "https://www.ypheareak.site",
+]);
+
 const allowedOrigins = [
   process.env.CLIENT_URL,
   "http://localhost:5173",
@@ -81,6 +86,7 @@ const allowedOrigins = [
 
 const isAllowedOrigin = (origin) => {
   if (!origin) return true;
+  if (CANONICAL_WEB_ORIGINS.has(origin)) return true;
   if (allowedOrigins.includes(origin)) return true;
   if (/^https?:\/\/([a-z0-9-]+\.)*ypheareak\.site$/i.test(origin)) return true;
   if (/^https?:\/\/([a-z0-9-]+\.)*vercel\.app$/i.test(origin)) return true;
