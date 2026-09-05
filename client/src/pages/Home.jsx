@@ -764,7 +764,7 @@ const Home = () => {
               <div className="absolute -inset-10 rounded-full bg-gradient-to-tr from-amber-200/20 via-emerald-200/15 to-sky-200/20 dark:from-amber-400/10 dark:via-emerald-400/10 dark:to-sky-400/10 blur-3xl opacity-70 group-hover:opacity-100 transition duration-700 pointer-events-none" />
 
               {/* Circular Floral Frame Avatar (Dynamic with backend photo & fallback) */}
-              <div className="relative w-72 h-72 sm:w-80 sm:h-80 md:w-96 md:h-96 lg:w-[26rem] lg:h-[26rem] xl:w-[30rem] xl:h-[30rem] 2xl:w-[34rem] 2xl:h-[34rem] flex items-center justify-center group-hover:scale-[1.02] transition-transform duration-500">
+              <div className="relative w-80 h-80 sm:w-[22rem] sm:h-[22rem] md:w-[26rem] md:h-[26rem] lg:w-[32rem] lg:h-[32rem] xl:w-[38rem] xl:h-[38rem] 2xl:w-[44rem] 2xl:h-[44rem] flex items-center justify-center group-hover:scale-[1.02] transition-transform duration-500">
                 {/* Dynamic photo clipped inside circular window */}
                 <div className="absolute w-[68%] h-[68%] rounded-full overflow-hidden z-0 shadow-md">
                   {displayUser?.profile_image && !profileImgError ? (
