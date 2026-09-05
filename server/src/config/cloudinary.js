@@ -46,14 +46,16 @@ const uploadToCloudinary = async (input, options = {}) => {
     transformation: [
       { quality: "auto:good", fetch_format: "auto", flags: "lossy" },
     ],
-    // Create common delivery sizes after upload so visitors receive CDN-ready
-    // images instead of triggering the first transformation themselves.
+    // Create the exact responsive delivery sizes before the upload endpoint
+    // responds. This moves the transformation work to the admin upload, so a
+    // visitor's first image request is a small CDN cache hit rather than a
+    // slow on-demand transformation.
     eager: [
-      { width: 360, crop: "limit", quality: "auto:good", fetch_format: "auto" },
-      { width: 640, crop: "limit", quality: "auto:good", fetch_format: "auto" },
-      { width: 900, crop: "limit", quality: "auto:good", fetch_format: "auto" },
+      { fetch_format: "auto", quality: "auto:good", width: 360, crop: "limit" },
+      { fetch_format: "auto", quality: "auto:good", width: 640, crop: "limit" },
+      { fetch_format: "auto", quality: "auto:good", width: 900, crop: "limit" },
     ],
-    eager_async: true,
+    eager_async: false,
   };
 
   if (publicId) {
@@ -100,4 +102,3 @@ module.exports = {
   isCloudinaryConfigured,
   uploadToCloudinary,
 };
-

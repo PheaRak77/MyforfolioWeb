@@ -4,7 +4,6 @@ import { getImagePlaceholder } from "./imagePlaceholder.js";
  * Formats image URLs for deployed environments with automatic performance optimizations:
  * - On-the-fly Cloudinary WebP/AVIF conversion (`f_auto`)
  * - Smart perceptual compression (`q_auto:good`)
- * - Auto device-pixel-ratio (`dpr_auto`)
  * - Responsive dimensional limits per variant
  */
 
@@ -68,7 +67,10 @@ export const optimizeCloudinaryUrl = (url, options = {}) => {
     aspectRatio,
   } = options;
 
-  const transforms = [`f_${format}`, `q_${quality}`, "dpr_auto"];
+  // `srcSet` already lets the browser choose the correct physical image size.
+  // Avoiding dpr_auto keeps this URL identical to the derived sizes generated
+  // during upload, so a new visitor receives a CDN-cached image immediately.
+  const transforms = [`f_${format}`, `q_${quality}`];
 
   if (aspectRatio) transforms.push(`ar_${aspectRatio}`);
   if (width) transforms.push(`w_${Math.round(width)}`);
