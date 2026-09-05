@@ -48,35 +48,42 @@ router.post("/", async (req, res, next) => {
       [name.trim(), email.trim().toLowerCase(), subject.trim(), message.trim()]
     );
 
-    // 2. Determine recipient email (Always deliver to the configured portfolio SMTP_EMAIL)
-    let recipientEmail = process.env.SMTP_EMAIL?.trim();
-    if (!recipientEmail) {
-      const { rows } = await pool.query(
-        "SELECT email FROM users WHERE role = 'admin' LIMIT 1"
-      );
-      recipientEmail = rows[0]?.email;
-    }
+    // 2. The recipient is the real portfolio-admin email. SMTP_EMAIL is the
+    // sending mailbox; CONTACT_RECIPIENT_EMAIL permits a separate inbox.
+    const { rows } = await pool.query(
+      "SELECT email FROM users WHERE role = 'admin' ORDER BY created_at ASC LIMIT 1"
+    );
+    const recipientEmail = process.env.CONTACT_RECIPIENT_EMAIL?.trim() || rows[0]?.email;
 
-    // 3. Dispatch email notification in background (non-blocking for lightning-fast user response)
-    if (process.env.SMTP_EMAIL && process.env.SMTP_PASSWORD && recipientEmail) {
-      setImmediate(() => {
-        sendContactEmail({
-          senderName: name.trim(),
-          senderEmail: email.trim().toLowerCase(),
-          subject: subject.trim(),
-          message: message.trim(),
-          recipientEmail,
-        })
-          .then(() => {
-            console.log(`[Contact] ✅ Background email delivered to ${recipientEmail} successfully!`);
-          })
-          .catch((emailErr) => {
-            console.error("[Contact Email Error]:", emailErr.message);
-          });
+    if (!process.env.SMTP_EMAIL?.trim() || !process.env.SMTP_PASSWORD?.trim()) {
+      console.error("[Contact] Email not sent: SMTP_EMAIL or SMTP_PASSWORD is missing.");
+      return res.status(503).json({
+        success: false,
+        message: "Email delivery is not configured yet. Please contact the administrator directly.",
       });
     }
 
-    // 4. Return instant HTTP 200 response to client
+    if (!recipientEmail) {
+      console.error("[Contact] Email not sent: no administrator recipient address found.");
+      return res.status(503).json({
+        success: false,
+        message: "The administrator email address is not configured yet.",
+      });
+    }
+
+    // 3. Await the provider response. Never show a false success message: the
+    // sender only sees success after Nodemailer accepts the message for delivery.
+    await sendContactEmail({
+      senderName: name.trim(),
+      senderEmail: email.trim().toLowerCase(),
+      subject: subject.trim(),
+      message: message.trim(),
+      recipientEmail,
+    });
+
+    console.log(`[Contact] Email accepted for delivery to ${recipientEmail}.`);
+
+    // 4. Return success only after the mail provider accepted the message.
     return res.json({
       success: true,
       message: "Message sent successfully! Thank you for reaching out.",
