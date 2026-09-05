@@ -1,4 +1,10 @@
 const nodemailer = require("nodemailer");
+const dns = require("node:dns");
+
+// Render's service network is IPv4-only in this deployment. Gmail can resolve
+// to IPv6 first, which produces ENETUNREACH before Nodemailer can authenticate.
+// Prefer IPv4 so SMTP uses smtp.gmail.com's reachable A record.
+dns.setDefaultResultOrder("ipv4first");
 
 let transporterInstance = null;
 const escapeHtml = (value = "") => String(value)
