@@ -55,8 +55,10 @@ router.post("/", async (req, res, next) => {
     );
     const recipientEmail = process.env.CONTACT_RECIPIENT_EMAIL?.trim() || rows[0]?.email;
 
-    if (!process.env.SMTP_EMAIL?.trim() || !process.env.SMTP_PASSWORD?.trim()) {
-      console.error("[Contact] Email not sent: SMTP_EMAIL or SMTP_PASSWORD is missing.");
+    const hasResend = Boolean(process.env.RESEND_API_KEY?.trim());
+    const hasSmtp = Boolean(process.env.SMTP_EMAIL?.trim() && process.env.SMTP_PASSWORD?.trim());
+    if (!hasResend && !hasSmtp) {
+      console.error("[Contact] Email not sent: no email delivery provider is configured.");
       return res.status(503).json({
         success: false,
         message: "Email delivery is not configured yet. Please contact the administrator directly.",

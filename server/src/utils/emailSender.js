@@ -14,6 +14,32 @@ const escapeHtml = (value = "") => String(value)
   .replace(/"/g, "&quot;")
   .replace(/'/g, "&#039;");
 
+const sendWithResend = async ({ recipientEmail, senderEmail, senderName, subject, html, text }) => {
+  const response = await fetch("https://api.resend.com/emails", {
+    method: "POST",
+    headers: {
+      Authorization: `Bearer ${process.env.RESEND_API_KEY.trim()}`,
+      "Content-Type": "application/json",
+    },
+    body: JSON.stringify({
+      // `onboarding@resend.dev` works for early testing when recipientEmail is
+      // the email used for the Resend account. Use EMAIL_FROM with a verified
+      // domain when sending to general visitors.
+      from: process.env.EMAIL_FROM?.trim() || "Portfolio Contact <onboarding@resend.dev>",
+      to: [recipientEmail],
+      reply_to: senderEmail,
+      subject: `[Portfolio] ${subject}`,
+      html,
+      text,
+    }),
+  });
+
+  if (!response.ok) {
+    const detail = await response.text();
+    throw new Error(`Resend delivery failed (${response.status}): ${detail}`);
+  }
+};
+
 const getTransporter = () => {
   if (transporterInstance) {
     return transporterInstance;
@@ -85,7 +111,6 @@ const sendContactEmail = async ({
   message,
   recipientEmail,
 }) => {
-  const mailTransporter = getTransporter();
   const safeName = escapeHtml(senderName);
   const safeEmail = escapeHtml(senderEmail);
   const safeSubject = escapeHtml(subject);
@@ -163,13 +188,29 @@ const sendContactEmail = async ({
 </html>
   `;
 
+  const text = `New message from ${senderName} (${senderEmail})\n\nSubject: ${subject}\n\n${message}`;
+
+  // HTTPS delivery avoids SMTP socket timeouts on restrictive cloud networks.
+  if (process.env.RESEND_API_KEY?.trim()) {
+    await sendWithResend({
+      recipientEmail,
+      senderEmail,
+      senderName,
+      subject,
+      html,
+      text,
+    });
+    return;
+  }
+
+  const mailTransporter = getTransporter();
   await mailTransporter.sendMail({
     from: `"Portfolio Contact" <${process.env.SMTP_EMAIL}>`,
     to: recipientEmail,
     replyTo: `"${senderName}" <${senderEmail}>`,
     subject: `[Portfolio] ${subject}`,
     html,
-    text: `New message from ${senderName} (${senderEmail})\n\nSubject: ${subject}\n\n${message}`,
+    text,
   });
 };
 
