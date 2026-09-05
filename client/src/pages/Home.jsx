@@ -760,43 +760,18 @@ const Home = () => {
           <div className="flex-shrink-0 z-10 animate-hero-avatar relative">
             <div className="relative group flex items-center justify-center">
 
-              {/* Soft ambient glow behind the circle */}
-              <div className="absolute -inset-8 rounded-full bg-gradient-to-tr from-green-300/20 via-sky-300/15 to-emerald-400/20 blur-3xl opacity-70 group-hover:opacity-100 transition duration-700 pointer-events-none" />
+              {/* Soft ambient floral glow */}
+              <div className="absolute -inset-10 rounded-full bg-gradient-to-tr from-amber-200/20 via-emerald-200/15 to-sky-200/20 dark:from-amber-400/10 dark:via-emerald-400/10 dark:to-sky-400/10 blur-3xl opacity-70 group-hover:opacity-100 transition duration-700 pointer-events-none" />
 
-              {/* Circular frame wrapper */}
-              <div className="relative w-56 h-56 sm:w-64 sm:h-64 md:w-72 md:h-72 lg:w-80 lg:h-80 xl:w-[22rem] xl:h-[22rem] group-hover:scale-[1.03] transition-transform duration-500">
-
-                {/* Floral wreath — BEHIND the photo, extends outward, multiply removes white bg */}
+              {/* Circular Floral Frame Avatar */}
+              <div className="relative w-64 h-64 sm:w-72 sm:h-72 md:w-80 md:h-80 lg:w-96 lg:h-96 xl:w-[26rem] xl:h-[26rem] flex items-center justify-center group-hover:scale-[1.02] transition-transform duration-500">
                 <img
-                  src="/profile-photo.png"
-                  alt=""
-                  aria-hidden="true"
-                  className="absolute pointer-events-none z-0"
-                  style={{
-                    top: "-22%",
-                    left: "-22%",
-                    width: "144%",
-                    height: "144%",
-                    objectFit: "contain",
-                    mixBlendMode: "multiply",
-                  }}
+                  src="/profile-framed.png"
+                  alt={displayUser?.name || "Yorn Pheareak"}
+                  className="w-full h-full object-contain filter drop-shadow-xl select-none"
+                  loading="eager"
+                  decoding="async"
                 />
-
-                {/* Profile photo circle — sits ON TOP of the floral, clips to circle */}
-                <div className="absolute inset-0 rounded-full overflow-hidden z-10 ring-4 ring-white/20 shadow-2xl">
-                  {displayUser?.profile_image && !profileImgError ? (
-                    <PortfolioImage
-                      src={displayUser.profile_image}
-                      alt={displayUser.name || "Profile"}
-                      variant="profile"
-                      priority={true}
-                      onError={() => setProfileImgError(true)}
-                      className="w-full h-full object-cover"
-                    />
-                  ) : (
-                    <FingerprintLoader size="md" label="L O A D I N G" />
-                  )}
-                </div>
               </div>
             </div>
           </div>
