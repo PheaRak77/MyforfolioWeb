@@ -17,9 +17,11 @@ const Certificates = lazy(() => import("./pages/Certificates"));
 const Skills = lazy(() => import("./pages/Skills"));
 const Profile = lazy(() => import("./pages/Profile"));
 
+import FingerprintLoader from "./components/FingerprintLoader";
+
 const PageLoader = () => (
-  <div className="min-h-screen bg-slate-950 flex items-center justify-center">
-    <div className="w-8 h-8 border-2 border-blue-500 border-t-transparent rounded-full animate-spin" />
+  <div className="min-h-screen bg-slate-950 flex items-center justify-center p-4">
+    <FingerprintLoader size="md" label="L O A D I N G" />
   </div>
 );
 

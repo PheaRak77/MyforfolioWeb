@@ -13,6 +13,7 @@ import useScrollReveal from "../hooks/useScrollReveal";
 import PortfolioImage from "../components/PortfolioImage";
 import VerifiedBadge, { VerifiedName } from "../components/VerifiedBadge";
 import MotionBackground from "../components/MotionBackground";
+import FingerprintLoader from "../components/FingerprintLoader";
 import ThemeToggle from "../components/ThemeToggle";
 import ProjectCard from "../components/ProjectCard";
 import CertificateCard from "../components/CertificateCard";
@@ -786,28 +787,9 @@ const Home = () => {
                         className="w-full h-full object-cover skew-x-[14deg] scale-125 transition-transform duration-700 group-hover:scale-130"
                       />
                     ) : (
-                      <div className="relative w-full h-full flex flex-col items-center justify-center p-8 skew-x-[14deg] bg-gradient-to-b from-slate-900/80 to-slate-950/95 overflow-hidden">
-                        {/* High-tech HUD grid lines inside placeholder */}
-                        <div className="absolute inset-0 bg-grid-mesh opacity-20 pointer-events-none" />
-                        <div className="relative z-10 flex flex-col items-center">
-                          <div className="w-24 h-24 sm:w-28 sm:h-28 mx-auto mb-4 rounded-2xl bg-gradient-to-tr from-amber-500 via-indigo-600 to-purple-600 flex items-center justify-center text-4xl sm:text-5xl font-extrabold text-white shadow-xl ring-2 ring-white/20">
-                            {displayUser?.name
-                              ? displayUser.name.charAt(0).toUpperCase()
-                              : "P"}
-                          </div>
-                          <p className="font-bold text-lg sm:text-xl text-white flex items-center justify-center gap-1.5">
-                            <VerifiedName
-                              name={displayUser?.name || "Yorn Pheareak"}
-                              badgeSize="md"
-                            />
-                          </p>
-                          <p className="text-xs sm:text-sm text-slate-400 capitalize mt-1 font-mono">
-                            {displayUser?.role || "Full-Stack Developer"}
-                          </p>
-                          <div className="mt-4 flex items-center gap-1.5 px-2.5 py-1 rounded-full bg-white/10 text-[11px] text-amber-300 font-mono">
-                            <span>// 2026 Portfolio</span>
-                          </div>
-                        </div>
+                      <div className="relative w-full h-full flex flex-col items-center justify-center p-6 skew-x-[14deg] bg-[#050811] overflow-hidden">
+                        {/* Biometric Cyber Fingerprint Scanner */}
+                        <FingerprintLoader size="md" label="L O A D I N G" />
                       </div>
                     )}
                   </div>
