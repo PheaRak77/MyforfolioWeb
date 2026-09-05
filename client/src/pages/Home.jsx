@@ -763,35 +763,40 @@ const Home = () => {
               {/* Soft ambient glow behind the circle */}
               <div className="absolute -inset-8 rounded-full bg-gradient-to-tr from-green-300/20 via-sky-300/15 to-emerald-400/20 blur-3xl opacity-70 group-hover:opacity-100 transition duration-700 pointer-events-none" />
 
-              {/* Circular frame wrapper — sized to match the floral art */}
-              <div className="relative w-64 h-64 sm:w-72 sm:h-72 md:w-80 md:h-80 lg:w-[22rem] lg:h-[22rem] xl:w-96 xl:h-96 group-hover:scale-[1.03] transition-transform duration-500">
+              {/* Circular frame wrapper */}
+              <div className="relative w-56 h-56 sm:w-64 sm:h-64 md:w-72 md:h-72 lg:w-80 lg:h-80 xl:w-[22rem] xl:h-[22rem] group-hover:scale-[1.03] transition-transform duration-500">
 
-                {/* Profile photo — fills the circle */}
-                {displayUser?.profile_image && !profileImgError ? (
-                  <PortfolioImage
-                    src={displayUser.profile_image}
-                    alt={displayUser.name || "Profile"}
-                    variant="profile"
-                    priority={true}
-                    onError={() => setProfileImgError(true)}
-                    className="absolute inset-0 w-full h-full object-cover rounded-full"
-                  />
-                ) : (
-                  <img
-                    src="/profile-photo.png"
-                    alt="Profile"
-                    className="absolute inset-0 w-full h-full object-cover rounded-full"
-                  />
-                )}
-
-                {/* Floral wreath overlay — white becomes transparent via multiply */}
+                {/* Floral wreath — BEHIND the photo, extends outward, multiply removes white bg */}
                 <img
                   src="/profile-photo.png"
                   alt=""
                   aria-hidden="true"
-                  className="absolute inset-0 w-full h-full object-contain pointer-events-none"
-                  style={{ mixBlendMode: "multiply" }}
+                  className="absolute pointer-events-none z-0"
+                  style={{
+                    top: "-22%",
+                    left: "-22%",
+                    width: "144%",
+                    height: "144%",
+                    objectFit: "contain",
+                    mixBlendMode: "multiply",
+                  }}
                 />
+
+                {/* Profile photo circle — sits ON TOP of the floral, clips to circle */}
+                <div className="absolute inset-0 rounded-full overflow-hidden z-10 ring-4 ring-white/20 shadow-2xl">
+                  {displayUser?.profile_image && !profileImgError ? (
+                    <PortfolioImage
+                      src={displayUser.profile_image}
+                      alt={displayUser.name || "Profile"}
+                      variant="profile"
+                      priority={true}
+                      onError={() => setProfileImgError(true)}
+                      className="w-full h-full object-cover"
+                    />
+                  ) : (
+                    <FingerprintLoader size="md" label="L O A D I N G" />
+                  )}
+                </div>
               </div>
             </div>
           </div>
