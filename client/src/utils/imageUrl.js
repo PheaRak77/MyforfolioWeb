@@ -8,15 +8,23 @@ import { getImagePlaceholder } from "./imagePlaceholder.js";
  * - Responsive dimensional limits per variant
  */
 
-const getApiBaseUrl = () =>
-  (
-    (typeof import.meta !== "undefined" && import.meta.env?.VITE_API_URL) ||
-    "https://myportfolio-api-8b84.onrender.com/api"
-  )
-    .trim()
-    .replace(/\/api\/?$/, "");
-
 const isBrowser = typeof window !== "undefined";
+
+const getApiBaseUrl = () => {
+  if (typeof import.meta !== "undefined" && import.meta.env?.VITE_API_URL) {
+    return import.meta.env.VITE_API_URL.trim().replace(/\/api\/?$/, "");
+  }
+  if (
+    isBrowser &&
+    window.location.hostname !== "localhost" &&
+    window.location.hostname !== "127.0.0.1"
+  ) {
+    // Use relative path — Vercel proxies /api → Render server-side.
+    // Works on ypheareak.site, vercel.app, and any future domain.
+    return "";
+  }
+  return "http://localhost:5000";
+};
 
 const isProductionHost = () => {
   if (!isBrowser) return false;

@@ -13,7 +13,9 @@ const getBaseUrl = () => {
     window.location.hostname !== "localhost" &&
     window.location.hostname !== "127.0.0.1"
   ) {
-    return "https://myportfolio-api-8b84.onrender.com/api";
+    // Use relative path so Vercel proxies the request server-side.
+    // This avoids CORS entirely and works for ALL domains (including ypheareak.site).
+    return "/api";
   }
   return "http://localhost:5000/api";
 };

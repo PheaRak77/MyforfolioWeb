@@ -5,6 +5,10 @@
   "framework": "vite",
   "rewrites": [
     {
+      "source": "/api/:path*",
+      "destination": "https://myportfolio-api-8b84.onrender.com/api/:path*"
+    },
+    {
       "source": "/media/:path*",
       "destination": "https://myportfolio-api-8b84.onrender.com/uploads/:path*"
     },
