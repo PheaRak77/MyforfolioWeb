@@ -1,11 +1,14 @@
-import { memo } from "react";
-import PortfolioImage from "./PortfolioImage";
+import { memo, useState } from "react";
+import { getSkillIconUrl } from "../utils/skillIcons";
 
 /**
  * Single skill card with proficiency bar. Memoised so that unrelated page state
  * (contact form typing, modal opens) does not re-render the whole skills grid.
  */
 const SkillBar = memo(function SkillBar({ skill, index, isRevealed }) {
+  const [iconError, setIconError] = useState(false);
+  const iconUrl = !iconError ? getSkillIconUrl(skill.name, skill.icon) : null;
+
   return (
     <div
       className="portfolio-scroll-card portfolio-reveal-item p-3.5 sm:p-5 rounded-2xl sm:rounded-3xl bg-white/80 dark:bg-white/[0.04] backdrop-blur-xl border border-black/[0.06] dark:border-white/[0.08] hover:border-amber-400/60 dark:hover:border-amber-400/50 hover:shadow-2xl hover:shadow-amber-500/10 transition-all duration-300 group flex flex-col justify-between hover:-translate-y-1"
@@ -20,24 +23,22 @@ const SkillBar = memo(function SkillBar({ skill, index, isRevealed }) {
     >
       <div className="min-w-0">
         <div className="flex items-center gap-2.5 sm:gap-3 mb-2 sm:mb-3 min-w-0">
-          {skill.icon ? (
-            <div className="w-9 h-9 sm:w-11 sm:h-11 rounded-xl sm:rounded-2xl bg-amber-500/10 dark:bg-white/10 border border-amber-500/20 dark:border-white/10 p-1.5 sm:p-2 flex items-center justify-center shadow-sm flex-shrink-0 group-hover:scale-105 group-hover:border-amber-400/60 transition-all duration-300">
-              <PortfolioImage
-                src={skill.icon}
+          <div className="w-9 h-9 sm:w-11 sm:h-11 rounded-xl sm:rounded-2xl bg-amber-500/10 dark:bg-white/10 border border-amber-500/20 dark:border-white/10 p-1.5 sm:p-2 flex items-center justify-center shadow-sm flex-shrink-0 group-hover:scale-105 group-hover:border-amber-400/60 transition-all duration-300">
+            {iconUrl ? (
+              <img
+                src={iconUrl}
                 alt={skill.name}
-                className="w-full h-full max-w-[24px] max-h-[24px] sm:max-w-[28px] sm:max-h-[28px] object-contain"
-                fallback={
-                  <span className="text-amber-500 font-bold text-xs sm:text-sm">
-                    {skill.name?.charAt(0)}
-                  </span>
-                }
+                className="w-full h-full max-w-[24px] max-h-[24px] sm:max-w-[28px] sm:max-h-[28px] object-contain dark:invert dark:brightness-200"
+                loading="lazy"
+                decoding="async"
+                onError={() => setIconError(true)}
               />
-            </div>
-          ) : (
-            <div className="w-9 h-9 sm:w-11 sm:h-11 rounded-xl sm:rounded-2xl bg-amber-500/10 dark:bg-white/10 border border-amber-500/20 dark:border-white/10 text-amber-500 flex items-center justify-center font-bold text-xs sm:text-sm shadow-sm flex-shrink-0">
-              {skill.name?.charAt(0)}
-            </div>
-          )}
+            ) : (
+              <span className="text-amber-500 font-bold text-xs sm:text-sm select-none">
+                {skill.name?.charAt(0)?.toUpperCase()}
+              </span>
+            )}
+          </div>
 
           <div className="min-w-0 flex-1">
             <div className="flex items-center gap-1 flex-wrap">

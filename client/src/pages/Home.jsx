@@ -23,6 +23,7 @@ import {
 } from "../utils/publicDataCache";
 import { getProjectValidImages } from "../utils/projectImages";
 import { formatDisplayDate } from "../utils/formatDate";
+import { getSkillIconUrl } from "../utils/skillIcons";
 
 // The CV modal statically imports a full-page CV render. Nobody sees it until
 // they click "Look CV", so it stays out of the first-load bundle.
@@ -1379,24 +1380,27 @@ const Home = () => {
                 >
                   <div className="min-w-0">
                     <div className="flex items-center gap-2.5 sm:gap-3 mb-2 sm:mb-3 min-w-0">
-                      {skill.icon ? (
-                        <div className="w-9 h-9 sm:w-11 sm:h-11 rounded-xl sm:rounded-2xl bg-amber-500/10 dark:bg-white/10 border border-amber-500/20 dark:border-white/10 p-1.5 sm:p-2 flex items-center justify-center shadow-sm flex-shrink-0 group-hover:scale-105 group-hover:border-amber-400/60 transition-all duration-300">
-                          <PortfolioImage
-                            src={skill.icon}
-                            alt={skill.name}
-                            className="w-full h-full max-w-[24px] max-h-[24px] sm:max-w-[28px] sm:max-h-[28px] object-contain"
-                            fallback={
-                              <span className="text-amber-500 font-bold text-xs sm:text-sm">
-                                {skill.name?.charAt(0)}
-                              </span>
-                            }
-                          />
-                        </div>
-                      ) : (
-                        <div className="w-9 h-9 sm:w-11 sm:h-11 rounded-xl sm:rounded-2xl bg-amber-500/10 dark:bg-white/10 border border-amber-500/20 dark:border-white/10 text-amber-500 flex items-center justify-center font-bold text-xs sm:text-sm shadow-sm flex-shrink-0">
-                          {skill.name?.charAt(0)}
-                        </div>
-                      )}
+                      <div className="w-9 h-9 sm:w-11 sm:h-11 rounded-xl sm:rounded-2xl bg-amber-500/10 dark:bg-white/10 border border-amber-500/20 dark:border-white/10 p-1.5 sm:p-2 flex items-center justify-center shadow-sm flex-shrink-0 group-hover:scale-105 group-hover:border-amber-400/60 transition-all duration-300">
+                        {(() => {
+                          const iconUrl = getSkillIconUrl(skill.name, skill.icon);
+                          return iconUrl ? (
+                            <img
+                              src={iconUrl}
+                              alt={skill.name}
+                              className="w-full h-full max-w-[24px] max-h-[24px] sm:max-w-[28px] sm:max-h-[28px] object-contain dark:invert dark:brightness-200"
+                              loading="lazy"
+                              decoding="async"
+                              onError={(e) => { e.currentTarget.style.display = "none"; e.currentTarget.nextSibling.style.display = "flex"; }}
+                            />
+                          ) : null;
+                        })()}
+                        <span
+                          className="text-amber-500 font-bold text-xs sm:text-sm select-none"
+                          style={{ display: getSkillIconUrl(skill.name, skill.icon) ? "none" : "flex" }}
+                        >
+                          {skill.name?.charAt(0)?.toUpperCase()}
+                        </span>
+                      </div>
 
                       <div className="min-w-0 flex-1">
                         <div className="flex items-center gap-1 flex-wrap">
