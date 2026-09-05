@@ -756,28 +756,43 @@ const Home = () => {
             </div>
           </div>
 
-          {/* Right Parallelogram Avatar Showcase (Matching user reference) */}
+          {/* Right — Circular Floral Wreath Frame */}
           <div className="flex-shrink-0 z-10 animate-hero-avatar relative">
             <div className="relative group flex items-center justify-center">
-              {/* Full Ambient Golden / Yellow Halo Bloom */}
-              <div className="absolute -inset-6 -skew-x-[14deg] rounded-3xl bg-gradient-to-tr from-amber-400/30 via-yellow-400/25 to-indigo-500/20 blur-3xl opacity-75 group-hover:opacity-100 transition duration-700 pointer-events-none" />
 
+              {/* Soft ambient glow behind the circle */}
+              <div className="absolute -inset-8 rounded-full bg-gradient-to-tr from-green-300/20 via-sky-300/15 to-emerald-400/20 blur-3xl opacity-70 group-hover:opacity-100 transition duration-700 pointer-events-none" />
 
-              {/* Glowing Iridescent Border Frame */}
-              <div className="relative -skew-x-[14deg] rounded-3xl p-1.5 sm:p-2 bg-gradient-to-tr from-amber-400 via-yellow-300 via-amber-500 to-yellow-400 shadow-2xl group-hover:scale-[1.02] transition-transform duration-500">
-                {/* Secondary Inner Background Ring */}
-                <div className="rounded-2xl p-1 bg-white dark:bg-[#070b14] border-2 border-black/10 dark:border-white/20">
-                  {/* Parallelogram Avatar Container */}
-                  <div className="relative w-60 h-72 sm:w-72 sm:h-84 md:w-80 md:h-96 lg:w-[22rem] lg:h-[26rem] xl:w-[24rem] xl:h-[28rem] rounded-xl overflow-hidden bg-white dark:bg-white flex items-center justify-center shadow-inner">
-                    <img
-                      src="/profile-photo.png"
-                      alt="Profile"
-                      className="w-full h-full object-contain skew-x-[14deg] scale-110 transition-transform duration-700 group-hover:scale-115"
-                    />
-                  </div>
-                </div>
+              {/* Circular frame wrapper — sized to match the floral art */}
+              <div className="relative w-64 h-64 sm:w-72 sm:h-72 md:w-80 md:h-80 lg:w-[22rem] lg:h-[22rem] xl:w-96 xl:h-96 group-hover:scale-[1.03] transition-transform duration-500">
+
+                {/* Profile photo — fills the circle */}
+                {displayUser?.profile_image && !profileImgError ? (
+                  <PortfolioImage
+                    src={displayUser.profile_image}
+                    alt={displayUser.name || "Profile"}
+                    variant="profile"
+                    priority={true}
+                    onError={() => setProfileImgError(true)}
+                    className="absolute inset-0 w-full h-full object-cover rounded-full"
+                  />
+                ) : (
+                  <img
+                    src="/profile-photo.png"
+                    alt="Profile"
+                    className="absolute inset-0 w-full h-full object-cover rounded-full"
+                  />
+                )}
+
+                {/* Floral wreath overlay — white becomes transparent via multiply */}
+                <img
+                  src="/profile-photo.png"
+                  alt=""
+                  aria-hidden="true"
+                  className="absolute inset-0 w-full h-full object-contain pointer-events-none"
+                  style={{ mixBlendMode: "multiply" }}
+                />
               </div>
-
             </div>
           </div>
         </section>
