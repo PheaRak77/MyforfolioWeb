@@ -17,10 +17,15 @@ const getTransporter = () => {
   const rawPass = (process.env.SMTP_PASSWORD || "").trim();
   const pass = rawPass.replace(/\s+/g, ""); // Remove any spaces from app password
 
-  // If using Gmail, 'service: gmail' with connection pooling is the fastest and most reliable
+  // Render and other cloud hosts can intermittently block or delay Gmail's
+  // implicit-TLS port (465). Gmail's explicit TLS submission port (587) is
+  // the standard cloud-safe choice and works with Gmail App Passwords.
   if (email.endsWith("@gmail.com") || (!process.env.SMTP_HOST && email.includes("@gmail"))) {
     transporterInstance = nodemailer.createTransport({
-      service: "gmail",
+      host: "smtp.gmail.com",
+      port: parseInt(process.env.SMTP_PORT, 10) || 587,
+      secure: false,
+      requireTLS: true,
       pool: true, // Reuse open connections
       maxConnections: 3,
       maxMessages: 50,
@@ -31,6 +36,9 @@ const getTransporter = () => {
       tls: {
         rejectUnauthorized: false,
       },
+      connectionTimeout: 10000,
+      greetingTimeout: 10000,
+      socketTimeout: 15000,
     });
     return transporterInstance;
   }
