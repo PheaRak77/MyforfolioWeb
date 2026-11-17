@@ -38,7 +38,7 @@ export default function CvModal({ isOpen, onClose }) {
       aria-labelledby="cv-modal-title"
     >
       {/* Floating Top Action Bar (Sticky at top of screen for easy download & close) */}
-      <div className="sticky top-2 sm:top-4 z-30 mb-4 sm:mb-6 w-full max-w-4xl flex items-center justify-between gap-3 px-4 sm:px-6 py-3 rounded-2xl bg-slate-900/90 border border-slate-700/80 shadow-2xl backdrop-blur-xl">
+      <div className="sticky top-2 sm:top-4 z-30 mb-4 sm:mb-6 w-full max-w-4xl flex items-center justify-between gap-3 px-4 sm:px-6 py-3 rounded-2xl liquid-glass-modal">
         <div className="flex items-center gap-3">
           <div className="w-9 h-9 rounded-xl bg-gradient-to-tr from-blue-600 to-indigo-600 flex items-center justify-center text-white shadow-md shadow-blue-500/25 flex-shrink-0">
             <svg
@@ -58,14 +58,14 @@ export default function CvModal({ isOpen, onClose }) {
           <div>
             <h2
               id="cv-modal-title"
-              className="text-sm sm:text-base font-bold text-white leading-tight flex items-center gap-2"
+              className="text-sm sm:text-base font-bold text-slate-900 dark:text-white leading-tight flex items-center gap-2"
             >
               <span>Yorn Pheareak — Curriculum Vitae</span>
-              <span className="text-[10px] uppercase font-bold px-2 py-0.5 rounded-full bg-emerald-500/20 text-emerald-300 border border-emerald-500/30">
+              <span className="text-[10px] uppercase font-bold px-2 py-0.5 rounded-full bg-emerald-500/20 text-emerald-700 dark:text-emerald-300 border border-emerald-500/30">
                 Official
               </span>
             </h2>
-            <p className="text-xs text-slate-400 hidden sm:block">
+            <p className="text-xs text-slate-600 dark:text-slate-400 hidden sm:block">
               Full-Stack Developer
             </p>
           </div>
@@ -101,7 +101,7 @@ export default function CvModal({ isOpen, onClose }) {
             download="Yorn_Pheareak_CV_HQ.png"
             target="_blank"
             rel="noopener noreferrer"
-            className="hidden sm:inline-flex items-center gap-2 px-4 py-2.5 rounded-xl bg-slate-800 hover:bg-slate-700 text-slate-200 hover:text-white border border-slate-700 text-xs sm:text-sm font-semibold transition-all hover:scale-[1.02] active:scale-[0.98]"
+            className="liquid-glass-pill hidden sm:inline-flex items-center gap-2 px-4 py-2.5 rounded-xl text-slate-800 dark:text-slate-100 text-xs sm:text-sm font-semibold transition-all hover:scale-[1.02] active:scale-[0.98]"
             title="Download Ultra HD PNG (300 DPI)"
           >
             <span>PNG (HD)</span>
@@ -110,7 +110,7 @@ export default function CvModal({ isOpen, onClose }) {
           <button
             type="button"
             onClick={onClose}
-            className="p-2.5 rounded-xl bg-slate-800 hover:bg-slate-700 text-slate-300 hover:text-white border border-slate-700 transition-colors shadow-sm"
+            className="liquid-glass-pill p-2.5 rounded-xl text-slate-700 dark:text-slate-200 hover:text-black dark:hover:text-white transition-all"
             aria-label="Close CV Modal"
             title="Close"
           >

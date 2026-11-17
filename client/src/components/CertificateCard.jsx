@@ -37,7 +37,7 @@ const CertificateCard = memo(function CertificateCard({
 
   return (
     <div
-      className="portfolio-scroll-card portfolio-reveal-item rounded-3xl bg-white/80 dark:bg-slate-900/60 backdrop-blur-xl border border-slate-200/80 dark:border-slate-800/80 hover:border-purple-500/50 hover:shadow-2xl hover:shadow-purple-500/10 transition-all duration-300 flex flex-col overflow-hidden group hover:-translate-y-1.5"
+      className="portfolio-scroll-card portfolio-reveal-item liquid-glass-card rounded-3xl hover:border-purple-400/70 dark:hover:border-purple-400/50 hover:shadow-2xl hover:shadow-purple-500/15 transition-all duration-300 flex flex-col overflow-hidden group hover:-translate-y-1.5"
       style={{
         opacity: isRevealed ? 1 : 0,
         transform: isRevealed ? "none" : "translateY(40px)",

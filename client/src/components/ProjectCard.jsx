@@ -21,7 +21,7 @@ const ProjectCard = memo(function ProjectCard({
   const select = () => onSelect(project);
 
   return (
-    <div className="portfolio-scroll-card group rounded-3xl bg-white/80 dark:bg-slate-900/60 backdrop-blur-xl border border-slate-200/80 dark:border-slate-800/80 hover:border-blue-500/50 hover:shadow-2xl hover:shadow-blue-500/10 transition-all duration-300 flex flex-col overflow-hidden hover:-translate-y-1.5">
+    <div className="portfolio-scroll-card liquid-glass-card group rounded-3xl hover:border-blue-400/70 dark:hover:border-blue-400/50 hover:shadow-2xl hover:shadow-blue-500/15 transition-all duration-300 flex flex-col overflow-hidden hover:-translate-y-1.5">
       {/* Project Image Preview — no opacity animation (fixes lazy-load black box) */}
       <div
         onClick={select}

@@ -311,8 +311,8 @@ const Home = () => {
       {/* Motion-style Parametric Matrix Wave & Ambient Aurora Glow */}
       <MotionBackground />
 
-      {/* Top Apple-Style Glassmorphic Navigation Bar */}
-      <header className="fixed inset-x-0 top-0 z-40 w-full apple-nav-blur bg-white/90 dark:bg-[#070b14]/90 border-b border-black/[0.06] dark:border-white/[0.08] pt-safe-top shadow-sm">
+      {/* Top Apple-Style Liquid Glass Navigation Bar */}
+      <header className="fixed inset-x-0 top-0 z-40 w-full liquid-glass-nav pt-safe-top transition-all duration-300">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 h-16 sm:h-18 flex items-center justify-between gap-3 sm:gap-4">
           <a
             href="#hero"
@@ -356,47 +356,47 @@ const Home = () => {
             </div>
           </a>
 
-          {/* Apple-Style Desktop Nav Links (Visible on LG screens) */}
-          <nav className="hidden lg:flex items-center gap-1.5 xl:gap-2 text-xs font-semibold text-neutral-600 dark:text-neutral-300">
+          {/* Apple-Style Liquid Glass Desktop Nav Links (Visible on LG screens) */}
+          <nav className="hidden lg:flex items-center gap-1 xl:gap-1.5 px-2 py-1 rounded-full liquid-glass-pill text-xs font-semibold text-neutral-700 dark:text-neutral-200">
             <a
               href="#about"
               onClick={(e) => handleNavClick(e, "#about")}
-              className="px-3.5 py-1.5 rounded-full hover:bg-black/5 dark:hover:bg-white/10 hover:text-neutral-900 dark:hover:text-white transition-all"
+              className="px-3.5 py-1.5 rounded-full hover:bg-white/80 dark:hover:bg-white/15 hover:text-neutral-950 dark:hover:text-white transition-all"
             >
               About
             </a>
             <a
               href="#skills"
               onClick={(e) => handleNavClick(e, "#skills")}
-              className="px-3.5 py-1.5 rounded-full hover:bg-black/5 dark:hover:bg-white/10 hover:text-neutral-900 dark:hover:text-white transition-all"
+              className="px-3.5 py-1.5 rounded-full hover:bg-white/80 dark:hover:bg-white/15 hover:text-neutral-950 dark:hover:text-white transition-all"
             >
               Skills
             </a>
             <a
               href="#projects"
               onClick={(e) => handleNavClick(e, "#projects")}
-              className="px-3.5 py-1.5 rounded-full hover:bg-black/5 dark:hover:bg-white/10 hover:text-neutral-900 dark:hover:text-white transition-all"
-            >https://www.ypheareak.site/
+              className="px-3.5 py-1.5 rounded-full hover:bg-white/80 dark:hover:bg-white/15 hover:text-neutral-950 dark:hover:text-white transition-all"
+            >
               Projects
             </a>
             <a
               href="#certificates"
               onClick={(e) => handleNavClick(e, "#certificates")}
-              className="px-3.5 py-1.5 rounded-full hover:bg-black/5 dark:hover:bg-white/10 hover:text-neutral-900 dark:hover:text-white transition-all"
+              className="px-3.5 py-1.5 rounded-full hover:bg-white/80 dark:hover:bg-white/15 hover:text-neutral-950 dark:hover:text-white transition-all"
             >
               Certificates
             </a>
             <a
               href="#contact"
               onClick={(e) => handleNavClick(e, "#contact")}
-              className="px-3.5 py-1.5 rounded-full hover:bg-black/5 dark:hover:bg-white/10 hover:text-neutral-900 dark:hover:text-white transition-all"
+              className="px-3.5 py-1.5 rounded-full hover:bg-white/80 dark:hover:bg-white/15 hover:text-neutral-950 dark:hover:text-white transition-all"
             >
               Contact
             </a>
             <button
               type="button"
               onClick={() => setCvModalOpen(true)}
-              className="ml-2 text-neutral-950 font-bold transition-all hover:scale-105 flex items-center gap-1.5 px-4 py-1.5 rounded-full bg-gradient-to-r from-amber-400 via-yellow-400 to-amber-500 hover:from-amber-300 hover:to-amber-400 shadow-md shadow-amber-500/25"
+              className="ml-1 text-neutral-950 font-bold transition-all hover:scale-105 flex items-center gap-1.5 px-4 py-1.5 rounded-full bg-gradient-to-r from-amber-400 via-yellow-400 to-amber-500 hover:from-amber-300 hover:to-amber-400 shadow-md shadow-amber-500/25"
               title="Look and Download CV"
             >
               <svg
@@ -435,7 +435,7 @@ const Home = () => {
                   )}
                   <button
                     onClick={logout}
-                    className="px-3 py-1.5 text-xs font-medium rounded-full bg-black/5 dark:bg-white/10 text-neutral-700 dark:text-neutral-300 hover:text-black dark:hover:text-white transition-colors"
+                    className="liquid-glass-pill px-3.5 py-1.5 text-xs font-semibold rounded-full text-neutral-700 dark:text-neutral-200 hover:text-black dark:hover:text-white transition-all"
                     title="Logout"
                   >
                     Logout
@@ -444,7 +444,7 @@ const Home = () => {
               ) : (
                 <Link
                   to="/login"
-                  className="px-3.5 py-1.5 text-xs font-semibold rounded-full bg-black/5 dark:bg-white/10 border border-black/5 dark:border-white/10 text-neutral-800 dark:text-neutral-200 hover:text-black dark:hover:text-white hover:bg-black/10 dark:hover:bg-white/15 transition-all flex items-center gap-1.5"
+                  className="liquid-glass-pill px-4 py-1.5 text-xs font-semibold rounded-full text-neutral-800 dark:text-neutral-100 hover:text-black dark:hover:text-white hover:scale-105 transition-all flex items-center gap-1.5"
                 >
                   Sign In
                 </Link>
@@ -455,7 +455,7 @@ const Home = () => {
             <button
               type="button"
               onClick={() => setMobileMenuOpen(!mobileMenuOpen)}
-              className="lg:hidden w-10 h-10 rounded-full bg-black/5 dark:bg-white/10 border border-black/5 dark:border-white/10 flex flex-col items-center justify-center gap-1.5 focus:outline-none transition-all active:scale-90"
+              className="lg:hidden liquid-glass-pill w-10 h-10 rounded-full flex flex-col items-center justify-center gap-1.5 focus:outline-none transition-all active:scale-90"
               aria-label="Toggle Navigation Menu"
             >
               <span
@@ -477,9 +477,9 @@ const Home = () => {
           </div>
         </div>
 
-        {/* Apple-Style Animated Mobile Drawer Menu */}
+        {/* Apple-Style Liquid Glass Animated Mobile Drawer Menu */}
         {mobileMenuOpen && (
-          <div className="lg:hidden apple-nav-blur bg-white/95 dark:bg-[#070b14]/95 border-b border-black/[0.08] dark:border-white/[0.08] px-5 pt-4 pb-7 pb-safe-bottom space-y-4 shadow-2xl animate-mobile-drawer origin-top">
+          <div className="lg:hidden liquid-glass-modal mx-3 mt-2 rounded-3xl px-5 pt-4 pb-6 space-y-4 animate-mobile-drawer origin-top">
             <nav className="flex flex-col space-y-2 text-sm font-semibold">
               <a
                 href="#about"
@@ -612,7 +612,7 @@ const Home = () => {
           {/* Left Text Column */}
           <div className="flex-1 space-y-6 text-center lg:text-left z-10 w-full">
             {/* Modern Availability Badge */}
-            <div className="inline-flex items-center gap-2.5 px-4 py-2 rounded-full bg-white/80 dark:bg-slate-900/80 border border-emerald-500/30 text-emerald-600 dark:text-emerald-300 shadow-lg shadow-emerald-500/10 backdrop-blur-xl animate-role-pill">
+            <div className="liquid-glass-pill inline-flex items-center gap-2.5 px-4 py-2 rounded-full border-emerald-500/35 text-emerald-600 dark:text-emerald-300 shadow-lg shadow-emerald-500/10 animate-role-pill">
               <span className="relative flex h-2.5 w-2.5">
                 <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-emerald-400 opacity-75"></span>
                 <span className="relative inline-flex rounded-full h-2.5 w-2.5 bg-emerald-500"></span>
@@ -654,7 +654,7 @@ const Home = () => {
             {/* Badges Info */}
             <div className="flex flex-wrap items-center justify-center lg:justify-start gap-3 sm:gap-4 pt-2 text-sm animate-hero-3">
               {displayUser?.email && (
-                <div className="flex items-center gap-2 px-4 py-2.5 rounded-2xl bg-white/80 dark:bg-slate-900/70 border border-slate-200/80 dark:border-slate-800/80 shadow-sm dark:shadow-md hover:border-amber-500/40 transition-all backdrop-blur-md group">
+                <div className="liquid-glass-pill flex items-center gap-2 px-4 py-2.5 rounded-2xl hover:border-amber-500/50 transition-all group">
                   <div className="w-6 h-6 rounded-lg bg-amber-500/10 text-amber-500 dark:text-amber-400 flex items-center justify-center flex-shrink-0 group-hover:scale-110 transition-transform">
                     <svg
                       className="w-3.5 h-3.5"
@@ -670,14 +670,14 @@ const Home = () => {
                       />
                     </svg>
                   </div>
-                  <span className="text-xs sm:text-sm font-medium text-slate-700 dark:text-slate-300 truncate">
+                  <span className="text-xs sm:text-sm font-medium text-slate-700 dark:text-slate-200 truncate">
                     {displayUser.email}
                   </span>
                 </div>
               )}
 
               {displayUser?.phone && (
-                <div className="flex items-center gap-2 px-4 py-2.5 rounded-2xl bg-white/80 dark:bg-slate-900/70 border border-slate-200/80 dark:border-slate-800/80 shadow-sm dark:shadow-md hover:border-emerald-500/40 transition-all backdrop-blur-md group">
+                <div className="liquid-glass-pill flex items-center gap-2 px-4 py-2.5 rounded-2xl hover:border-emerald-500/50 transition-all group">
                   <div className="w-6 h-6 rounded-lg bg-emerald-500/10 text-emerald-500 dark:text-emerald-400 flex items-center justify-center flex-shrink-0 group-hover:scale-110 transition-transform">
                     <svg
                       className="w-3.5 h-3.5"
@@ -693,14 +693,14 @@ const Home = () => {
                       />
                     </svg>
                   </div>
-                  <span className="text-xs sm:text-sm font-medium text-slate-700 dark:text-slate-300">
+                  <span className="text-xs sm:text-sm font-medium text-slate-700 dark:text-slate-200">
                     {displayUser.phone}
                   </span>
                 </div>
               )}
 
               {displayUser?.dob && (
-                <div className="flex items-center gap-2 px-4 py-2.5 rounded-2xl bg-white/80 dark:bg-slate-900/70 border border-slate-200/80 dark:border-slate-800/80 shadow-sm dark:shadow-md hover:border-purple-500/40 transition-all backdrop-blur-md group">
+                <div className="liquid-glass-pill flex items-center gap-2 px-4 py-2.5 rounded-2xl hover:border-purple-500/50 transition-all group">
                   <div className="w-6 h-6 rounded-lg bg-purple-500/10 text-purple-500 dark:text-purple-400 flex items-center justify-center flex-shrink-0 group-hover:scale-110 transition-transform">
                     <svg
                       className="w-3.5 h-3.5"
@@ -716,7 +716,7 @@ const Home = () => {
                       />
                     </svg>
                   </div>
-                  <span className="text-xs sm:text-sm font-medium text-slate-700 dark:text-slate-300">
+                  <span className="text-xs sm:text-sm font-medium text-slate-700 dark:text-slate-200">
                     Born {formatDisplayDate(displayUser.dob)}
                   </span>
                 </div>
@@ -758,13 +758,13 @@ const Home = () => {
 
               <a
                 href="#projects"
-                className="px-5 py-3.5 rounded-full bg-white/80 dark:bg-white/5 hover:bg-white dark:hover:bg-white/10 text-neutral-800 dark:text-white font-semibold border border-black/5 dark:border-white/10 hover:border-amber-400/50 transition-all hover:-translate-y-0.5 text-sm shadow-sm backdrop-blur-md"
+                className="liquid-glass-pill px-5 py-3.5 rounded-full text-neutral-800 dark:text-white font-semibold hover:border-amber-400/60 transition-all hover:-translate-y-0.5 text-sm"
               >
                 View Projects
               </a>
               <a
                 href="#certificates"
-                className="px-5 py-3.5 rounded-full bg-white/80 dark:bg-white/5 hover:bg-white dark:hover:bg-white/10 text-neutral-700 dark:text-slate-200 font-semibold border border-black/5 dark:border-white/10 hover:border-amber-400/50 transition-all hover:-translate-y-0.5 text-sm shadow-sm backdrop-blur-md"
+                className="liquid-glass-pill px-5 py-3.5 rounded-full text-neutral-700 dark:text-slate-100 font-semibold hover:border-amber-400/60 transition-all hover:-translate-y-0.5 text-sm"
               >
                 Certificates
               </a>
@@ -865,7 +865,7 @@ const Home = () => {
                 </svg>
               </div>
 
-              <div className="p-6 sm:p-7 rounded-3xl bg-white/80 dark:bg-white/[0.04] backdrop-blur-xl border border-black/[0.06] dark:border-white/[0.08] shadow-sm hover:border-amber-400/50 transition-all duration-300">
+              <div className="liquid-glass-card p-6 sm:p-7 rounded-3xl hover:border-amber-400/60 transition-all duration-300">
                 <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-2 border-b border-black/5 dark:border-white/10 pb-4 mb-4">
                   <div>
                     <span className="text-xs uppercase font-extrabold tracking-wider text-amber-500 dark:text-amber-300">
@@ -923,7 +923,7 @@ const Home = () => {
                 </svg>
               </div>
 
-              <div className="p-6 sm:p-7 rounded-3xl bg-white/80 dark:bg-white/[0.04] backdrop-blur-xl border border-black/[0.06] dark:border-white/[0.08] shadow-sm hover:border-amber-400/50 transition-all duration-300 space-y-6">
+              <div className="liquid-glass-card p-6 sm:p-7 rounded-3xl hover:border-amber-400/60 transition-all duration-300 space-y-6">
                 <div className="border-b border-black/5 dark:border-white/10 pb-4">
                   <span className="text-xs uppercase font-extrabold tracking-wider text-amber-500 dark:text-amber-300">
                     Core Competencies
@@ -935,7 +935,7 @@ const Home = () => {
 
                 {/* Categorized Skills Grid */}
                 <div className="grid sm:grid-cols-2 gap-4">
-                  <div className="p-4 rounded-2xl bg-black/5 dark:bg-white/5 border border-black/5 dark:border-white/10">
+                  <div className="liquid-glass-box p-4 rounded-2xl">
                     <h4 className="font-bold text-xs uppercase text-amber-600 dark:text-amber-300 tracking-wide mb-1.5">
                       Frontend
                     </h4>
@@ -945,7 +945,7 @@ const Home = () => {
                     </p>
                   </div>
 
-                  <div className="p-4 rounded-2xl bg-black/5 dark:bg-white/5 border border-black/5 dark:border-white/10">
+                  <div className="liquid-glass-box p-4 rounded-2xl">
                     <h4 className="font-bold text-xs uppercase text-amber-600 dark:text-amber-300 tracking-wide mb-1.5">
                       Backend & APIs
                     </h4>
@@ -955,7 +955,7 @@ const Home = () => {
                     </p>
                   </div>
 
-                  <div className="p-4 rounded-2xl bg-black/5 dark:bg-white/5 border border-black/5 dark:border-white/10">
+                  <div className="liquid-glass-box p-4 rounded-2xl">
                     <h4 className="font-bold text-xs uppercase text-amber-600 dark:text-amber-300 tracking-wide mb-1.5">
                       Databases
                     </h4>
@@ -964,7 +964,7 @@ const Home = () => {
                     </p>
                   </div>
 
-                  <div className="p-4 rounded-2xl bg-black/5 dark:bg-white/5 border border-black/5 dark:border-white/10">
+                  <div className="liquid-glass-box p-4 rounded-2xl">
                     <h4 className="font-bold text-xs uppercase text-amber-600 dark:text-amber-300 tracking-wide mb-1.5">
                       Tools & Technologies
                     </h4>
@@ -980,7 +980,7 @@ const Home = () => {
                     Technical Proficiency & Focus Areas
                   </h4>
                   <div className="space-y-3 text-sm text-neutral-600 dark:text-neutral-300">
-                    <div className="p-3.5 rounded-2xl bg-white/50 dark:bg-white/[0.02] border border-black/5 dark:border-white/5">
+                    <div className="liquid-glass-box p-3.5 rounded-2xl">
                       <strong className="text-neutral-900 dark:text-white font-semibold">
                         Clean & Beautiful User Interfaces:
                       </strong>{" "}
@@ -988,7 +988,7 @@ const Home = () => {
                       intuitive user interfaces that deliver exceptional user
                       experiences across all digital touchpoints.
                     </div>
-                    <div className="p-3.5 rounded-2xl bg-white/50 dark:bg-white/[0.02] border border-black/5 dark:border-white/5">
+                    <div className="liquid-glass-box p-3.5 rounded-2xl">
                       <strong className="text-neutral-900 dark:text-white font-semibold">
                         Fully Responsive Web Development:
                       </strong>{" "}
@@ -997,7 +997,7 @@ const Home = () => {
                       phones and tablets to desktop monitors—ensuring optimal
                       layout consistency and accessibility.
                     </div>
-                    <div className="p-3.5 rounded-2xl bg-white/50 dark:bg-white/[0.02] border border-black/5 dark:border-white/5">
+                    <div className="liquid-glass-box p-3.5 rounded-2xl">
                       <strong className="text-neutral-900 dark:text-white font-semibold">
                         Modern Styling Frameworks:
                       </strong>{" "}
@@ -1005,7 +1005,7 @@ const Home = () => {
                       create fast-loading, clean, and pixel-perfect layouts with
                       custom styling and animations.
                     </div>
-                    <div className="p-3.5 rounded-2xl bg-white/50 dark:bg-white/[0.02] border border-black/5 dark:border-white/5">
+                    <div className="liquid-glass-box p-3.5 rounded-2xl">
                       <strong className="text-neutral-900 dark:text-white font-semibold">
                         Framework Mastery:
                       </strong>{" "}
@@ -1013,7 +1013,7 @@ const Home = () => {
                       component-driven single-page applications (SPAs) using
                       Vue.js and React.js.
                     </div>
-                    <div className="p-3.5 rounded-2xl bg-white/50 dark:bg-white/[0.02] border border-black/5 dark:border-white/5">
+                    <div className="liquid-glass-box p-3.5 rounded-2xl">
                       <strong className="text-neutral-900 dark:text-white font-semibold">
                         Server-Side Development:
                       </strong>{" "}
@@ -1051,7 +1051,7 @@ const Home = () => {
                 </svg>
               </div>
 
-              <div className="p-6 sm:p-7 rounded-3xl bg-white/80 dark:bg-white/[0.04] backdrop-blur-xl border border-black/[0.06] dark:border-white/[0.08] shadow-sm hover:border-amber-400/50 transition-all duration-300">
+              <div className="liquid-glass-card p-6 sm:p-7 rounded-3xl hover:border-amber-400/60 transition-all duration-300">
                 <div className="border-b border-black/5 dark:border-white/10 pb-4 mb-4">
                   <span className="text-xs uppercase font-extrabold tracking-wider text-amber-500 dark:text-amber-300">
                     Education
@@ -1099,7 +1099,7 @@ const Home = () => {
 
           <div className="grid md:grid-cols-3 gap-6">
             <div
-              className="relative p-6 sm:p-7 rounded-3xl bg-white/80 dark:bg-slate-900/60 backdrop-blur-xl border border-slate-200/80 dark:border-slate-800/80 hover:border-blue-500/50 hover:shadow-xl hover:shadow-blue-500/10 transition-all duration-300 group hover:-translate-y-1 reveal reveal-scale reveal-delay-1"
+              className="liquid-glass-card relative p-6 sm:p-7 rounded-3xl hover:border-blue-400/70 dark:hover:border-blue-400/50 hover:shadow-xl hover:shadow-blue-500/15 transition-all duration-300 group hover:-translate-y-1 reveal reveal-scale reveal-delay-1"
               style={{
                 opacity: isAboutVisible ? 1 : 0,
                 transform: isAboutVisible ? "none" : "scale(0.88)",
@@ -1136,7 +1136,7 @@ const Home = () => {
             </div>
 
             <div
-              className="relative p-6 sm:p-7 rounded-3xl bg-white/80 dark:bg-slate-900/60 backdrop-blur-xl border border-slate-200/80 dark:border-slate-800/80 hover:border-indigo-500/50 hover:shadow-xl hover:shadow-indigo-500/10 transition-all duration-300 group hover:-translate-y-1"
+              className="liquid-glass-card relative p-6 sm:p-7 rounded-3xl hover:border-indigo-400/70 dark:hover:border-indigo-400/50 hover:shadow-xl hover:shadow-indigo-500/15 transition-all duration-300 group hover:-translate-y-1"
               style={{
                 opacity: isAboutVisible ? 1 : 0,
                 transform: isAboutVisible
@@ -1174,7 +1174,7 @@ const Home = () => {
             </div>
 
             <div
-              className="relative p-6 sm:p-7 rounded-3xl bg-white/80 dark:bg-slate-900/60 backdrop-blur-xl border border-slate-200/80 dark:border-slate-800/80 hover:border-purple-500/50 hover:shadow-xl hover:shadow-purple-500/10 transition-all duration-300 group hover:-translate-y-1"
+              className="liquid-glass-card relative p-6 sm:p-7 rounded-3xl hover:border-purple-400/70 dark:hover:border-purple-400/50 hover:shadow-xl hover:shadow-purple-500/15 transition-all duration-300 group hover:-translate-y-1"
               style={{
                 opacity: isAboutVisible ? 1 : 0,
                 transform: isAboutVisible
@@ -1213,7 +1213,7 @@ const Home = () => {
           </div>
 
           {/* Quick CV Highlight Card */}
-          <div className="p-6 sm:p-8 rounded-3xl bg-gradient-to-r from-blue-50/90 via-indigo-50/80 to-purple-50/90 dark:from-[#0f172a]/90 dark:via-[#1e1b4b]/60 dark:to-[#1e1b4b]/80 border border-blue-200/80 dark:border-indigo-500/30 flex flex-col md:flex-row items-center justify-between gap-6 shadow-xl backdrop-blur-xl">
+          <div className="liquid-glass-card p-6 sm:p-8 rounded-3xl flex flex-col md:flex-row items-center justify-between gap-6">
             <div className="flex items-center gap-5 text-center md:text-left">
               <div className="w-14 h-14 rounded-2xl bg-gradient-to-tr from-blue-600 via-indigo-600 to-purple-600 flex items-center justify-center text-white shadow-lg shadow-indigo-500/30 flex-shrink-0">
                 <svg
@@ -1270,7 +1270,7 @@ const Home = () => {
               <a
                 href="/Yorn_Pheareak_CV.pdf"
                 download="Yorn_Pheareak_CV.pdf"
-                className="px-5 py-3 rounded-xl bg-white/90 hover:bg-white dark:bg-slate-900/90 dark:hover:bg-slate-800 text-slate-800 dark:text-slate-200 font-bold text-xs border border-slate-200 dark:border-slate-700 transition-all flex items-center gap-1.5 shadow-sm hover:scale-[1.03]"
+                className="liquid-glass-pill px-5 py-3 rounded-xl text-slate-800 dark:text-slate-100 font-bold text-xs transition-all flex items-center gap-1.5 hover:scale-[1.03]"
               >
                 <svg
                   className="w-4 h-4 text-blue-500"
@@ -1318,7 +1318,7 @@ const Home = () => {
                 className={`px-4 py-2 rounded-full text-xs font-semibold transition-all ${
                   selectedSkillCategory === "all"
                     ? "bg-neutral-900 text-white dark:bg-white dark:text-neutral-950 shadow-md"
-                    : "bg-white/80 dark:bg-white/5 hover:bg-white dark:hover:bg-white/10 text-neutral-700 dark:text-neutral-300 border border-black/5 dark:border-white/10"
+                    : "liquid-glass-pill text-neutral-700 dark:text-neutral-200 hover:scale-[1.03]"
                 }`}
               >
                 All ({skills.length})
@@ -1330,7 +1330,7 @@ const Home = () => {
                   className={`px-4 py-2 rounded-full text-xs font-semibold transition-all ${
                     selectedSkillCategory === "featured"
                       ? "bg-gradient-to-r from-amber-400 via-yellow-400 to-amber-500 text-neutral-950 font-bold shadow-md shadow-amber-500/25"
-                      : "bg-white/80 dark:bg-white/5 hover:bg-white dark:hover:bg-white/10 text-neutral-700 dark:text-neutral-300 border border-black/5 dark:border-white/10"
+                      : "liquid-glass-pill text-neutral-700 dark:text-neutral-200 hover:scale-[1.03]"
                   }`}
                 >
                   ★ Featured
@@ -1344,7 +1344,7 @@ const Home = () => {
                   className={`px-4 py-2 rounded-full text-xs font-semibold transition-all ${
                     selectedSkillCategory === cat
                       ? "bg-neutral-900 text-white dark:bg-white dark:text-neutral-950 shadow-md"
-                      : "bg-white/80 dark:bg-white/5 hover:bg-white dark:hover:bg-white/10 text-neutral-700 dark:text-neutral-300 border border-black/5 dark:border-white/10"
+                      : "liquid-glass-pill text-neutral-700 dark:text-neutral-200 hover:scale-[1.03]"
                   }`}
                 >
                   {cat}
@@ -1354,12 +1354,12 @@ const Home = () => {
           </div>
 
           {loading ? (
-            <div className="p-12 text-center text-neutral-400 bg-white/80 dark:bg-white/[0.03] backdrop-blur-xl rounded-3xl border border-black/5 dark:border-white/10">
+            <div className="liquid-glass-card p-12 text-center text-neutral-400 rounded-3xl">
               <div className="w-8 h-8 mx-auto mb-3 border-2 border-amber-500 border-t-transparent rounded-full animate-spin" />
               <p>Loading skills...</p>
             </div>
           ) : filteredSkills.length === 0 ? (
-            <div className="p-12 text-center text-neutral-400 bg-white/80 dark:bg-white/[0.03] backdrop-blur-xl rounded-3xl border border-black/5 dark:border-white/10">
+            <div className="liquid-glass-card p-12 text-center text-neutral-400 rounded-3xl">
               <p className="text-neutral-600 dark:text-slate-300">
                 No skills found in this category.
               </p>
@@ -1405,7 +1405,7 @@ const Home = () => {
                 className={`px-4 py-2 rounded-full text-xs font-semibold transition-all ${
                   selectedTech === "all"
                     ? "bg-neutral-900 text-white dark:bg-white dark:text-neutral-950 shadow-md"
-                    : "bg-white/80 dark:bg-white/5 hover:bg-white dark:hover:bg-white/10 text-neutral-700 dark:text-neutral-300 border border-black/5 dark:border-white/10"
+                    : "liquid-glass-pill text-neutral-700 dark:text-neutral-200 hover:scale-[1.03]"
                 }`}
               >
                 All ({projects.length})
@@ -1417,7 +1417,7 @@ const Home = () => {
                   className={`px-4 py-2 rounded-full text-xs font-semibold transition-all ${
                     selectedTech === "featured"
                       ? "bg-gradient-to-r from-amber-400 via-yellow-400 to-amber-500 text-neutral-950 font-bold shadow-md shadow-amber-500/25"
-                      : "bg-white/80 dark:bg-white/5 hover:bg-white dark:hover:bg-white/10 text-neutral-700 dark:text-neutral-300 border border-black/5 dark:border-white/10"
+                      : "liquid-glass-pill text-neutral-700 dark:text-neutral-200 hover:scale-[1.03]"
                   }`}
                 >
                   ★ Featured
@@ -1431,7 +1431,7 @@ const Home = () => {
                   className={`px-4 py-2 rounded-full text-xs font-semibold transition-all ${
                     selectedTech === tech
                       ? "bg-neutral-900 text-white dark:bg-white dark:text-neutral-950 shadow-md"
-                      : "bg-white/80 dark:bg-white/5 hover:bg-white dark:hover:bg-white/10 text-neutral-700 dark:text-neutral-300 border border-black/5 dark:border-white/10"
+                      : "liquid-glass-pill text-neutral-700 dark:text-neutral-200 hover:scale-[1.03]"
                   }`}
                 >
                   {tech}
@@ -1441,12 +1441,12 @@ const Home = () => {
           </div>
 
           {loading ? (
-            <div className="p-12 text-center text-slate-400 bg-white/80 dark:bg-slate-900/60 backdrop-blur-xl rounded-3xl border border-slate-200 dark:border-slate-800">
+            <div className="liquid-glass-card p-12 text-center text-slate-400 rounded-3xl">
               <div className="w-8 h-8 mx-auto mb-3 border-2 border-blue-500 border-t-transparent rounded-full animate-spin" />
               <p>Loading projects...</p>
             </div>
           ) : filteredProjects.length === 0 ? (
-            <div className="p-12 text-center text-slate-400 bg-white/80 dark:bg-slate-900/60 backdrop-blur-xl rounded-3xl border border-slate-200 dark:border-slate-800">
+            <div className="liquid-glass-card p-12 text-center text-slate-400 rounded-3xl">
               <svg
                 className="w-12 h-12 mx-auto mb-3 text-slate-400 dark:text-slate-600"
                 fill="none"
@@ -1502,12 +1502,12 @@ const Home = () => {
           </div>
 
           {loading ? (
-            <div className="p-12 text-center text-slate-400 bg-white/80 dark:bg-slate-900/60 backdrop-blur-xl rounded-3xl border border-slate-200 dark:border-slate-800">
+            <div className="liquid-glass-card p-12 text-center text-slate-400 rounded-3xl">
               <div className="w-8 h-8 mx-auto mb-3 border-2 border-indigo-500 border-t-transparent rounded-full animate-spin" />
               <p>Loading certificates...</p>
             </div>
           ) : certificates.length === 0 ? (
-            <div className="p-12 text-center text-slate-400 bg-white/80 dark:bg-slate-900/60 backdrop-blur-xl rounded-3xl border border-slate-200 dark:border-slate-800">
+            <div className="liquid-glass-card p-12 text-center text-slate-400 rounded-3xl">
               <svg
                 className="w-12 h-12 mx-auto mb-3 text-slate-400 dark:text-slate-600"
                 fill="none"
@@ -1549,7 +1549,7 @@ const Home = () => {
           ref={revealContactRef}
           className={`scroll-mt-24 sm:scroll-mt-28 reveal reveal-scale-up ${isContactVisible ? "visible" : ""}`}
         >
-          <div className="rounded-2xl sm:rounded-3xl bg-gradient-to-br from-white/90 via-slate-50/80 to-amber-50/30 dark:from-[#0b1120]/90 dark:via-[#111827]/85 dark:to-[#1e1b4b]/80 border border-black/[0.06] dark:border-white/[0.08] p-4 sm:p-8 lg:p-12 relative overflow-hidden shadow-2xl backdrop-blur-xl">
+          <div className="liquid-glass-card rounded-2xl sm:rounded-3xl p-4 sm:p-8 lg:p-12 relative overflow-hidden">
             <div className="absolute top-0 right-0 w-72 sm:w-96 h-72 sm:h-96 bg-amber-400/15 rounded-full blur-3xl pointer-events-none" />
             <div className="absolute bottom-0 left-0 w-72 sm:w-96 h-72 sm:h-96 bg-purple-600/15 rounded-full blur-3xl pointer-events-none" />
 
@@ -1572,7 +1572,7 @@ const Home = () => {
                 {/* Direct Contact Cards */}
                 <div className="space-y-3 pt-1">
                   {displayUser?.email && (
-                    <div className="p-3.5 sm:p-4 rounded-2xl bg-white/80 dark:bg-white/[0.04] border border-black/5 dark:border-white/10 hover:border-amber-400/50 flex items-center justify-between gap-2.5 group transition-all shadow-sm backdrop-blur-md min-w-0">
+                    <div className="liquid-glass-box p-3.5 sm:p-4 rounded-2xl hover:border-amber-400/50 flex items-center justify-between gap-2.5 group transition-all min-w-0">
                       <div className="flex items-center gap-3 min-w-0 flex-1">
                         <div className="w-9 h-9 sm:w-11 sm:h-11 rounded-xl bg-amber-500/10 text-amber-600 dark:text-amber-300 flex items-center justify-center flex-shrink-0 group-hover:scale-105 transition-transform">
                           <svg
@@ -1610,7 +1610,7 @@ const Home = () => {
                   )}
 
                   {displayUser?.phone && (
-                    <div className="p-3.5 sm:p-4 rounded-2xl bg-white/80 dark:bg-white/[0.04] border border-black/5 dark:border-white/10 hover:border-emerald-500/50 flex items-center justify-between gap-2.5 group transition-all shadow-sm backdrop-blur-md min-w-0">
+                    <div className="liquid-glass-box p-3.5 sm:p-4 rounded-2xl hover:border-emerald-500/50 flex items-center justify-between gap-2.5 group transition-all min-w-0">
                       <div className="flex items-center gap-3 min-w-0 flex-1">
                         <div className="w-9 h-9 sm:w-11 sm:h-11 rounded-xl bg-emerald-500/10 text-emerald-600 dark:text-emerald-300 flex items-center justify-center flex-shrink-0 group-hover:scale-105 transition-transform">
                           <svg
@@ -1650,7 +1650,7 @@ const Home = () => {
               </div>
 
               {/* Right Column: Interactive Send Message Form */}
-              <div className="md:col-span-1 lg:col-span-7 bg-white/90 dark:bg-white/[0.04] border border-black/[0.06] dark:border-white/[0.08] rounded-2xl sm:rounded-3xl p-4 sm:p-8 shadow-xl backdrop-blur-xl min-w-0">
+              <div className="md:col-span-1 lg:col-span-7 liquid-glass-box rounded-2xl sm:rounded-3xl p-4 sm:p-8 shadow-xl min-w-0">
                 {contactSubmitted ? (
                   <div className="text-center py-8 space-y-4 animate-in zoom-in-95 duration-300">
                     <div className="w-14 h-14 mx-auto rounded-2xl bg-emerald-500/10 border border-emerald-500/30 text-emerald-600 dark:text-emerald-400 flex items-center justify-center shadow-lg shadow-emerald-500/20">
@@ -1726,10 +1726,10 @@ const Home = () => {
                               setContactErrors({ ...contactErrors, name: "" });
                           }}
                           placeholder="John Doe"
-                          className={`w-full text-xs sm:text-sm px-3.5 py-2.5 rounded-xl sm:rounded-2xl bg-black/5 dark:bg-white/5 text-neutral-900 dark:text-white border focus:outline-none ${
+                          className={`w-full text-xs sm:text-sm px-3.5 py-2.5 rounded-xl sm:rounded-2xl liquid-glass-input text-neutral-900 dark:text-white focus:outline-none ${
                             contactErrors.name
                               ? "border-red-500 focus:ring-red-500 bg-red-500/5"
-                              : "border-black/10 dark:border-white/10 focus:border-amber-400"
+                              : ""
                           }`}
                         />
                         {contactErrors.name && (
@@ -1756,10 +1756,10 @@ const Home = () => {
                               setContactErrors({ ...contactErrors, email: "" });
                           }}
                           placeholder="john@example.com"
-                          className={`w-full text-xs sm:text-sm px-3.5 py-2.5 rounded-xl sm:rounded-2xl bg-black/5 dark:bg-white/5 text-neutral-900 dark:text-white border focus:outline-none ${
+                          className={`w-full text-xs sm:text-sm px-3.5 py-2.5 rounded-xl sm:rounded-2xl liquid-glass-input text-neutral-900 dark:text-white focus:outline-none ${
                             contactErrors.email
                               ? "border-red-500 focus:ring-red-500 bg-red-500/5"
-                              : "border-black/10 dark:border-white/10 focus:border-amber-400"
+                              : ""
                           }`}
                         />
                         {contactErrors.email && (
@@ -1787,10 +1787,10 @@ const Home = () => {
                             setContactErrors({ ...contactErrors, subject: "" });
                         }}
                         placeholder="Project Discussion / Collaboration"
-                        className={`w-full text-xs sm:text-sm px-3.5 py-2.5 rounded-xl sm:rounded-2xl bg-black/5 dark:bg-white/5 text-neutral-900 dark:text-white border focus:outline-none ${
+                        className={`w-full text-xs sm:text-sm px-3.5 py-2.5 rounded-xl sm:rounded-2xl liquid-glass-input text-neutral-900 dark:text-white focus:outline-none ${
                           contactErrors.subject
                             ? "border-red-500 focus:ring-red-500 bg-red-500/5"
-                            : "border-black/10 dark:border-white/10 focus:border-amber-400"
+                            : ""
                         }`}
                       />
                       {contactErrors.subject && (
@@ -1817,10 +1817,10 @@ const Home = () => {
                             setContactErrors({ ...contactErrors, message: "" });
                         }}
                         placeholder="Hi, I would like to discuss a project..."
-                        className={`w-full text-xs sm:text-sm px-3.5 py-2.5 rounded-xl sm:rounded-2xl bg-black/5 dark:bg-white/5 text-neutral-900 dark:text-white border focus:outline-none ${
+                        className={`w-full text-xs sm:text-sm px-3.5 py-2.5 rounded-xl sm:rounded-2xl liquid-glass-input text-neutral-900 dark:text-white focus:outline-none ${
                           contactErrors.message
                             ? "border-red-500 focus:ring-red-500 bg-red-500/5"
-                            : "border-black/10 dark:border-white/10 focus:border-amber-400"
+                            : ""
                         }`}
                       />
                       {contactErrors.message && (
@@ -1859,29 +1859,29 @@ const Home = () => {
         </section>
       </main>
 
-      {/* FOOTER */}
-      <footer className="border-t border-slate-200/80 dark:border-slate-800/80 bg-white/80 dark:bg-[#070b14]/90 backdrop-blur-xl py-12 sm:py-16 pb-safe-bottom text-center text-slate-500 dark:text-slate-400 text-sm transition-colors duration-300">
+      {/* LIQUID GLASS FOOTER */}
+      <footer className="liquid-glass-footer py-12 sm:py-16 pb-safe-bottom text-center text-slate-500 dark:text-slate-400 text-sm transition-colors duration-300 relative z-10">
         <div className="max-w-4xl mx-auto px-4 sm:px-6 flex flex-col items-center justify-center gap-5 text-center">
           {/* Centered Action Links */}
           <div className="flex flex-wrap items-center justify-center gap-2.5 sm:gap-4 text-xs font-semibold text-neutral-600 dark:text-neutral-300">
             <button
               type="button"
               onClick={() => setCvModalOpen(true)}
-              className="px-4 py-2 rounded-full bg-gradient-to-r from-amber-400/20 via-yellow-400/20 to-amber-500/20 border border-amber-400/30 text-amber-600 dark:text-amber-300 hover:scale-105 transition-all font-bold shadow-sm"
+              className="px-4 py-2 rounded-full bg-gradient-to-r from-amber-400/20 via-yellow-400/20 to-amber-500/20 border border-amber-400/35 text-amber-600 dark:text-amber-300 hover:scale-105 transition-all font-bold shadow-sm backdrop-blur-md"
             >
               Look CV
             </button>
             <a
               href="#hero"
               onClick={(e) => handleNavClick(e, "#hero")}
-              className="px-4 py-2 rounded-full bg-black/5 dark:bg-white/10 hover:bg-black/10 dark:hover:bg-white/15 hover:text-slate-900 dark:hover:text-white transition-all"
+              className="liquid-glass-pill px-4 py-2 rounded-full hover:text-slate-900 dark:hover:text-white hover:scale-105 transition-all"
             >
               Back to top &uarr;
             </a>
             {!isAuthenticated && (
               <Link
                 to="/login"
-                className="px-4 py-2 rounded-full bg-black/5 dark:bg-white/10 hover:bg-black/10 dark:hover:bg-white/15 hover:text-amber-600 dark:hover:text-amber-400 transition-all text-neutral-600 dark:text-neutral-400"
+                className="liquid-glass-pill px-4 py-2 rounded-full hover:text-amber-600 dark:hover:text-amber-400 hover:scale-105 transition-all text-neutral-700 dark:text-neutral-200"
               >
                 Admin Sign In
               </Link>
@@ -1909,11 +1909,17 @@ const Home = () => {
 
       {/* CERTIFICATE LIGHTBOX / ZOOM MODAL (READ-ONLY) */}
       {selectedCertificate && (
-        <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/85 backdrop-blur-sm">
-          <div className="bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 rounded-2xl max-w-2xl w-full max-h-[90vh] overflow-y-auto p-6 sm:p-8 space-y-6 shadow-2xl relative">
+        <div
+          onClick={() => setSelectedCertificate(null)}
+          className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-slate-950/60 dark:bg-black/80 backdrop-blur-md"
+        >
+          <div
+            onClick={(e) => e.stopPropagation()}
+            className="liquid-glass-modal rounded-3xl max-w-2xl w-full max-h-[90vh] overflow-y-auto p-6 sm:p-8 space-y-6 relative"
+          >
             <button
               onClick={() => setSelectedCertificate(null)}
-              className="absolute top-5 right-5 p-2 rounded-full bg-slate-100 dark:bg-slate-800 text-slate-500 dark:text-slate-400 hover:text-black dark:hover:text-white hover:bg-slate-200 dark:hover:bg-slate-700 transition-colors"
+              className="liquid-glass-pill absolute top-5 right-5 p-2 rounded-full text-slate-600 dark:text-slate-300 hover:text-black dark:hover:text-white hover:scale-105 transition-all"
             >
               <svg
                 className="w-5 h-5"

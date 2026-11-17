@@ -75,7 +75,12 @@ export default function MotionBackground() {
         </div>
       </div>
 
-      {/* 2. Gentle ambient lighting depth (Subtle glow, no harsh yellow washout) */}
+      {/* 2. Soft Liquid-Glass ambient refraction orbs (Light & Dark mode) */}
+      <div className="hidden sm:block absolute -top-24 -left-24 w-[32rem] h-[32rem] rounded-full bg-sky-300/20 dark:bg-blue-600/15 blur-3xl pointer-events-none" />
+      <div className="hidden sm:block absolute top-1/3 -right-24 w-[28rem] h-[28rem] rounded-full bg-amber-300/20 dark:bg-amber-500/10 blur-3xl pointer-events-none" />
+      <div className="hidden sm:block absolute bottom-0 left-1/4 w-[34rem] h-[34rem] rounded-full bg-indigo-300/20 dark:bg-indigo-600/15 blur-3xl pointer-events-none" />
+
+      {/* 3. Gentle ambient lighting depth */}
       <div className="absolute inset-0 bg-gradient-to-b from-transparent via-transparent to-slate-50/60 dark:to-[#070b14]/75 pointer-events-none" />
     </div>
   );

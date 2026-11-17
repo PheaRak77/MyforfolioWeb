@@ -12,7 +12,7 @@ const SkillBar = memo(function SkillBar({ skill, index, isRevealed }) {
 
   return (
     <div
-      className="portfolio-scroll-card portfolio-reveal-item p-3.5 sm:p-5 rounded-2xl sm:rounded-3xl bg-white/80 dark:bg-white/[0.04] backdrop-blur-xl border border-black/[0.06] dark:border-white/[0.08] hover:border-amber-400/60 dark:hover:border-amber-400/50 hover:shadow-2xl hover:shadow-amber-500/10 transition-all duration-300 group flex flex-col justify-between hover:-translate-y-1"
+      className="portfolio-scroll-card portfolio-reveal-item liquid-glass-card p-3.5 sm:p-5 rounded-2xl sm:rounded-3xl hover:border-amber-400/70 dark:hover:border-amber-400/50 hover:shadow-2xl hover:shadow-amber-500/15 transition-all duration-300 group flex flex-col justify-between hover:-translate-y-1"
       style={{
         opacity: isRevealed ? 1 : 0,
         transform: isRevealed ? "none" : "translateY(32px) scale(0.95)",

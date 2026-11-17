@@ -58,18 +58,18 @@ export default function ProjectDetailsModal({ project, onClose }) {
     <>
       <div
         onClick={onClose}
-        className="fixed inset-0 z-50 flex items-center justify-center p-3 sm:p-4 bg-black/80 backdrop-blur-sm"
+        className="fixed inset-0 z-50 flex items-center justify-center p-3 sm:p-4 bg-slate-950/60 dark:bg-black/75 backdrop-blur-md"
       >
         <div
           onClick={(e) => e.stopPropagation()}
-          className="bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 rounded-2xl max-w-3xl w-full max-h-[92vh] overflow-y-auto p-5 sm:p-8 space-y-6 shadow-2xl relative"
+          className="liquid-glass-modal rounded-3xl max-w-3xl w-full max-h-[92vh] overflow-y-auto p-5 sm:p-8 space-y-6 relative"
         >
           {/* Close Button */}
           <button
             type="button"
             onClick={onClose}
             aria-label="Close project details"
-            className="absolute top-4 right-4 z-20 p-2 rounded-full bg-slate-100 dark:bg-slate-800 text-slate-500 dark:text-slate-400 hover:text-black dark:hover:text-white hover:bg-slate-200 dark:hover:bg-slate-700 transition-colors"
+            className="liquid-glass-pill absolute top-4 right-4 z-20 p-2 rounded-full text-slate-600 dark:text-slate-300 hover:text-black dark:hover:text-white hover:scale-105 transition-all"
           >
             <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
               <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
