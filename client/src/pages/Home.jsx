@@ -13,29 +13,28 @@ import useScrollReveal from "../hooks/useScrollReveal";
 import PortfolioImage from "../components/PortfolioImage";
 import VerifiedBadge, { VerifiedName } from "../components/VerifiedBadge";
 import MotionBackground from "../components/MotionBackground";
-import FingerprintLoader from "../components/FingerprintLoader";
 import ThemeToggle from "../components/ThemeToggle";
 import ProjectCard from "../components/ProjectCard";
 import ProjectDetailsModal from "../components/ProjectDetailsModal";
 import CertificateCard from "../components/CertificateCard";
+import HeroName3D from "../components/HeroName3D";
 import {
+  consumeFreshBypassFlag,
   fetchPublicPortfolioData,
   hydrateFromCache,
 } from "../utils/publicDataCache";
 import { formatDisplayDate } from "../utils/formatDate";
-import { getSkillIconUrl } from "../utils/skillIcons";
 import SkillBar from "../components/SkillBar";
+import { prefetchRoute } from "../utils/prefetchRoute";
 
 // The CV modal statically imports a full-page CV render. Nobody sees it until
 // they click "Look CV", so it stays out of the first-load bundle.
 const CvModal = lazy(() => import("../components/CvModal"));
 
-// One synchronous storage read for the whole page instead of one per useState
-// initialiser — readCache touches both localStorage and sessionStorage per key.
-const cached = hydrateFromCache();
-
 const Home = () => {
   const { user: authUser, isAuthenticated, logout } = useAuth();
+  const [cached] = useState(() => hydrateFromCache());
+  const [activeSection, setActiveSection] = useState("hero");
 
   const [profile, setProfile] = useState(
     () =>
@@ -201,8 +200,11 @@ const Home = () => {
         }
         setError("");
 
+        const portfolioEndpoint = consumeFreshBypassFlag()
+          ? "/portfolio?fresh=1"
+          : "/portfolio";
         const responses = await fetchPublicPortfolioData(publicApi, {
-          portfolio: "/portfolio",
+          portfolio: portfolioEndpoint,
         });
 
         const portfolio = responses.portfolio?.value?.data;
@@ -247,6 +249,27 @@ const Home = () => {
     };
 
     fetchPublicData();
+  }, [cached]);
+
+  // Smooth Scroll-Spy for Liquid Glass Navbar active indicator (zero scroll-event jank)
+  useEffect(() => {
+    const ids = ["hero", "about", "skills", "projects", "certificates", "contact"];
+    const elements = ids.map((id) => document.getElementById(id)).filter(Boolean);
+    if (!elements.length || typeof IntersectionObserver === "undefined") return;
+
+    const observer = new IntersectionObserver(
+      (entries) => {
+        entries.forEach((entry) => {
+          if (entry.isIntersecting) {
+            setActiveSection(entry.target.id);
+          }
+        });
+      },
+      { rootMargin: "-35% 0px -55% 0px", threshold: 0 },
+    );
+
+    elements.forEach((el) => observer.observe(el));
+    return () => observer.disconnect();
   }, []);
 
   // Display user priority: authenticated user if looking at own portfolio, else fetched public profile
@@ -358,41 +381,26 @@ const Home = () => {
 
           {/* Apple-Style Liquid Glass Desktop Nav Links (Visible on LG screens) */}
           <nav className="hidden lg:flex items-center gap-1 xl:gap-1.5 px-2 py-1 rounded-full liquid-glass-pill text-xs font-semibold text-neutral-700 dark:text-neutral-200">
-            <a
-              href="#about"
-              onClick={(e) => handleNavClick(e, "#about")}
-              className="px-3.5 py-1.5 rounded-full hover:bg-white/80 dark:hover:bg-white/15 hover:text-neutral-950 dark:hover:text-white transition-all"
-            >
-              About
-            </a>
-            <a
-              href="#skills"
-              onClick={(e) => handleNavClick(e, "#skills")}
-              className="px-3.5 py-1.5 rounded-full hover:bg-white/80 dark:hover:bg-white/15 hover:text-neutral-950 dark:hover:text-white transition-all"
-            >
-              Skills
-            </a>
-            <a
-              href="#projects"
-              onClick={(e) => handleNavClick(e, "#projects")}
-              className="px-3.5 py-1.5 rounded-full hover:bg-white/80 dark:hover:bg-white/15 hover:text-neutral-950 dark:hover:text-white transition-all"
-            >
-              Projects
-            </a>
-            <a
-              href="#certificates"
-              onClick={(e) => handleNavClick(e, "#certificates")}
-              className="px-3.5 py-1.5 rounded-full hover:bg-white/80 dark:hover:bg-white/15 hover:text-neutral-950 dark:hover:text-white transition-all"
-            >
-              Certificates
-            </a>
-            <a
-              href="#contact"
-              onClick={(e) => handleNavClick(e, "#contact")}
-              className="px-3.5 py-1.5 rounded-full hover:bg-white/80 dark:hover:bg-white/15 hover:text-neutral-950 dark:hover:text-white transition-all"
-            >
-              Contact
-            </a>
+            {[
+              { id: "about", label: "About" },
+              { id: "skills", label: "Skills" },
+              { id: "projects", label: "Projects" },
+              { id: "certificates", label: "Certificates" },
+              { id: "contact", label: "Contact" },
+            ].map((item) => (
+              <a
+                key={item.id}
+                href={`#${item.id}`}
+                onClick={(e) => handleNavClick(e, `#${item.id}`)}
+                className={`px-3.5 py-1.5 rounded-full transition-all ${
+                  activeSection === item.id
+                    ? "bg-white/95 dark:bg-white/20 text-neutral-950 dark:text-white shadow-sm"
+                    : "hover:bg-white/75 dark:hover:bg-white/12 hover:text-neutral-950 dark:hover:text-white"
+                }`}
+              >
+                {item.label}
+              </a>
+            ))}
             <button
               type="button"
               onClick={() => setCvModalOpen(true)}
@@ -428,6 +436,8 @@ const Home = () => {
                   {authUser?.role === "admin" && (
                     <Link
                       to="/dashboard"
+                      onMouseEnter={() => prefetchRoute("/dashboard")}
+                      onTouchStart={() => prefetchRoute("/dashboard")}
                       className="px-3.5 py-1.5 text-xs font-semibold rounded-full bg-neutral-900 text-white dark:bg-white dark:text-neutral-900 hover:scale-105 transition-all flex items-center gap-1.5 shadow-sm"
                     >
                       Dashboard
@@ -444,6 +454,8 @@ const Home = () => {
               ) : (
                 <Link
                   to="/login"
+                  onMouseEnter={() => prefetchRoute("/login")}
+                  onTouchStart={() => prefetchRoute("/login")}
                   className="liquid-glass-pill px-4 py-1.5 text-xs font-semibold rounded-full text-neutral-800 dark:text-neutral-100 hover:text-black dark:hover:text-white hover:scale-105 transition-all flex items-center gap-1.5"
                 >
                   Sign In
@@ -630,20 +642,7 @@ const Home = () => {
                 </span>
               </span>{" "}
               <br className="hidden sm:inline" />
-              <span className="relative inline-flex items-center gap-3 sm:gap-4 mt-2 sm:mt-3 flex-nowrap">
-                <span className="animate-name-gradient font-black text-4xl sm:text-5xl lg:text-6xl xl:text-7xl tracking-tight drop-shadow-sm whitespace-nowrap">
-                  {displayUser?.name || "Yorn Pheareak"}
-                </span>
-                <VerifiedBadge
-                  size="2xl"
-                  className="inline-block flex-shrink-0 drop-shadow-[0_0_14px_rgba(56,189,248,0.6)]"
-                />
-                {/* Ambient dynamic glow underneath */}
-                <span
-                  aria-hidden="true"
-                  className="absolute -inset-4 rounded-3xl bg-gradient-to-r from-amber-400/20 via-indigo-500/20 to-fuchsia-500/20 blur-3xl -z-10 animate-aurora-1"
-                />
-              </span>
+              <HeroName3D name={displayUser?.name || "Yorn Pheareak"} />
             </h1>
 
             <p className="text-base sm:text-lg text-neutral-600 dark:text-slate-300 max-w-2xl mx-auto lg:mx-0 leading-relaxed font-normal animate-hero-2">

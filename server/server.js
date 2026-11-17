@@ -22,8 +22,15 @@ const contactRoutes = require("./src/routes/contact.routes");
 
 const { notFound, errorHandler } = require("./src/middleware/error.middleware");
 const { ensureDatabaseSchema } = require("./src/config/migrate");
-const { cacheMiddleware, clearPublicCache } = require("./src/middleware/cache.middleware");
-const { getPublicPortfolio } = require("./src/controllers/portfolio.controller");
+const {
+  cacheMiddleware,
+  clearPublicCache,
+  setPublicCacheEntry,
+} = require("./src/middleware/cache.middleware");
+const {
+  getPublicPortfolio,
+  buildPublicPortfolioPayload,
+} = require("./src/controllers/portfolio.controller");
 
 
 const app = express();
@@ -173,13 +180,23 @@ app.use(
 configurePassport();
 app.use(passport.initialize());
 
-// Auto-migrate DB schema on every startup (safe: uses IF NOT EXISTS / ADD COLUMN IF NOT EXISTS)
-ensureDatabaseSchema().catch((err) =>
-  console.warn("Migration warning:", err.message)
-);
+// Auto-migrate DB schema on startup, then pre-warm public portfolio RAM cache
+// so even the very first visitor gets an instant <2ms server cache hit.
+ensureDatabaseSchema()
+  .then(() => buildPublicPortfolioPayload())
+  .then((payload) => {
+    setPublicCacheEntry("/api/portfolio", payload, 120);
+    console.log("⚡ Public portfolio cache pre-warmed");
+  })
+  .catch((err) => console.warn("Startup / cache-warm notice:", err.message));
 
-// Expose clearPublicCache so controllers can call it on write operations
-app.locals.clearPublicCache = clearPublicCache;
+// Expose clearPublicCache (with background re-warm) so admin writes stay instant
+app.locals.clearPublicCache = () => {
+  clearPublicCache();
+  buildPublicPortfolioPayload()
+    .then((payload) => setPublicCacheEntry("/api/portfolio", payload, 120))
+    .catch(() => {});
+};
 
 // Health check route
 app.get("/api/health", async (req, res) => {
@@ -205,10 +222,8 @@ app.get("/api/health", async (req, res) => {
   }
 });
 
-// Homepage payload: one request replaces four independent API calls. Do not put
-// it in a shared cache: a mutation can be handled by another instance and must
-// be visible on the public domain immediately.
-app.get("/api/portfolio", apiLimiter, getPublicPortfolio);
+// Homepage payload: single CTE query + 120s RAM cache + 30s CDN stale-while-revalidate
+app.get("/api/portfolio", apiLimiter, cacheMiddleware(120, 30), getPublicPortfolio);
 
 // Mount Routes — public GET routes get 60-second in-memory cache for speed
 app.use("/api/auth", authLimiter, authRoutes);

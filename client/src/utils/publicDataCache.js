@@ -56,9 +56,22 @@ export const clearPublicDataCache = () => {
         .filter((storageKey) => storageKey.startsWith(CACHE_PREFIX))
         .forEach((storageKey) => store.removeItem(storageKey));
     });
+    sessionStorage.setItem("portfolio_fresh_once", "1");
   } catch {
     // ignore
   }
+};
+
+export const consumeFreshBypassFlag = () => {
+  try {
+    if (sessionStorage.getItem("portfolio_fresh_once") === "1") {
+      sessionStorage.removeItem("portfolio_fresh_once");
+      return true;
+    }
+  } catch {
+    // ignore
+  }
+  return false;
 };
 
 /** Load all cached portfolio sections at once for instant first paint */

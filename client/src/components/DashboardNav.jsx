@@ -5,6 +5,7 @@ import { getLivePortfolioUrl } from "../config/site";
 import PortfolioImage from "./PortfolioImage";
 import VerifiedBadge, { VerifiedName } from "./VerifiedBadge";
 import ThemeToggle from "./ThemeToggle";
+import { prefetchRoute } from "../utils/prefetchRoute";
 
 const DashboardNav = () => {
   const { user, logout } = useAuth();
@@ -100,6 +101,8 @@ const DashboardNav = () => {
               <Link
                 key={link.to}
                 to={link.to}
+                onMouseEnter={() => prefetchRoute(link.to)}
+                onTouchStart={() => prefetchRoute(link.to)}
                 className={`px-3.5 py-2 rounded-xl text-xs font-semibold transition-all ${
                   isActive
                     ? "bg-slate-800 text-white border border-slate-700 shadow-inner"

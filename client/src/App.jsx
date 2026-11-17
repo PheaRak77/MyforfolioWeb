@@ -1,5 +1,5 @@
-import { lazy, Suspense } from "react";
-import { Routes, Route } from "react-router-dom";
+import { lazy, Suspense, useEffect } from "react";
+import { Routes, Route, useLocation } from "react-router-dom";
 
 import Home from "./pages/Home";
 
@@ -22,17 +22,26 @@ const Messages = lazy(() => import("./pages/Messages"));
 import FingerprintLoader from "./components/FingerprintLoader";
 
 const PageLoader = () => (
-  <div className="min-h-screen bg-slate-950 flex items-center justify-center p-4">
+  <div className="min-h-screen bg-[#fafafa] dark:bg-[#070b14] flex items-center justify-center p-4 transition-colors">
     <FingerprintLoader size="md" label="L O A D I N G" />
   </div>
 );
 
 export default function App() {
+  const location = useLocation();
+
+  useEffect(() => {
+    if (!location.hash) {
+      window.scrollTo({ top: 0, behavior: "instant" });
+    }
+  }, [location.pathname, location.hash]);
+
   return (
     <>
       <CanonicalUrlRedirect />
       <NetworkStatus />
-      <Routes>
+      <div key={location.pathname} className="animate-page-enter">
+        <Routes>
         <Route path="/" element={<Home />} />
         <Route
           path="/login"
@@ -120,6 +129,7 @@ export default function App() {
 
         <Route path="*" element={<Home />} />
       </Routes>
+      </div>
     </>
   );
 }
