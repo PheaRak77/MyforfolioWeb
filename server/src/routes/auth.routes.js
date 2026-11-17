@@ -6,6 +6,7 @@ const {
   login,
   getMe,
   forgotPassword,
+  verifyResetOtp,
   resetPassword,
   googleCallback,
 } = require("../controllers/auth.controller");
@@ -18,6 +19,7 @@ router.post("/register", register);
 router.post("/login", login);
 router.get("/me", requireAuth, getMe);
 router.post("/forgot-password", forgotPassword);
+router.post("/verify-otp", verifyResetOtp);
 router.post("/reset-password", resetPassword);
 
 router.get("/google", (req, res, next) => {

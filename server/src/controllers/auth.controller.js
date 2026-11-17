@@ -133,89 +133,188 @@ const getMe = asyncHandler(async (req, res) => {
   });
 });
 
+const hashSecret = (value) =>
+  crypto.createHash("sha256").update(String(value)).digest("hex");
+
+const resolveResetClientUrl = (req) => {
+  const origin = req.headers.origin;
+  if (origin) {
+    try {
+      const parsed = new URL(origin);
+      if (
+        parsed.hostname === "localhost" ||
+        parsed.hostname === "127.0.0.1" ||
+        parsed.hostname === "ypheareak.site" ||
+        parsed.hostname.endsWith(".ypheareak.site") ||
+        parsed.hostname.endsWith(".vercel.app")
+      ) {
+        return parsed.origin;
+      }
+    } catch {
+      // ignore invalid origin
+    }
+  }
+  return process.env.NODE_ENV === "production"
+    ? "https://www.ypheareak.site"
+    : process.env.CLIENT_URL || "http://localhost:5173";
+};
+
+const findUserByIdentifier = async (identifier) => {
+  const target = (identifier || "").trim().toLowerCase();
+  if (!target) return null;
+  const result = await pool.query(
+    "SELECT * FROM users WHERE LOWER(email) = $1 OR phone = $2 LIMIT 1",
+    [target, target],
+  );
+  return result.rows[0] || null;
+};
+
 const forgotPassword = asyncHandler(async (req, res) => {
   const { email, identifier } = req.body;
-  const target = (email || identifier || "").trim().toLowerCase();
+  const rawTarget = (email || identifier || "").trim();
 
-  if (!target) {
+  if (!rawTarget) {
     throw new ApiError(400, "Email or phone number is required");
   }
 
-  const result = await pool.query(
-    "SELECT * FROM users WHERE LOWER(email) = $1 OR phone = $2",
-    [target, target]
-  );
-
-  const user = result.rows[0];
+  const user = await findUserByIdentifier(rawTarget);
   let resetLink = null;
-  let resetToken = null;
 
   if (user) {
-    resetToken = crypto.randomBytes(32).toString("hex");
-    const resetTokenHash = crypto
-      .createHash("sha256")
-      .update(resetToken)
-      .digest("hex");
+    // Invalidate any previous unused OTPs or reset links for this user
+    await pool.query(
+      "UPDATE password_resets SET used_at = NOW() WHERE user_id = $1 AND used_at IS NULL",
+      [user.id],
+    );
 
-    const expiresAt = new Date(Date.now() + 60 * 60 * 1000).toISOString();
+    // 1. 6-digit numeric OTP code (valid for 15 minutes)
+    const otp = crypto.randomInt(100000, 1000000).toString();
+    const otpHash = hashSecret(otp);
+    const otpExpiresAt = new Date(Date.now() + 15 * 60 * 1000).toISOString();
+
+    // 2. Fallback clickable reset link token (valid for 60 minutes)
+    const resetToken = crypto.randomBytes(32).toString("hex");
+    const resetTokenHash = hashSecret(resetToken);
+    const linkExpiresAt = new Date(Date.now() + 60 * 60 * 1000).toISOString();
 
     await pool.query(
       `
       INSERT INTO password_resets (user_id, token_hash, expires_at)
-      VALUES ($1, $2, $3)
+      VALUES ($1, $2, $3), ($1, $4, $5)
       `,
-      [user.id, resetTokenHash, expiresAt],
+      [user.id, otpHash, otpExpiresAt, resetTokenHash, linkExpiresAt],
     );
 
-    const clientUrl = process.env.CLIENT_URL || "http://localhost:5173";
+    const clientUrl = resolveResetClientUrl(req);
     resetLink = `${clientUrl}/reset-password?token=${resetToken}&email=${encodeURIComponent(
       user.email,
     )}`;
 
-    // Do not expose reset tokens in production API responses or logs. Send the
-    // link asynchronously so the response stays fast and does not reveal
-    // whether a particular account exists.
-    if (process.env.NODE_ENV === "production") {
-      if (process.env.SMTP_EMAIL && process.env.SMTP_PASSWORD) {
-        setImmediate(() => sendPasswordResetEmail({
+    const hasResend = Boolean(process.env.RESEND_API_KEY?.trim());
+    const hasSmtp = Boolean(
+      process.env.SMTP_EMAIL?.trim() && process.env.SMTP_PASSWORD?.trim(),
+    );
+
+    if (hasResend) {
+      try {
+        await sendPasswordResetEmail({
           recipientEmail: user.email,
+          otp,
           resetLink,
-        }).catch((error) => console.error("Password reset email failed:", error.message)));
+        });
+        console.log(`[Auth] Password reset OTP delivered via Resend to ${user.email}.`);
+      } catch (error) {
+        console.error("[Auth] Resend OTP delivery failed:", error.message);
+        throw new ApiError(
+          502,
+          "Could not send OTP email right now. Please try again in a moment.",
+        );
       }
+    } else if (hasSmtp) {
+      setImmediate(() =>
+        sendPasswordResetEmail({
+          recipientEmail: user.email,
+          otp,
+          resetLink,
+        }).catch((error) =>
+          console.error("[Auth] SMTP OTP delivery failed:", error.message),
+        ),
+      );
+    }
+
+    if (process.env.NODE_ENV === "production") {
       resetLink = null;
     }
   }
 
   res.json({
     success: true,
-    message: "If an account matches those details, reset instructions have been sent.",
+    message:
+      "If an account matches those details, a 6-digit OTP verification code has been sent to your email.",
     ...(process.env.NODE_ENV !== "production" && resetLink ? { resetLink } : {}),
   });
 });
 
-const resetPassword = asyncHandler(async (req, res) => {
-  const { token, email, newPassword } = req.body;
+const verifyResetOtp = asyncHandler(async (req, res) => {
+  const { email, identifier, otp } = req.body;
+  const rawTarget = (email || identifier || "").trim();
+  const cleanOtp = String(otp || "").trim();
 
-  if (!token || !email || !newPassword) {
-    throw new ApiError(400, "Token, email, and newPassword are required");
+  if (!rawTarget || !cleanOtp) {
+    throw new ApiError(400, "Email/phone and 6-digit OTP code are required");
+  }
+
+  const user = await findUserByIdentifier(rawTarget);
+  if (!user) {
+    throw new ApiError(400, "Invalid or expired OTP code");
+  }
+
+  const otpHash = hashSecret(cleanOtp);
+  const resetResult = await pool.query(
+    `
+    SELECT id
+    FROM password_resets
+    WHERE user_id = $1
+      AND token_hash = $2
+      AND used_at IS NULL
+      AND expires_at > NOW()
+    LIMIT 1
+    `,
+    [user.id, otpHash],
+  );
+
+  if (!resetResult.rows[0]) {
+    throw new ApiError(400, "Invalid or expired OTP code. Please try again.");
+  }
+
+  res.json({
+    success: true,
+    message: "OTP verified! Please enter your new password.",
+  });
+});
+
+const resetPassword = asyncHandler(async (req, res) => {
+  const { token, otp, email, identifier, newPassword } = req.body;
+  const rawTarget = (email || identifier || "").trim();
+  const secret = String(otp || token || "").trim();
+
+  if (!secret || !rawTarget || !newPassword) {
+    throw new ApiError(
+      400,
+      "OTP code (or reset token), email/phone, and newPassword are required",
+    );
   }
 
   if (newPassword.length < 6) {
     throw new ApiError(400, "Password must be at least 6 characters");
   }
 
-  const tokenHash = crypto.createHash("sha256").update(token).digest("hex");
-
-  const userResult = await pool.query("SELECT * FROM users WHERE email = $1", [
-    email.toLowerCase(),
-  ]);
-
-  const user = userResult.rows[0];
-
+  const user = await findUserByIdentifier(rawTarget);
   if (!user) {
     throw new ApiError(400, "Invalid reset request");
   }
 
+  const tokenHash = hashSecret(secret);
   const resetResult = await pool.query(
     `
     SELECT *
@@ -224,14 +323,14 @@ const resetPassword = asyncHandler(async (req, res) => {
       AND token_hash = $2
       AND used_at IS NULL
       AND expires_at > NOW()
+    LIMIT 1
     `,
     [user.id, tokenHash],
   );
 
   const reset = resetResult.rows[0];
-
   if (!reset) {
-    throw new ApiError(400, "Invalid or expired reset token");
+    throw new ApiError(400, "Invalid or expired OTP code / reset token");
   }
 
   const passwordHash = await bcrypt.hash(newPassword, 10);
@@ -241,9 +340,10 @@ const resetPassword = asyncHandler(async (req, res) => {
     user.id,
   ]);
 
-  await pool.query("UPDATE password_resets SET used_at = NOW() WHERE id = $1", [
-    reset.id,
-  ]);
+  await pool.query(
+    "UPDATE password_resets SET used_at = NOW() WHERE user_id = $1 AND used_at IS NULL",
+    [user.id],
+  );
 
   res.json({
     success: true,
@@ -287,6 +387,7 @@ module.exports = {
   login,
   getMe,
   forgotPassword,
+  verifyResetOtp,
   resetPassword,
   googleCallback,
 };

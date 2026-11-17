@@ -14,7 +14,14 @@ const escapeHtml = (value = "") => String(value)
   .replace(/"/g, "&quot;")
   .replace(/'/g, "&#039;");
 
-const sendWithResend = async ({ recipientEmail, senderEmail, senderName, subject, html, text }) => {
+const sendWithResend = async ({
+  recipientEmail,
+  replyTo,
+  fromName = "Portfolio",
+  subject,
+  html,
+  text,
+}) => {
   const response = await fetch("https://api.resend.com/emails", {
     method: "POST",
     signal: AbortSignal.timeout(10000),
@@ -26,10 +33,10 @@ const sendWithResend = async ({ recipientEmail, senderEmail, senderName, subject
       // `onboarding@resend.dev` works for early testing when recipientEmail is
       // the email used for the Resend account. Use EMAIL_FROM with a verified
       // domain when sending to general visitors.
-      from: process.env.EMAIL_FROM?.trim() || "Portfolio Contact <onboarding@resend.dev>",
+      from: process.env.EMAIL_FROM?.trim() || `${fromName} <onboarding@resend.dev>`,
       to: [recipientEmail],
-      reply_to: senderEmail,
-      subject: `[Portfolio] ${subject}`,
+      ...(replyTo ? { reply_to: replyTo } : {}),
+      subject,
       html,
       text,
     }),
@@ -195,9 +202,9 @@ const sendContactEmail = async ({
   if (process.env.RESEND_API_KEY?.trim()) {
     await sendWithResend({
       recipientEmail,
-      senderEmail,
-      senderName,
-      subject,
+      replyTo: senderEmail,
+      fromName: "Portfolio Contact",
+      subject: `[Portfolio] ${subject}`,
       html,
       text,
     });
@@ -215,16 +222,98 @@ const sendContactEmail = async ({
   });
 };
 
-const sendPasswordResetEmail = async ({ recipientEmail, resetLink }) => {
-  const mailTransporter = getTransporter();
+const sendPasswordResetEmail = async ({ recipientEmail, otp, resetLink }) => {
+  const safeOtp = escapeHtml(otp);
   const safeLink = escapeHtml(resetLink);
+  const subject = otp
+    ? `Your Password Reset OTP: ${otp}`
+    : "Reset your portfolio password";
 
+  const text = otp
+    ? `Your password reset OTP verification code is: ${otp}\n\nThis code expires in 15 minutes.\n\nOr use this link to reset your password (expires in 1 hour): ${resetLink}`
+    : `Use this link to reset your password. It expires in one hour: ${resetLink}`;
+
+  const html = `
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Password Reset OTP</title>
+</head>
+<body style="margin:0;padding:0;background:#0f172a;font-family:'Segoe UI',Arial,sans-serif;">
+  <div style="max-width:540px;margin:40px auto;background:#1e293b;border-radius:16px;overflow:hidden;border:1px solid #334155;">
+    <div style="background:linear-gradient(135deg,#f59e0b,#ea580c);padding:28px 32px;text-align:center;">
+      <h1 style="margin:0;color:#fff;font-size:22px;font-weight:800;letter-spacing:-0.3px;">
+        🔐 Password Reset Verification
+      </h1>
+      <p style="margin:6px 0 0;color:rgba(255,255,255,0.88);font-size:13px;">
+        Use the 6-digit OTP code below to set a new password
+      </p>
+    </div>
+
+    <div style="padding:32px;text-align:center;">
+      ${
+        otp
+          ? `
+      <div style="font-size:11px;text-transform:uppercase;letter-spacing:1.4px;color:#94a3b8;font-weight:700;margin-bottom:12px;">
+        One-Time Verification Code (OTP)
+      </div>
+      <div style="display:inline-block;padding:16px 32px;background:#0f172a;border:1px solid #38bdf8;border-radius:14px;font-family:monospace;font-size:34px;font-weight:800;letter-spacing:10px;color:#38bdf8;">
+        ${safeOtp}
+      </div>
+      <p style="margin:14px 0 0;color:#94a3b8;font-size:12px;">
+        This OTP code expires in <strong style="color:#e2e8f0;">15 minutes</strong>.
+      </p>
+      `
+          : ""
+      }
+
+      ${
+        resetLink
+          ? `
+      <div style="margin-top:26px;padding-top:22px;border-top:1px solid #334155;">
+        <p style="margin:0 0 14px;color:#94a3b8;font-size:12px;">
+          Or click the button below directly:
+        </p>
+        <a href="${safeLink}"
+           style="display:inline-block;padding:12px 28px;background:linear-gradient(135deg,#3b82f6,#6366f1);color:#fff;font-size:13px;font-weight:700;text-decoration:none;border-radius:10px;">
+          Reset Password Now
+        </a>
+      </div>
+      `
+          : ""
+      }
+    </div>
+
+    <div style="border-top:1px solid #334155;padding:16px 24px;text-align:center;">
+      <p style="margin:0;color:#64748b;font-size:11px;">
+        If you did not request a password reset, you can safely ignore this email.
+      </p>
+    </div>
+  </div>
+</body>
+</html>
+  `;
+
+  if (process.env.RESEND_API_KEY?.trim()) {
+    await sendWithResend({
+      recipientEmail,
+      fromName: "Portfolio Security",
+      subject,
+      html,
+      text,
+    });
+    return;
+  }
+
+  const mailTransporter = getTransporter();
   await mailTransporter.sendMail({
     from: `"Portfolio Security" <${process.env.SMTP_EMAIL}>`,
     to: recipientEmail,
-    subject: "Reset your portfolio password",
-    text: `Use this link to reset your password. It expires in one hour: ${resetLink}`,
-    html: `<p>We received a password reset request.</p><p><a href="${safeLink}">Reset your password</a></p><p>This link expires in one hour. If you did not request it, you can ignore this email.</p>`,
+    subject,
+    text,
+    html,
   });
 };
 
