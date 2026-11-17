@@ -91,6 +91,7 @@ const Dashboard = () => {
     projects: 0,
     certificates: 0,
     skills: 0,
+    messages: 0,
     brokenImages: 0,
   });
   const [loading, setLoading] = useState(true);
@@ -100,11 +101,12 @@ const Dashboard = () => {
     const fetchCounts = async () => {
       try {
         setLoading(true);
-        const [pRes, cRes, sRes, profileRes] = await Promise.allSettled([
+        const [pRes, cRes, sRes, profileRes, msgRes] = await Promise.allSettled([
           api.get("/projects/my"),
           api.get("/certificates/my"),
           api.get("/skills/my"),
           api.get("/users/profile"),
+          api.get("/contact/messages"),
         ]);
 
         const projects = pRes.status === "fulfilled" ? pRes.value.data?.projects || [] : [];
@@ -121,6 +123,7 @@ const Dashboard = () => {
           projects: projects.length,
           certificates: certificates.length,
           skills: sRes.status === "fulfilled" ? sRes.value.data?.skills?.length || 0 : 0,
+          messages: msgRes.status === "fulfilled" ? msgRes.value.data?.messages?.length || 0 : 0,
           brokenImages: brokenProjects + brokenCerts + brokenProfile,
         });
         setContent({
@@ -196,6 +199,22 @@ const Dashboard = () => {
       icon: (
         <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
           <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M10 20l4-16m4 4l4 4-4 4M6 16l-4-4 4-4" />
+        </svg>
+      ),
+    },
+    {
+      title: "Messages",
+      count: stats.messages,
+      desc: "Read and reply to visitor inquiries sent via your contact form.",
+      link: "/messages",
+      btnText: "View Messages",
+      gradient: "from-cyan-600 to-blue-600",
+      accent: "text-cyan-400",
+      bgLight: "bg-cyan-500/10",
+      border: "border-cyan-500/20",
+      icon: (
+        <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M3 8l7.89 5.26a2 2 0 002.22 0L21 8M5 19h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z" />
         </svg>
       ),
     },
@@ -281,7 +300,7 @@ const Dashboard = () => {
         )}
 
         {/* Overview Stats & Management Grid */}
-        <div className="grid sm:grid-cols-2 lg:grid-cols-4 gap-6">
+        <div className="grid sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-5 gap-6">
           {cards.map((card) => (
             <div
               key={card.title}

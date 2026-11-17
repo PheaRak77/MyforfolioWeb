@@ -17,6 +17,7 @@ const Projects = lazy(() => import("./pages/Projects"));
 const Certificates = lazy(() => import("./pages/Certificates"));
 const Skills = lazy(() => import("./pages/Skills"));
 const Profile = lazy(() => import("./pages/Profile"));
+const Messages = lazy(() => import("./pages/Messages"));
 
 import FingerprintLoader from "./components/FingerprintLoader";
 
@@ -104,6 +105,14 @@ export default function App() {
             element={
               <Suspense fallback={<PageLoader />}>
                 <Profile />
+              </Suspense>
+            }
+          />
+          <Route
+            path="/messages"
+            element={
+              <Suspense fallback={<PageLoader />}>
+                <Messages />
               </Suspense>
             }
           />

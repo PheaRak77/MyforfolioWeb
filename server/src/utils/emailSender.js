@@ -17,6 +17,7 @@ const escapeHtml = (value = "") => String(value)
 const sendWithResend = async ({ recipientEmail, senderEmail, senderName, subject, html, text }) => {
   const response = await fetch("https://api.resend.com/emails", {
     method: "POST",
+    signal: AbortSignal.timeout(10000),
     headers: {
       Authorization: `Bearer ${process.env.RESEND_API_KEY.trim()}`,
       "Content-Type": "application/json",

@@ -41,7 +41,7 @@ router.post("/", async (req, res, next) => {
       });
     }
 
-    // 1. Immediately save message into database
+    // 1. Immediately save message into database so it is never lost
     await pool.query(
       `INSERT INTO contact_messages (name, email, subject, message)
        VALUES ($1, $2, $3, $4)`,
@@ -55,39 +55,47 @@ router.post("/", async (req, res, next) => {
     );
     const recipientEmail = process.env.CONTACT_RECIPIENT_EMAIL?.trim() || rows[0]?.email;
 
-    const hasResend = Boolean(process.env.RESEND_API_KEY?.trim());
-    const hasSmtp = Boolean(process.env.SMTP_EMAIL?.trim() && process.env.SMTP_PASSWORD?.trim());
-    if (!hasResend && !hasSmtp) {
-      console.error("[Contact] Email not sent: no email delivery provider is configured.");
-      return res.status(503).json({
-        success: false,
-        message: "Email delivery is not configured yet. Please contact the administrator directly.",
-      });
-    }
-
-    if (!recipientEmail) {
-      console.error("[Contact] Email not sent: no administrator recipient address found.");
-      return res.status(503).json({
-        success: false,
-        message: "The administrator email address is not configured yet.",
-      });
-    }
-
-    // 3. Await the provider response. Never show a false success message: the
-    // sender only sees success after Nodemailer accepts the message for delivery.
-    await sendContactEmail({
+    const emailPayload = {
       senderName: name.trim(),
       senderEmail: email.trim().toLowerCase(),
       subject: subject.trim(),
       message: message.trim(),
       recipientEmail,
-    });
+    };
 
-    console.log(`[Contact] Email accepted for delivery to ${recipientEmail}.`);
+    const hasResend = Boolean(process.env.RESEND_API_KEY?.trim());
+    const hasSmtp = Boolean(process.env.SMTP_EMAIL?.trim() && process.env.SMTP_PASSWORD?.trim());
+    let emailSent = false;
 
-    // 4. Return success only after the mail provider accepted the message.
+    if (recipientEmail && hasResend) {
+      // Fast HTTPS delivery (~300ms). Even if the email provider rejects/fails,
+      // the message is already stored safely in contact_messages for the admin inbox.
+      try {
+        await sendContactEmail(emailPayload);
+        emailSent = true;
+        console.log(`[Contact] Email accepted for delivery via Resend to ${recipientEmail}.`);
+      } catch (mailErr) {
+        console.warn("[Contact] Resend delivery failed (saved to DB):", mailErr.message);
+      }
+    } else if (recipientEmail && hasSmtp) {
+      // Cloud hosts (including Render free tier) block outbound SMTP ports 25/465/587,
+      // which previously caused a 10s hang and HTTP 500. Attempt SMTP in the background
+      // so the visitor's request succeeds immediately after DB persistence.
+      setImmediate(() => {
+        sendContactEmail(emailPayload)
+          .then(() => console.log(`[Contact] SMTP email sent to ${recipientEmail}.`))
+          .catch((mailErr) =>
+            console.warn("[Contact] Background SMTP failed (message saved in DB):", mailErr.message)
+          );
+      });
+    } else {
+      console.warn("[Contact] No email provider configured; message saved in DB for admin inbox.");
+    }
+
+    // 3. Return success once the message is safely stored in PostgreSQL
     return res.json({
       success: true,
+      emailSent,
       message: "Message sent successfully! Thank you for reaching out.",
     });
   } catch (err) {

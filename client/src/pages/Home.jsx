@@ -125,6 +125,8 @@ const Home = () => {
 
     if (!contactForm.subject.trim()) {
       errors.subject = "Please enter a subject";
+    } else if (contactForm.subject.trim().length < 2) {
+      errors.subject = "Subject must be at least 2 characters";
     }
 
     if (!contactForm.message.trim()) {

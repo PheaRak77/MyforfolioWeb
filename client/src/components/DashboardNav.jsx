@@ -22,6 +22,7 @@ const DashboardNav = () => {
     { to: "/projects", label: "Projects" },
     { to: "/certificates", label: "Certificates" },
     { to: "/skills", label: "Skills" },
+    { to: "/messages", label: "Messages" },
     { to: "/profile", label: "Profile" },
   ];
 
