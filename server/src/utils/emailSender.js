@@ -22,25 +22,36 @@ const sendWithResend = async ({
   html,
   text,
 }) => {
-  const response = await fetch("https://api.resend.com/emails", {
-    method: "POST",
-    signal: AbortSignal.timeout(10000),
-    headers: {
-      Authorization: `Bearer ${process.env.RESEND_API_KEY.trim()}`,
-      "Content-Type": "application/json",
-    },
-    body: JSON.stringify({
-      // `onboarding@resend.dev` works for early testing when recipientEmail is
-      // the email used for the Resend account. Use EMAIL_FROM with a verified
-      // domain when sending to general visitors.
-      from: process.env.EMAIL_FROM?.trim() || `${fromName} <onboarding@resend.dev>`,
-      to: [recipientEmail],
-      ...(replyTo ? { reply_to: replyTo } : {}),
-      subject,
-      html,
-      text,
-    }),
-  });
+  const apiKey = process.env.RESEND_API_KEY.trim();
+  const configuredFrom = process.env.EMAIL_FROM?.trim();
+  const primaryFrom = configuredFrom || `${fromName} <noreply@ypheareak.site>`;
+  const fallbackFrom = `${fromName} <onboarding@resend.dev>`;
+
+  const attemptSend = async (fromAddress) =>
+    fetch("https://api.resend.com/emails", {
+      method: "POST",
+      signal: AbortSignal.timeout(10000),
+      headers: {
+        Authorization: `Bearer ${apiKey}`,
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify({
+        from: fromAddress,
+        to: [recipientEmail],
+        ...(replyTo ? { reply_to: replyTo } : {}),
+        subject,
+        html,
+        text,
+      }),
+    });
+
+  let response = await attemptSend(primaryFrom);
+
+  // If no custom EMAIL_FROM is set and the custom domain is still propagating,
+  // retry once using Resend's sandbox sender so owner alerts still deliver.
+  if (!response.ok && !configuredFrom && response.status === 403) {
+    response = await attemptSend(fallbackFrom);
+  }
 
   if (!response.ok) {
     const detail = await response.text();
