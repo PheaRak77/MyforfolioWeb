@@ -272,6 +272,21 @@ const Home = () => {
     return () => observer.disconnect();
   }, []);
 
+  // Lock background page scroll & allow Escape key when certificate modal is open
+  useEffect(() => {
+    if (!selectedCertificate) return;
+    const prevOverflow = document.body.style.overflow;
+    document.body.style.overflow = "hidden";
+    const onKeyDown = (e) => {
+      if (e.key === "Escape") setSelectedCertificate(null);
+    };
+    window.addEventListener("keydown", onKeyDown);
+    return () => {
+      document.body.style.overflow = prevOverflow;
+      window.removeEventListener("keydown", onKeyDown);
+    };
+  }, [selectedCertificate]);
+
   // Display user priority: authenticated user if looking at own portfolio, else fetched public profile
   // ALWAYS show the admin/owner's public profile on the portfolio page
   // regardless of who is currently logged in

@@ -32,6 +32,16 @@ export default function ProjectDetailsModal({ project, onClose }) {
     setIsFullscreen(false);
   }, [project?.id]);
 
+  // Lock body scroll while project modal is open so focus stays centered
+  useEffect(() => {
+    if (!project) return;
+    const prevOverflow = document.body.style.overflow;
+    document.body.style.overflow = "hidden";
+    return () => {
+      document.body.style.overflow = prevOverflow;
+    };
+  }, [project]);
+
   // Keyboard navigation: Left/Right arrows + Escape
   useEffect(() => {
     if (!project) return;

@@ -1118,24 +1118,24 @@ html {
   }
 }
 
+/* Opacity-only page transition (never use transform here so position: fixed
+   navbar, modals, and background stay pinned to the viewport) */
 @keyframes page-enter {
   from {
     opacity: 0;
-    transform: translate3d(0, 8px, 0);
   }
   to {
     opacity: 1;
-    transform: translate3d(0, 0, 0);
   }
 }
 
 .animate-page-enter {
-  animation: page-enter 260ms cubic-bezier(0.22, 1, 0.36, 1) both;
+  animation: page-enter 220ms cubic-bezier(0.22, 1, 0.36, 1);
 }
 
 /* Isolate decorative layers for fast rendering */
 .portfolio-motion-bg {
-  contain: strict;
+  contain: layout paint;
   transform: translateZ(0);
 }
 
