@@ -1,6 +1,6 @@
 const express = require("express");
 const router = express.Router();
-const { sendContactEmail } = require("../utils/emailSender");
+const { sendContactEmail, resolveHttpsProvider } = require("../utils/emailSender");
 const pool = require("../config/db");
 const { requireAuth, requireAdmin } = require("../middleware/auth.middleware");
 
@@ -63,19 +63,19 @@ router.post("/", async (req, res, next) => {
       recipientEmail,
     };
 
-    const hasResend = Boolean(process.env.RESEND_API_KEY?.trim());
+    const httpsProvider = resolveHttpsProvider();
     const hasSmtp = Boolean(process.env.SMTP_EMAIL?.trim() && process.env.SMTP_PASSWORD?.trim());
     let emailSent = false;
 
-    if (recipientEmail && hasResend) {
+    if (recipientEmail && httpsProvider) {
       // Fast HTTPS delivery (~300ms). Even if the email provider rejects/fails,
       // the message is already stored safely in contact_messages for the admin inbox.
       try {
         await sendContactEmail(emailPayload);
         emailSent = true;
-        console.log(`[Contact] Email accepted for delivery via Resend to ${recipientEmail}.`);
+        console.log(`[Contact] Email accepted for delivery via ${httpsProvider.provider} to ${recipientEmail}.`);
       } catch (mailErr) {
-        console.warn("[Contact] Resend delivery failed (saved to DB):", mailErr.message);
+        console.warn(`[Contact] ${httpsProvider.provider} delivery failed (saved to DB):`, mailErr.message);
       }
     } else if (recipientEmail && hasSmtp) {
       // Cloud hosts (including Render free tier) block outbound SMTP ports 25/465/587,

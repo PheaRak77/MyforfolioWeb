@@ -14,7 +14,43 @@ const escapeHtml = (value = "") => String(value)
   .replace(/"/g, "&quot;")
   .replace(/'/g, "&#039;");
 
-const sendWithResend = async ({
+const resolveHttpsProvider = () => {
+  const brevoKey = process.env.BREVO_API_KEY?.trim();
+  const resendKey = process.env.RESEND_API_KEY?.trim();
+
+  if (brevoKey) {
+    return { provider: "brevo", apiKey: brevoKey };
+  }
+
+  // Support users who paste a Brevo API key (xkeysib-...) into RESEND_API_KEY.
+  if (resendKey?.startsWith("xkeysib-")) {
+    return { provider: "brevo", apiKey: resendKey };
+  }
+
+  if (resendKey) {
+    return { provider: "resend", apiKey: resendKey };
+  }
+
+  return null;
+};
+
+const hasHttpsEmailProvider = () => Boolean(resolveHttpsProvider());
+
+const resolveBrevoSenderEmail = () => {
+  const explicitBrevo = process.env.BREVO_SENDER_EMAIL?.trim();
+  if (explicitBrevo) return explicitBrevo;
+
+  const configuredFrom = process.env.EMAIL_FROM?.trim();
+  if (configuredFrom) {
+    const bracketMatch = configuredFrom.match(/<([^>]+)>/);
+    return (bracketMatch ? bracketMatch[1] : configuredFrom).trim();
+  }
+
+  return process.env.SMTP_EMAIL?.trim() || "noreply@ypheareak.site";
+};
+
+const sendWithBrevo = async ({
+  apiKey,
   recipientEmail,
   replyTo,
   fromName = "Portfolio",
@@ -22,7 +58,40 @@ const sendWithResend = async ({
   html,
   text,
 }) => {
-  const apiKey = process.env.RESEND_API_KEY.trim();
+  const senderEmail = resolveBrevoSenderEmail();
+  const response = await fetch("https://api.brevo.com/v3/smtp/email", {
+    method: "POST",
+    signal: AbortSignal.timeout(10000),
+    headers: {
+      "api-key": apiKey,
+      "Content-Type": "application/json",
+      Accept: "application/json",
+    },
+    body: JSON.stringify({
+      sender: { name: fromName, email: senderEmail },
+      to: [{ email: recipientEmail }],
+      ...(replyTo ? { replyTo: { email: replyTo } } : {}),
+      subject,
+      htmlContent: html,
+      textContent: text,
+    }),
+  });
+
+  if (!response.ok) {
+    const detail = await response.text();
+    throw new Error(`Brevo delivery failed (${response.status}): ${detail}`);
+  }
+};
+
+const sendWithResend = async ({
+  apiKey,
+  recipientEmail,
+  replyTo,
+  fromName = "Portfolio",
+  subject,
+  html,
+  text,
+}) => {
   const configuredFrom = process.env.EMAIL_FROM?.trim();
   const primaryFrom = configuredFrom || `${fromName} <noreply@ypheareak.site>`;
   const fallbackFrom = `${fromName} <onboarding@resend.dev>`;
@@ -57,6 +126,19 @@ const sendWithResend = async ({
     const detail = await response.text();
     throw new Error(`Resend delivery failed (${response.status}): ${detail}`);
   }
+};
+
+const sendViaHttpsProvider = async (payload) => {
+  const resolved = resolveHttpsProvider();
+  if (!resolved) return false;
+
+  if (resolved.provider === "brevo") {
+    await sendWithBrevo({ apiKey: resolved.apiKey, ...payload });
+  } else {
+    await sendWithResend({ apiKey: resolved.apiKey, ...payload });
+  }
+
+  return true;
 };
 
 const getTransporter = () => {
@@ -210,15 +292,16 @@ const sendContactEmail = async ({
   const text = `New message from ${senderName} (${senderEmail})\n\nSubject: ${subject}\n\n${message}`;
 
   // HTTPS delivery avoids SMTP socket timeouts on restrictive cloud networks.
-  if (process.env.RESEND_API_KEY?.trim()) {
-    await sendWithResend({
+  if (
+    await sendViaHttpsProvider({
       recipientEmail,
       replyTo: senderEmail,
       fromName: "Portfolio Contact",
       subject: `[Portfolio] ${subject}`,
       html,
       text,
-    });
+    })
+  ) {
     return;
   }
 
@@ -307,14 +390,15 @@ const sendPasswordResetEmail = async ({ recipientEmail, otp, resetLink }) => {
 </html>
   `;
 
-  if (process.env.RESEND_API_KEY?.trim()) {
-    await sendWithResend({
+  if (
+    await sendViaHttpsProvider({
       recipientEmail,
       fromName: "Portfolio Security",
       subject,
       html,
       text,
-    });
+    })
+  ) {
     return;
   }
 
@@ -328,4 +412,9 @@ const sendPasswordResetEmail = async ({ recipientEmail, otp, resetLink }) => {
   });
 };
 
-module.exports = { sendContactEmail, sendPasswordResetEmail };
+module.exports = {
+  sendContactEmail,
+  sendPasswordResetEmail,
+  hasHttpsEmailProvider,
+  resolveHttpsProvider,
+};

@@ -6,7 +6,7 @@ const ApiError = require("../utils/ApiError");
 const asyncHandler = require("../utils/asyncHandler");
 const generateToken = require("../utils/generateToken");
 const sanitizeUser = require("../utils/sanitizeUser");
-const { sendPasswordResetEmail } = require("../utils/emailSender");
+const { sendPasswordResetEmail, resolveHttpsProvider } = require("../utils/emailSender");
 
 const register = asyncHandler(async (req, res) => {
   const { name, email, phone, password, dob } = req.body;
@@ -210,21 +210,23 @@ const forgotPassword = asyncHandler(async (req, res) => {
       user.email,
     )}`;
 
-    const hasResend = Boolean(process.env.RESEND_API_KEY?.trim());
+    const httpsProvider = resolveHttpsProvider();
     const hasSmtp = Boolean(
       process.env.SMTP_EMAIL?.trim() && process.env.SMTP_PASSWORD?.trim(),
     );
 
-    if (hasResend) {
+    if (httpsProvider) {
       try {
         await sendPasswordResetEmail({
           recipientEmail: user.email,
           otp,
           resetLink,
         });
-        console.log(`[Auth] Password reset OTP delivered via Resend to ${user.email}.`);
+        console.log(
+          `[Auth] Password reset OTP delivered via ${httpsProvider.provider} to ${user.email}.`,
+        );
       } catch (error) {
-        console.error("[Auth] Resend OTP delivery failed:", error.message);
+        console.error(`[Auth] ${httpsProvider.provider} OTP delivery failed:`, error.message);
         throw new ApiError(
           502,
           "Could not send OTP email right now. Please try again in a moment.",
