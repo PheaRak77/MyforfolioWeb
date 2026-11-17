@@ -16,12 +16,12 @@ import MotionBackground from "../components/MotionBackground";
 import FingerprintLoader from "../components/FingerprintLoader";
 import ThemeToggle from "../components/ThemeToggle";
 import ProjectCard from "../components/ProjectCard";
+import ProjectDetailsModal from "../components/ProjectDetailsModal";
 import CertificateCard from "../components/CertificateCard";
 import {
   fetchPublicPortfolioData,
   hydrateFromCache,
 } from "../utils/publicDataCache";
-import { getProjectValidImages } from "../utils/projectImages";
 import { formatDisplayDate } from "../utils/formatDate";
 import { getSkillIconUrl } from "../utils/skillIcons";
 import SkillBar from "../components/SkillBar";
@@ -374,7 +374,7 @@ const Home = () => {
               href="#projects"
               onClick={(e) => handleNavClick(e, "#projects")}
               className="px-3.5 py-1.5 rounded-full hover:bg-black/5 dark:hover:bg-white/10 hover:text-neutral-900 dark:hover:text-white transition-all"
-            >
+            >https://www.ypheareak.site/
               Projects
             </a>
             <a
@@ -1900,126 +1900,10 @@ const Home = () => {
       </footer>
 
       {/* PROJECT DETAILS MODAL (READ-ONLY) */}
-      {selectedProject && (
-        <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/80 backdrop-blur-sm">
-          <div className="bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 rounded-2xl max-w-2xl w-full max-h-[90vh] overflow-y-auto p-6 sm:p-8 space-y-6 shadow-2xl relative">
-            <button
-              onClick={() => setSelectedProject(null)}
-              className="absolute top-5 right-5 p-2 rounded-full bg-slate-100 dark:bg-slate-800 text-slate-500 dark:text-slate-400 hover:text-black dark:hover:text-white hover:bg-slate-200 dark:hover:bg-slate-700 transition-colors"
-            >
-              <svg
-                className="w-5 h-5"
-                fill="none"
-                stroke="currentColor"
-                viewBox="0 0 24 24"
-              >
-                <path
-                  strokeLinecap="round"
-                  strokeLinejoin="round"
-                  strokeWidth={2}
-                  d="M6 18L18 6M6 6l12 12"
-                />
-              </svg>
-            </button>
-
-            {selectedProject &&
-              getProjectValidImages(selectedProject).length > 0 && (
-                <div className="space-y-3">
-                  <PortfolioImage
-                    src={getProjectValidImages(selectedProject)[0]}
-                    alt={selectedProject.title}
-                    variant="project"
-                    className="w-full max-h-72 object-cover rounded-xl border border-slate-200 dark:border-slate-800"
-                  />
-                  {getProjectValidImages(selectedProject).length > 1 && (
-                    <div className="grid grid-cols-3 gap-2">
-                      {getProjectValidImages(selectedProject)
-                        .slice(1)
-                        .map((imgUrl, i) => (
-                          <PortfolioImage
-                            key={i}
-                            src={imgUrl}
-                            alt=""
-                            variant="project"
-                            className="w-full h-20 object-cover rounded-lg border border-slate-200 dark:border-slate-800"
-                          />
-                        ))}
-                    </div>
-                  )}
-                </div>
-              )}
-
-            <div>
-              <div className="flex items-center gap-2">
-                <h3 className="text-2xl font-bold text-slate-900 dark:text-white">
-                  {selectedProject.title}
-                </h3>
-                {selectedProject.is_featured && (
-                  <span className="px-2.5 py-0.5 rounded-full bg-blue-600 text-white text-xs font-bold">
-                    Featured
-                  </span>
-                )}
-              </div>
-              <p className="text-slate-600 dark:text-slate-300 text-sm mt-3 whitespace-pre-line leading-relaxed">
-                {selectedProject.description}
-              </p>
-            </div>
-
-            {selectedProject.tech_stack &&
-              selectedProject.tech_stack.length > 0 && (
-                <div>
-                  <h4 className="text-xs uppercase tracking-wider font-semibold text-slate-500 dark:text-slate-400 mb-2">
-                    Technologies Used
-                  </h4>
-                  <div className="flex flex-wrap gap-2">
-                    {selectedProject.tech_stack.map((tech) => (
-                      <span
-                        key={tech}
-                        className="px-3 py-1 rounded-lg bg-slate-100 dark:bg-slate-800 text-blue-600 dark:text-blue-400 text-xs font-medium border border-slate-200 dark:border-slate-700"
-                      >
-                        {tech}
-                      </span>
-                    ))}
-                  </div>
-                </div>
-              )}
-
-            {selectedProject.links && selectedProject.links.length > 0 && (
-              <div className="pt-4 border-t border-slate-100 dark:border-slate-800">
-                <h4 className="text-xs uppercase tracking-wider font-semibold text-slate-500 dark:text-slate-400 mb-3">
-                  Links & Live Demos
-                </h4>
-                <div className="flex flex-wrap gap-3">
-                  {selectedProject.links.map((link, idx) => (
-                    <a
-                      key={idx}
-                      href={link.url}
-                      target="_blank"
-                      rel="noopener noreferrer"
-                      className="px-4 py-2 rounded-xl bg-blue-600 hover:bg-blue-500 text-white text-sm font-semibold inline-flex items-center gap-2 transition-colors shadow-md shadow-blue-500/20"
-                    >
-                      <span>{link.label}</span>
-                      <svg
-                        className="w-4 h-4"
-                        fill="none"
-                        stroke="currentColor"
-                        viewBox="0 0 24 24"
-                      >
-                        <path
-                          strokeLinecap="round"
-                          strokeLinejoin="round"
-                          strokeWidth={2}
-                          d="M10 6H6a2 2 0 00-2 2v10a2 2 0 002 2h10a2 2 0 002-2v-4M14 4h6m0 0v6m0-6L10 14"
-                        />
-                      </svg>
-                    </a>
-                  ))}
-                </div>
-              </div>
-            )}
-          </div>
-        </div>
-      )}
+      <ProjectDetailsModal
+        project={selectedProject}
+        onClose={() => setSelectedProject(null)}
+      />
 
       {/* CERTIFICATE LIGHTBOX / ZOOM MODAL (READ-ONLY) */}
       {selectedCertificate && (
