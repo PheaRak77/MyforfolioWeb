@@ -18,6 +18,7 @@ import ProjectCard from "../components/ProjectCard";
 import ProjectDetailsModal from "../components/ProjectDetailsModal";
 import CertificateCard from "../components/CertificateCard";
 import HeroName3D from "../components/HeroName3D";
+import TechMarquee from "../components/TechMarquee";
 import {
   consumeFreshBypassFlag,
   fetchPublicPortfolioData,
@@ -849,6 +850,9 @@ const Home = () => {
             </div>
           </div>
         </section>
+
+        {/* ANIMATED LIQUID GLASS TECH STACK MARQUEE */}
+        <TechMarquee onJumpToSkills={(e) => handleNavClick(e, "#skills")} />
 
         {/* CV / RESUME TIMELINE SECTION (Directly after Banner UI) */}
         <section id="experience" className="relative pt-4 pb-8 space-y-10">

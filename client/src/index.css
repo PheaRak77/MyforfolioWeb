@@ -1226,6 +1226,53 @@ html {
 }
 
 /* =====================================================
+   INFINITE TECH STACK MARQUEE (GPU-COMPOSITED)
+   ===================================================== */
+@keyframes tech-marquee-scroll {
+  0% {
+    transform: translate3d(0, 0, 0);
+  }
+  100% {
+    transform: translate3d(-50%, 0, 0);
+  }
+}
+
+.tech-marquee-mask {
+  -webkit-mask-image: linear-gradient(
+    to right,
+    transparent,
+    black 7%,
+    black 93%,
+    transparent
+  );
+  mask-image: linear-gradient(
+    to right,
+    transparent,
+    black 7%,
+    black 93%,
+    transparent
+  );
+}
+
+.tech-marquee-track {
+  animation: tech-marquee-scroll 30s linear infinite;
+  will-change: transform;
+  transform: translate3d(0, 0, 0);
+}
+
+.tech-marquee-mask:hover .tech-marquee-track {
+  animation-play-state: paused;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .tech-marquee-track {
+    animation: none;
+    flex-wrap: wrap;
+    width: auto !important;
+  }
+}
+
+/* =====================================================
    CV PRINT & PDF EXPORT STYLES
    ===================================================== */
 @media print {
