@@ -1,5 +1,6 @@
 import { memo, useEffect, useId, useRef, useState } from "react";
 import PortfolioImage from "./PortfolioImage";
+import { startViewportRafLoop } from "../utils/viewportRaf";
 
 /**
  * Interactive 3D Swinging Lanyard Photo Badge (inspired by ReactBits Lanyard).
@@ -17,6 +18,7 @@ const HeroLanyardCard = memo(function HeroLanyardCard({
   const [isFlipped, setIsFlipped] = useState(false);
   const [isDragging, setIsDragging] = useState(false);
 
+  const stageRef = useRef(null);
   const cardPivotRef = useRef(null);
   const cardFlipRef = useRef(null);
   const strapPathRef = useRef(null);
@@ -55,17 +57,11 @@ const HeroLanyardCard = memo(function HeroLanyardCard({
       typeof window !== "undefined" &&
       window.matchMedia?.("(prefers-reduced-motion: reduce)")?.matches;
 
-    let rafId = 0;
-    let prevTime = performance.now();
-
     const ANCHOR_X = 190;
     const ANCHOR_Y = 0;
     const BASE_STRAP_LENGTH = 100;
 
-    const tick = (now) => {
-      const dt = Math.min((now - prevTime) / 16.6667, 2.2);
-      prevTime = now;
-
+    return startViewportRafLoop(stageRef.current, (now, dt) => {
       const p = physicsRef.current;
 
       if (!p.dragging) {
@@ -137,12 +133,7 @@ const HeroLanyardCard = memo(function HeroLanyardCard({
           `translate(${endX.toFixed(2)}, ${endY.toFixed(2)}) rotate(${claspAngle.toFixed(2)})`,
         );
       }
-
-      rafId = requestAnimationFrame(tick);
-    };
-
-    rafId = requestAnimationFrame(tick);
-    return () => cancelAnimationFrame(rafId);
+    });
   }, []);
 
   const handlePointerDown = (e) => {
@@ -208,7 +199,11 @@ const HeroLanyardCard = memo(function HeroLanyardCard({
   const displayName = user?.name || "Yorn Pheareak";
 
   return (
-    <div className="relative flex flex-col items-center select-none w-[320px] sm:w-[380px] mx-auto">
+    <div
+      ref={stageRef}
+      style={{ contain: "layout style" }}
+      className="relative flex flex-col items-center select-none w-[320px] sm:w-[380px] mx-auto"
+    >
       {/* Subtle ambient glow behind badge */}
       <div
         aria-hidden="true"

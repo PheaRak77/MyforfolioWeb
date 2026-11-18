@@ -1,5 +1,6 @@
 import { useEffect, useRef } from "react";
 import VerifiedBadge from "./VerifiedBadge";
+import { startViewportRafLoop } from "../utils/viewportRaf";
 
 // Stepped palette from crisp bright front-adjacent highlight down to deep shadow
 const DEPTH_LAYERS = [
@@ -65,9 +66,7 @@ export default function HeroName3D({ name = "Yorn Pheareak" }) {
     window.addEventListener("touchmove", handleTouchMove, { passive: true });
     window.addEventListener("mouseleave", handleLeave);
 
-    let rafId = 0;
-
-    const tick = (now) => {
+    const stopRaf = startViewportRafLoop(stageRef.current, (now, dt) => {
       const isFreshPointer = pointer.active && now - pointer.lastMovedAt < 2600;
 
       let targetDx = 0.25;
@@ -81,8 +80,9 @@ export default function HeroName3D({ name = "Yorn Pheareak" }) {
         targetDy = 0.25 + Math.cos(now * 0.001) * 0.35;
       }
 
-      current.dx += (targetDx - current.dx) * 0.12;
-      current.dy += (targetDy - current.dy) * 0.12;
+      const blend = 1 - Math.pow(0.88, dt);
+      current.dx += (targetDx - current.dx) * blend;
+      current.dy += (targetDy - current.dy) * blend;
 
       if (frontRef.current) {
         const fx = current.dx * 3.5;
@@ -99,14 +99,10 @@ export default function HeroName3D({ name = "Yorn Pheareak" }) {
         const ly = -current.dy * depth * 1.15 + depth * 1.15;
         layer.style.transform = `translate3d(${lx.toFixed(2)}px, ${ly.toFixed(2)}px, 0)`;
       }
-
-      rafId = requestAnimationFrame(tick);
-    };
-
-    rafId = requestAnimationFrame(tick);
+    });
 
     return () => {
-      cancelAnimationFrame(rafId);
+      stopRaf();
       window.removeEventListener("mousemove", handleMouseMove);
       window.removeEventListener("touchmove", handleTouchMove);
       window.removeEventListener("mouseleave", handleLeave);

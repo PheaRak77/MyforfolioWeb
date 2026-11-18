@@ -1251,9 +1251,9 @@ html {
 }
 
 /* =====================================================
-   INFINITE TECH STACK MARQUEE (GPU-COMPOSITED)
+   FULL-WIDTH SEAMLESS LOGO LOOP (GPU-COMPOSITED)
    ===================================================== */
-@keyframes tech-marquee-scroll {
+@keyframes logo-loop-scroll {
   0% {
     transform: translate3d(0, 0, 0);
   }
@@ -1262,31 +1262,53 @@ html {
   }
 }
 
-.tech-marquee-mask {
+.logo-loop-section {
+  contain: layout paint;
+}
+
+.logo-loop-mask {
   -webkit-mask-image: linear-gradient(
     to right,
     transparent,
-    black 7%,
-    black 93%,
+    black 8%,
+    black 92%,
     transparent
   );
   mask-image: linear-gradient(
     to right,
     transparent,
-    black 7%,
-    black 93%,
+    black 8%,
+    black 92%,
     transparent
   );
 }
 
-.tech-marquee-track {
-  animation: tech-marquee-scroll 30s linear infinite;
+.logo-loop-track {
+  animation: logo-loop-scroll 42s linear infinite;
   will-change: transform;
   transform: translate3d(0, 0, 0);
+  backface-visibility: hidden;
 }
 
-.tech-marquee-mask:hover .tech-marquee-track {
-  animation-play-state: paused;
+@media (hover: hover) {
+  .logo-loop-mask:hover .logo-loop-track {
+    animation-play-state: paused;
+  }
+}
+
+@media (max-width: 640px) {
+  .logo-loop-track {
+    animation-duration: 30s;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .logo-loop-track {
+    animation: none;
+    flex-wrap: wrap;
+    justify-content: center;
+    width: auto !important;
+  }
 }
 
 /* =====================================================

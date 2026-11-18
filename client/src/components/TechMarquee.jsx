@@ -1,23 +1,27 @@
 import { memo, useState } from "react";
 import { getSkillIconUrl } from "../utils/skillIcons";
 
-const MARQUEE_TECH_STACK = [
-  { name: "Express.js", lookup: "express", accent: "#64748b", tint: "from-slate-500/20 to-zinc-500/10" },
-  { name: "Node.js", lookup: "node", accent: "#22c55e", tint: "from-emerald-500/20 to-green-500/10" },
-  { name: "JavaScript", lookup: "javascript", accent: "#eab308", tint: "from-yellow-400/25 to-amber-500/10" },
-  { name: "React", lookup: "react", accent: "#38bdf8", tint: "from-sky-400/20 to-cyan-500/10" },
-  { name: "Tailwind CSS", lookup: "tailwindcss", accent: "#06b6d4", tint: "from-cyan-400/20 to-sky-500/10" },
-  { name: "Bootstrap", lookup: "bootstrap", accent: "#8b5cf6", tint: "from-violet-500/20 to-purple-500/10" },
-  { name: "PostgreSQL", lookup: "postgresql", accent: "#3b82f6", tint: "from-blue-500/20 to-indigo-500/10" },
-  { name: "Git", lookup: "git", accent: "#f97316", tint: "from-orange-500/20 to-red-500/10" },
-  { name: "GitHub", lookup: "github", accent: "#94a3b8", tint: "from-slate-400/20 to-slate-600/10" },
-  { name: "HTML5", lookup: "html5", accent: "#ef4444", tint: "from-orange-500/20 to-rose-500/10" },
-  { name: "CSS3", lookup: "css3", accent: "#2563eb", tint: "from-blue-500/20 to-sky-500/10" },
-  { name: "Python", lookup: "python", accent: "#38bdf8", tint: "from-sky-500/20 to-yellow-400/10" },
-  { name: "Vite", lookup: "vite", accent: "#a855f7", tint: "from-purple-500/20 to-amber-400/10" },
+const LOGO_LOOP_ITEMS = [
+  { name: "Express.js", lookup: "express" },
+  { name: "Node.js", lookup: "node" },
+  { name: "JavaScript", lookup: "javascript" },
+  { name: "React", lookup: "react" },
+  { name: "Tailwind CSS", lookup: "tailwindcss" },
+  { name: "Bootstrap", lookup: "bootstrap" },
+  { name: "PostgreSQL", lookup: "postgresql" },
+  { name: "Git", lookup: "git" },
+  { name: "GitHub", lookup: "github" },
+  { name: "HTML5", lookup: "html5" },
+  { name: "CSS3", lookup: "css3" },
+  { name: "Python", lookup: "python" },
+  { name: "Vite", lookup: "vite" },
+  { name: "Docker", lookup: "docker" },
 ];
 
-const MarqueeTechPill = memo(function MarqueeTechPill({ tech, onJumpToSkills }) {
+// Double inside each half so even 4K ultra-wide screens have zero empty gap
+const HALF_TRACK_ITEMS = [...LOGO_LOOP_ITEMS, ...LOGO_LOOP_ITEMS];
+
+const LogoLoopItem = memo(function LogoLoopItem({ tech, onJumpToSkills }) {
   const [failed, setFailed] = useState(false);
   const iconUrl = !failed ? getSkillIconUrl(tech.lookup) : null;
 
@@ -25,87 +29,56 @@ const MarqueeTechPill = memo(function MarqueeTechPill({ tech, onJumpToSkills }) 
     <a
       href="#skills"
       onClick={onJumpToSkills}
-      className="liquid-glass-pill group inline-flex items-center gap-2.5 sm:gap-3 px-3.5 sm:px-4 py-2 sm:py-2.5 rounded-2xl flex-shrink-0 transition-transform duration-300 hover:-translate-y-0.5 hover:scale-[1.03]"
+      title={tech.name}
+      aria-label={tech.name}
+      className="group inline-flex items-center justify-center flex-shrink-0 p-1.5 sm:p-2 rounded-xl opacity-75 hover:opacity-100 transition-all duration-300 hover:scale-125 focus:outline-none focus-visible:ring-2 focus-visible:ring-amber-400/60"
     >
-      <span
-        className={`w-7 h-7 sm:w-8 sm:h-8 rounded-xl bg-gradient-to-br ${tech.tint} border border-black/10 dark:border-white/15 flex items-center justify-center flex-shrink-0 shadow-sm`}
-      >
-        {iconUrl ? (
-          <img
-            src={iconUrl}
-            alt={tech.name}
-            className="w-4 h-4 sm:w-[18px] sm:h-[18px] object-contain dark:invert dark:brightness-200 transition-transform duration-300 group-hover:scale-110"
-            loading="eager"
-            decoding="async"
-            referrerPolicy="no-referrer"
-            onError={() => setFailed(true)}
-          />
-        ) : (
-          <span
-            className="text-xs font-extrabold"
-            style={{ color: tech.accent }}
-          >
-            {tech.name.charAt(0)}
-          </span>
-        )}
-      </span>
-
-      <span className="text-xs sm:text-sm font-bold text-neutral-800 dark:text-neutral-100 whitespace-nowrap tracking-tight">
-        {tech.name}
-      </span>
-
-      <span
-        aria-hidden="true"
-        className="w-1.5 h-1.5 rounded-full opacity-80 flex-shrink-0"
-        style={{ backgroundColor: tech.accent }}
-      />
+      {iconUrl ? (
+        <img
+          src={iconUrl}
+          alt={tech.name}
+          className="w-8 h-8 sm:w-10 sm:h-10 lg:w-11 lg:h-11 object-contain dark:invert dark:brightness-200 select-none pointer-events-none"
+          loading="eager"
+          decoding="async"
+          referrerPolicy="no-referrer"
+          onError={() => setFailed(true)}
+        />
+      ) : (
+        <span className="text-sm sm:text-base font-black tracking-tight text-slate-800 dark:text-white select-none">
+          {tech.name}
+        </span>
+      )}
     </a>
   );
 });
 
 /**
- * Infinite GPU-composited Liquid Glass tech stack marquee positioned under the Hero Banner.
- * Duplicates one full strip seamlessly inside a translate3d loop so there is no gap or snap.
+ * Full-screen-width seamless Logo Loop (inspired by ReactBits Logo Loop).
+ * Runs purely on the GPU compositor with zero JS frame timers and pauses on hover.
  */
 const TechMarquee = memo(function TechMarquee({ onJumpToSkills }) {
   return (
     <section
-      aria-label="Core Technologies"
-      className="relative -mt-4 sm:-mt-6 pb-2"
+      aria-label="Technologies & Frameworks"
+      className="logo-loop-section relative w-screen left-1/2 -translate-x-1/2 -mt-4 sm:-mt-6 border-y border-black/[0.06] dark:border-white/[0.08] bg-white/40 dark:bg-slate-950/35 backdrop-blur-md py-6 sm:py-8 overflow-hidden"
     >
-      <div className="liquid-glass-card rounded-2xl sm:rounded-3xl py-3.5 sm:py-4 overflow-hidden">
-        <div className="px-4 sm:px-6 pb-2.5 flex items-center justify-between gap-2">
-          <span className="inline-flex items-center gap-2 text-[10px] sm:text-xs font-bold uppercase tracking-[0.18em] text-neutral-500 dark:text-slate-400">
-            <span className="w-2 h-2 rounded-full bg-emerald-400 animate-pulse" />
-            Core Tech Stack &amp; Tools
-          </span>
-          <a
-            href="#skills"
-            onClick={onJumpToSkills}
-            className="text-[11px] sm:text-xs font-semibold text-amber-600 dark:text-amber-300 hover:underline whitespace-nowrap"
-          >
-            View All Skills →
-          </a>
-        </div>
-
-        <div className="tech-marquee-mask relative overflow-hidden">
-          <div className="tech-marquee-track flex items-center w-max">
-            {[0, 1].map((copyIndex) => (
-              <div
-                key={copyIndex}
-                aria-hidden={copyIndex === 1 ? "true" : undefined}
-                className="flex items-center gap-3 sm:gap-4 pr-3 sm:pr-4 flex-shrink-0"
-              >
-                {MARQUEE_TECH_STACK.map((tech) => (
-                  <MarqueeTechPill
-                    key={`${copyIndex}-${tech.name}`}
-                    tech={tech}
-                    onJumpToSkills={onJumpToSkills}
-                  />
-                ))}
-              </div>
-            ))}
-          </div>
+      <div className="logo-loop-mask relative overflow-hidden">
+        <div className="logo-loop-track flex items-center w-max">
+          {[0, 1].map((copyIndex) => (
+            <div
+              key={copyIndex}
+              aria-hidden={copyIndex === 1 ? "true" : undefined}
+              className="flex items-center gap-12 sm:gap-16 lg:gap-24 pr-12 sm:pr-16 lg:pr-24 flex-shrink-0"
+            >
+              {HALF_TRACK_ITEMS.map((tech, idx) => (
+                <LogoLoopItem
+                  key={`${copyIndex}-${idx}-${tech.name}`}
+                  tech={tech}
+                  onJumpToSkills={onJumpToSkills}
+                />
+              ))}
+            </div>
+          ))}
         </div>
       </div>
     </section>
