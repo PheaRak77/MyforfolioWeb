@@ -949,47 +949,29 @@ html.dark .hero-name-3d-front {
   transform: translateZ(28px);
 }
 
-/* Text Pressure Variable Font Character Styling */
-.text-pressure-font {
-  font-family: "Roboto Flex", system-ui, sans-serif;
-  font-optical-sizing: none;
+/* Depth Text Layered Extruded Type — Light & Dark */
+.depth-text-front {
+  color: #0f172a;
+  filter: drop-shadow(0 8px 18px rgba(79, 70, 229, 0.22));
+  will-change: transform;
 }
 
-.text-pressure-char {
-  display: inline-block;
-  will-change: font-variation-settings, transform;
-  background: linear-gradient(
-    130deg,
-    #1d4ed8 0%,
-    #4f46e5 24%,
-    #7e22ce 48%,
-    #db2777 72%,
-    #d97706 90%,
-    #1d4ed8 100%
-  );
-  background-size: 260% 260%;
-  -webkit-background-clip: text;
-  background-clip: text;
-  -webkit-text-fill-color: transparent;
-  filter: drop-shadow(0 5px 14px rgba(37, 99, 235, 0.2));
-  animation: text-gradient-flow 6s ease infinite;
+html.dark .depth-text-front {
+  color: #ffffff;
+  filter: drop-shadow(0 0 24px rgba(167, 139, 250, 0.38));
 }
 
-html.dark .text-pressure-char {
-  background: linear-gradient(
-    130deg,
-    #f8fafc 0%,
-    #7dd3fc 24%,
-    #a5b4fc 48%,
-    #f472b6 74%,
-    #fbbf24 92%,
-    #f8fafc 100%
-  );
-  background-size: 260% 260%;
-  -webkit-background-clip: text;
-  background-clip: text;
-  -webkit-text-fill-color: transparent;
-  filter: drop-shadow(0 6px 18px rgba(56, 189, 248, 0.32));
+.depth-text-layer {
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+  user-select: none;
+  will-change: transform;
+  color: var(--depth-light-color);
+}
+
+html.dark .depth-text-layer {
+  color: var(--depth-dark-color);
 }
 
 .animate-name-gradient {

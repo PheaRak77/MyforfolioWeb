@@ -1,27 +1,33 @@
-import { useEffect, useMemo, useRef } from "react";
+import { useEffect, useRef } from "react";
 import VerifiedBadge from "./VerifiedBadge";
 
+// Stepped palette from crisp bright front-adjacent highlight down to deep shadow
+const DEPTH_LAYERS = [
+  { light: "#4f46e5", dark: "#c4b5fd" },
+  { light: "#6366f1", dark: "#a78bfa" },
+  { light: "#7c3aed", dark: "#8b5cf6" },
+  { light: "#8b5cf6", dark: "#7c3aed" },
+  { light: "#a78bfa", dark: "#6d28d9" },
+  { light: "#c4b5fd", dark: "#5b21b6" },
+  { light: "#ddd6fe", dark: "#4c1d95" },
+  { light: "#ede9fe", dark: "#2e1065" },
+];
+
 /**
- * Interactive Text Pressure hero name animation (inspired by ReactBits Text Pressure).
- * - Uses the Roboto Flex variable font (`wght` 150..1000, `wdth` 72..125) to morph each letter's
- *   weight, width, and subtle stretch dynamically based on pointer proximity.
- * - Gently animates an ambient pressure wave when idle so it stays alive on mobile & desktop,
- *   while snapping smoothly to follow the real mouse/touch cursor with 0 React re-renders.
+ * Interactive Layered Depth Text hero name (inspired by ReactBits Depth Text).
+ * - Multi-layer stepped 3D extruded typography whose shadow stack shifts smoothly
+ *   in parallax against the cursor/touch pointer (with gentle idle float).
+ * - Uses direct DOM transform updates in requestAnimationFrame (0 React re-renders).
  */
 export default function HeroName3D({ name = "Yorn Pheareak" }) {
-  const containerRef = useRef(null);
-  const charRefs = useRef([]);
-
-  const chars = useMemo(() => Array.from(name), [name]);
+  const stageRef = useRef(null);
+  const frontRef = useRef(null);
+  const layerRefs = useRef([]);
 
   useEffect(() => {
     const prefersReducedMotion =
       typeof window !== "undefined" &&
       window.matchMedia?.("(prefers-reduced-motion: reduce)")?.matches;
-
-    const total = chars.length;
-    const weights = new Array(total).fill(700);
-    const widths = new Array(total).fill(100);
 
     const pointer = {
       active: false,
@@ -30,85 +36,68 @@ export default function HeroName3D({ name = "Yorn Pheareak" }) {
       lastMovedAt: 0,
     };
 
-    const handlePointerMove = (e) => {
-      pointer.x = e.clientX;
-      pointer.y = e.clientY;
+    const current = { dx: 0.35, dy: 0.45 };
+
+    const updatePointer = (clientX, clientY) => {
+      const node = stageRef.current;
+      if (!node) return;
+      const rect = node.getBoundingClientRect();
+      const cx = rect.left + rect.width / 2;
+      const cy = rect.top + rect.height / 2;
+      const nx = Math.max(-1.2, Math.min(1.2, (clientX - cx) / Math.max(rect.width * 0.6, 220)));
+      const ny = Math.max(-1.2, Math.min(1.2, (clientY - cy) / Math.max(rect.height * 2, 160)));
+      pointer.x = nx;
+      pointer.y = ny;
       pointer.active = true;
       pointer.lastMovedAt = performance.now();
     };
 
+    const handleMouseMove = (e) => updatePointer(e.clientX, e.clientY);
     const handleTouchMove = (e) => {
       const t = e.touches?.[0];
-      if (!t) return;
-      pointer.x = t.clientX;
-      pointer.y = t.clientY;
-      pointer.active = true;
-      pointer.lastMovedAt = performance.now();
+      if (t) updatePointer(t.clientX, t.clientY);
     };
-
-    const handlePointerLeave = () => {
+    const handleLeave = () => {
       pointer.active = false;
     };
 
-    window.addEventListener("mousemove", handlePointerMove, { passive: true });
+    window.addEventListener("mousemove", handleMouseMove, { passive: true });
     window.addEventListener("touchmove", handleTouchMove, { passive: true });
-    window.addEventListener("mouseleave", handlePointerLeave);
+    window.addEventListener("mouseleave", handleLeave);
 
     let rafId = 0;
 
     const tick = (now) => {
-      const container = containerRef.current;
-      if (container) {
-        const rect = container.getBoundingClientRect();
-        const radius = Math.max(rect.width * 0.42, 160);
+      const isFreshPointer = pointer.active && now - pointer.lastMovedAt < 2600;
 
-        // Fall back to a smooth sweeping focal wave if user hasn't moved mouse recently
-        const isPointerFresh =
-          pointer.active && now - pointer.lastMovedAt < 2400;
+      let targetDx = 0.25;
+      let targetDy = 0.35;
 
-        let focalX = rect.left + rect.width * 0.5;
-        let focalY = rect.top + rect.height * 0.5;
+      if (isFreshPointer) {
+        targetDx = pointer.x;
+        targetDy = pointer.y;
+      } else if (!prefersReducedMotion) {
+        targetDx = Math.sin(now * 0.0013) * 0.55;
+        targetDy = 0.25 + Math.cos(now * 0.001) * 0.35;
+      }
 
-        if (isPointerFresh) {
-          focalX = pointer.x;
-          focalY = pointer.y;
-        } else if (!prefersReducedMotion) {
-          const wave = (Math.sin(now * 0.0016) + 1) * 0.5;
-          focalX = rect.left + wave * rect.width;
-          focalY = rect.top + rect.height * 0.5;
-        }
+      current.dx += (targetDx - current.dx) * 0.12;
+      current.dy += (targetDy - current.dy) * 0.12;
 
-        const stepWidth = rect.width / Math.max(total, 1);
+      if (frontRef.current) {
+        const fx = current.dx * 3.5;
+        const fy = current.dy * 2.5;
+        frontRef.current.style.transform = `translate3d(${fx.toFixed(2)}px, ${fy.toFixed(2)}px, 0)`;
+      }
 
-        for (let i = 0; i < total; i += 1) {
-          const el = charRefs.current[i];
-          if (!el) continue;
-
-          if (chars[i] === " ") continue;
-
-          const charX = rect.left + (i + 0.5) * stepWidth;
-          const charY = rect.top + rect.height * 0.5;
-          const dist = Math.hypot(focalX - charX, (focalY - charY) * 0.65);
-
-          // Pressure ranges from 0 (far -> hairline thin) to 1 (near -> heavy bold)
-          const pressure = prefersReducedMotion
-            ? 0.72
-            : Math.max(0, 1 - dist / radius);
-          const eased = pressure * pressure * (3 - 2 * pressure);
-
-          const targetWght = 140 + eased * 860;
-          const targetWdth = 72 + eased * 54;
-
-          weights[i] += (targetWght - weights[i]) * 0.16;
-          widths[i] += (targetWdth - widths[i]) * 0.16;
-
-          const w = weights[i].toFixed(0);
-          const wd = widths[i].toFixed(1);
-          const scaleY = (1 + eased * 0.08).toFixed(3);
-
-          el.style.fontVariationSettings = `'wght' ${w}, 'wdth' ${wd}, 'opsz' 72`;
-          el.style.transform = `scaleY(${scaleY})`;
-        }
+      for (let i = 0; i < DEPTH_LAYERS.length; i += 1) {
+        const layer = layerRefs.current[i];
+        if (!layer) continue;
+        const depth = i + 1;
+        // Shift against pointer while maintaining a crisp elevated downward drop
+        const lx = -current.dx * depth * 1.65 + depth * 0.45;
+        const ly = -current.dy * depth * 1.15 + depth * 1.15;
+        layer.style.transform = `translate3d(${lx.toFixed(2)}px, ${ly.toFixed(2)}px, 0)`;
       }
 
       rafId = requestAnimationFrame(tick);
@@ -118,45 +107,60 @@ export default function HeroName3D({ name = "Yorn Pheareak" }) {
 
     return () => {
       cancelAnimationFrame(rafId);
-      window.removeEventListener("mousemove", handlePointerMove);
+      window.removeEventListener("mousemove", handleMouseMove);
       window.removeEventListener("touchmove", handleTouchMove);
-      window.removeEventListener("mouseleave", handlePointerLeave);
+      window.removeEventListener("mouseleave", handleLeave);
     };
-  }, [chars]);
+  }, []);
+
+  const textSizeClass =
+    "font-black text-[1.95rem] min-[400px]:text-[2.25rem] sm:text-5xl lg:text-[3.45rem] xl:text-[4.2rem] tracking-tight leading-[1.08] whitespace-nowrap";
 
   return (
-    <span className="relative inline-flex items-center gap-2.5 sm:gap-4 mt-2 sm:mt-3 flex-wrap sm:flex-nowrap justify-center lg:justify-start select-none cursor-default">
-      {/* Ambient glow behind text */}
+    <span
+      ref={stageRef}
+      className="relative inline-flex items-center gap-3 sm:gap-4 mt-2 sm:mt-3 flex-wrap sm:flex-nowrap justify-center lg:justify-start select-none cursor-default"
+    >
+      {/* Soft ambient violet/indigo halo beneath elevated text */}
       <span
         aria-hidden="true"
-        className="absolute -inset-4 rounded-3xl bg-gradient-to-r from-sky-400/20 via-indigo-500/20 to-amber-400/20 blur-3xl -z-10 pointer-events-none"
+        className="absolute -inset-x-4 -inset-y-2 rounded-3xl bg-gradient-to-r from-indigo-500/20 via-violet-500/25 to-purple-500/20 blur-2xl -z-20 pointer-events-none"
       />
 
-      <span
-        ref={containerRef}
-        aria-label={name}
-        className="text-pressure-font inline-flex items-baseline text-[1.75rem] min-[400px]:text-[2.05rem] sm:text-5xl lg:text-[3.35rem] xl:text-[4.1rem] tracking-tight leading-[1.08] whitespace-nowrap"
-      >
-        {chars.map((char, index) => (
-          <span
-            key={`${index}-${char}`}
-            ref={(el) => {
-              charRefs.current[index] = el;
-            }}
-            aria-hidden="true"
-            className={char === " " ? "inline-block w-[0.28em]" : "text-pressure-char"}
-            style={
-              char === " "
-                ? undefined
-                : { fontVariationSettings: "'wght' 700, 'wdth' 100, 'opsz' 72" }
-            }
-          >
-            {char === " " ? "\u00A0" : char}
-          </span>
-        ))}
+      <span className="relative inline-block">
+        {/* Stacked Parallax Extrusion Layers (rendered back-to-front) */}
+        {[...DEPTH_LAYERS]
+          .map((colors, idx) => ({ colors, idx }))
+          .reverse()
+          .map(({ colors, idx }) => (
+            <span
+              key={idx}
+              ref={(el) => {
+                layerRefs.current[idx] = el;
+              }}
+              aria-hidden="true"
+              style={{
+                "--depth-light-color": colors.light,
+                "--depth-dark-color": colors.dark,
+                zIndex: DEPTH_LAYERS.length - idx,
+              }}
+              className={`depth-text-layer ${textSizeClass}`}
+            >
+              {name}
+            </span>
+          ))}
+
+        {/* Crisp Front Face */}
+        <span
+          ref={frontRef}
+          style={{ zIndex: DEPTH_LAYERS.length + 2 }}
+          className={`depth-text-front relative block ${textSizeClass}`}
+        >
+          {name}
+        </span>
       </span>
 
-      <span className="inline-flex flex-shrink-0">
+      <span className="inline-flex flex-shrink-0 relative z-20">
         <VerifiedBadge
           size="2xl"
           className="inline-block flex-shrink-0 drop-shadow-[0_0_14px_rgba(56,189,248,0.65)]"
