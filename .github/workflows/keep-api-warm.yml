@@ -1,0 +1,16 @@
+name: Keep Portfolio API Warm
+
+on:
+  schedule:
+    # Render free tier spins down after ~15m idle; ping every 10m to prevent cold starts.
+    - cron: "*/10 * * * *"
+  workflow_dispatch:
+
+jobs:
+  ping:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Warm Render backend and Vercel Edge portfolio cache
+        run: |
+          curl -fsS --max-time 45 https://myportfolio-api-8b84.onrender.com/api/health > /dev/null
+          curl -fsS --max-time 30 https://ypheareak.site/api/portfolio > /dev/null

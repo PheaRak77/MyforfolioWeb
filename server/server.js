@@ -185,7 +185,7 @@ app.use(passport.initialize());
 ensureDatabaseSchema()
   .then(() => buildPublicPortfolioPayload())
   .then((payload) => {
-    setPublicCacheEntry("/api/portfolio", payload, 120);
+    setPublicCacheEntry("/api/portfolio", payload, 300);
     console.log("⚡ Public portfolio cache pre-warmed");
   })
   .catch((err) => console.warn("Startup / cache-warm notice:", err.message));
@@ -194,7 +194,7 @@ ensureDatabaseSchema()
 app.locals.clearPublicCache = () => {
   clearPublicCache();
   buildPublicPortfolioPayload()
-    .then((payload) => setPublicCacheEntry("/api/portfolio", payload, 120))
+    .then((payload) => setPublicCacheEntry("/api/portfolio", payload, 300))
     .catch(() => {});
 };
 
@@ -222,8 +222,8 @@ app.get("/api/health", async (req, res) => {
   }
 });
 
-// Homepage payload: single CTE query + 120s RAM cache + 30s CDN stale-while-revalidate
-app.get("/api/portfolio", apiLimiter, cacheMiddleware(120, 30), getPublicPortfolio);
+// Homepage payload: single CTE query + 5m RAM cache + 5m CDN fresh + 24h CDN stale-while-revalidate
+app.get("/api/portfolio", apiLimiter, cacheMiddleware(300, 300, 86400), getPublicPortfolio);
 
 // Mount Routes — public GET routes get 60-second in-memory cache for speed
 app.use("/api/auth", authLimiter, authRoutes);

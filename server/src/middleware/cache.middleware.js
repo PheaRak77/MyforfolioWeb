@@ -5,8 +5,9 @@ const cacheStore = new Map();
  * Cache middleware for public GET routes
  * @param {number} durationSeconds - In-memory server cache TTL in seconds (default: 60s)
  * @param {number} edgeSeconds - Shared CDN (Vercel/Cloudflare) s-maxage TTL in seconds
+ * @param {number} swrSeconds - Shared CDN stale-while-revalidate window in seconds
  */
-const cacheMiddleware = (durationSeconds = 60, edgeSeconds = 30) => {
+const cacheMiddleware = (durationSeconds = 60, edgeSeconds = 30, swrSeconds = 3600) => {
   return (req, res, next) => {
     // Only cache public GET requests; never cache authenticated/admin endpoints
     // or explicit cache-busting refreshes (`?fresh=1`).
@@ -27,7 +28,7 @@ const cacheMiddleware = (durationSeconds = 60, edgeSeconds = 30) => {
       "Cache-Control",
       bypass
         ? "no-cache, max-age=0"
-        : `public, max-age=15, s-maxage=${edgeSeconds}, stale-while-revalidate=3600`
+        : `public, max-age=60, s-maxage=${edgeSeconds}, stale-while-revalidate=${swrSeconds}`
     );
 
     if (cached && Date.now() < cached.expiry) {

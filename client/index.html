@@ -12,15 +12,30 @@
     <meta name="theme-color" content="#0f172a" />
     <meta name="referrer" content="strict-origin-when-cross-origin" />
     <link rel="preload" as="image" href="/floral-frame.png" fetchpriority="high" />
-    <link rel="dns-prefetch" href="https://myportfolio-api-8b84.onrender.com" />
-    <link
-      rel="preconnect"
-      href="https://myportfolio-api-8b84.onrender.com"
-      crossorigin
-    />
     <link rel="dns-prefetch" href="https://res.cloudinary.com" />
     <link rel="preconnect" href="https://res.cloudinary.com" crossorigin />
     <link rel="dns-prefetch" href="https://cdn.jsdelivr.net" />
+    <script>
+      (function () {
+        try {
+          var host = window.location.hostname;
+          var isLocal = host === "localhost" || host === "127.0.0.1";
+          if (
+            window.location.pathname === "/" &&
+            !isLocal &&
+            !sessionStorage.getItem("portfolio_fresh_once")
+          ) {
+            window.__PORTFOLIO_PREFETCH__ = fetch("/api/portfolio")
+              .then(function (r) {
+                return r.ok ? r.json() : null;
+              })
+              .catch(function () {
+                return null;
+              });
+          }
+        } catch (e) {}
+      })();
+    </script>
     <link rel="preconnect" href="https://fonts.googleapis.com" />
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
     <link

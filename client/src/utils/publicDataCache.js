@@ -89,7 +89,19 @@ export const fetchPublicPortfolioData = async (api, endpoints) => {
 
   const fetches = Object.entries(endpoints).map(async ([key, path]) => {
     try {
-      const response = await api.get(path);
+      let data = null;
+      if (
+        key === "portfolio" &&
+        path === "/portfolio" &&
+        typeof window !== "undefined" &&
+        window.__PORTFOLIO_PREFETCH__
+      ) {
+        const prefetchPromise = window.__PORTFOLIO_PREFETCH__;
+        delete window.__PORTFOLIO_PREFETCH__;
+        data = await prefetchPromise;
+      }
+
+      const response = data ? { data } : await api.get(path);
       writeCache(key, response.data);
       results[key] = { status: "fulfilled", value: response };
     } catch (error) {

@@ -85,10 +85,9 @@ const request = async (method, path, body, config = {}) => {
       // Production requests use the site's /api rewrite; local development
       // still calls its separate API server with CORS enabled.
       mode: REQUEST_MODE,
-      // The homepage has its own short-lived local cache for fast first paint.
-      // Always revalidate with the API so another browser/domain sees an admin
-      // update immediately instead of retaining a CDN/browser response.
-      cache: "no-store",
+      // Respect browser/Edge CDN caching for normal public reads while allowing
+      // explicit `?fresh=1` admin updates to bypass cached responses immediately.
+      cache: path.includes("fresh=1") ? "no-store" : "default",
       signal: AbortSignal.timeout(config.timeout ?? TIMEOUT_MS),
       headers: body ? { "Content-Type": "application/json" } : undefined,
       body: body ? JSON.stringify(body) : undefined,

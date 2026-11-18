@@ -818,6 +818,11 @@ const Home = () => {
                         />
                       }
                     />
+                  ) : loading && !profileImgError ? (
+                    <div
+                      aria-hidden="true"
+                      className="w-full h-full bg-gradient-to-br from-slate-200 via-slate-100 to-slate-200 dark:from-slate-800 dark:via-slate-900 dark:to-slate-800 animate-pulse"
+                    />
                   ) : (
                     <img
                       src="/profile-framed.png"
@@ -835,7 +840,7 @@ const Home = () => {
                   className="absolute inset-0 w-full h-full object-contain pointer-events-none z-10 select-none filter drop-shadow-lg"
                   loading="eager"
                   fetchPriority="high"
-                  decoding="sync"
+                  decoding="async"
                 />
               </div>
             </div>
