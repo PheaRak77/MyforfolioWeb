@@ -60,8 +60,8 @@ const Profile = () => {
       }));
 
       const successMsg =
-        result.provider === "cloudinary"
-          ? "Avatar uploaded to Cloudinary CDN! Click 'Save Profile' to apply."
+        result.provider === "database"
+          ? "Avatar saved to database! Click 'Save Profile' to apply."
           : "Avatar image processed! Click 'Save Profile' to apply.";
       setMessage(successMsg);
     } catch (err) {

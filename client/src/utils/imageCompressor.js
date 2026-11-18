@@ -86,8 +86,8 @@ export const compressImageFileToBlob = (
       return reject(new Error("No file provided"));
     }
 
-    // Skip SVGs or already small files (< 200KB)
-    if (file.type === "image/svg+xml" || file.size < 200 * 1024) {
+    // Skip SVGs or already tiny files (< 150KB)
+    if (file.type === "image/svg+xml" || file.size < 150 * 1024) {
       return resolve(file);
     }
 
@@ -110,19 +110,22 @@ export const compressImageFileToBlob = (
         canvas.width = width;
         canvas.height = height;
 
-        const ctx = canvas.getContext("2d", { alpha: false });
+        const ctx = canvas.getContext("2d", { alpha: true });
         ctx.imageSmoothingEnabled = true;
         ctx.imageSmoothingQuality = "high";
         ctx.drawImage(img, 0, 0, width, height);
 
+        // Prefer WebP so PostgreSQL stored images stay small and fast with alpha support
         canvas.toBlob(
-          (blob) => {
-            if (!blob) {
-              return resolve(file);
-            }
-            resolve(blob);
+          (webpBlob) => {
+            if (webpBlob) return resolve(webpBlob);
+            canvas.toBlob(
+              (jpegBlob) => resolve(jpegBlob || file),
+              "image/jpeg",
+              quality
+            );
           },
-          "image/jpeg",
+          "image/webp",
           quality
         );
       };

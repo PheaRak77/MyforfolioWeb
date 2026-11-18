@@ -28,7 +28,7 @@ const cacheMiddleware = (durationSeconds = 60, edgeSeconds = 30, swrSeconds = 36
       "Cache-Control",
       bypass
         ? "no-cache, max-age=0"
-        : `public, max-age=60, s-maxage=${edgeSeconds}, stale-while-revalidate=${swrSeconds}`
+        : `public, max-age=0, s-maxage=${edgeSeconds}, stale-while-revalidate=${swrSeconds}`
     );
 
     if (cached && Date.now() < cached.expiry) {

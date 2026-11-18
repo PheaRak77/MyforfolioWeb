@@ -18,6 +18,7 @@ const projectRoutes = require("./src/routes/project.routes");
 const certificateRoutes = require("./src/routes/certificate.routes");
 const skillRoutes = require("./src/routes/skill.routes");
 const uploadRoutes = require("./src/routes/upload.routes");
+const imageRoutes = require("./src/routes/image.routes");
 const contactRoutes = require("./src/routes/contact.routes");
 
 const { notFound, errorHandler } = require("./src/middleware/error.middleware");
@@ -222,8 +223,8 @@ app.get("/api/health", async (req, res) => {
   }
 });
 
-// Homepage payload: single CTE query + 5m RAM cache + 5m CDN fresh + 24h CDN stale-while-revalidate
-app.get("/api/portfolio", apiLimiter, cacheMiddleware(300, 300, 86400), getPublicPortfolio);
+// Homepage payload: single CTE query + 120s RAM cache + 15s CDN fresh + 24h CDN stale-while-revalidate
+app.get("/api/portfolio", apiLimiter, cacheMiddleware(120, 15, 86400), getPublicPortfolio);
 
 // Mount Routes — public GET routes get 60-second in-memory cache for speed
 app.use("/api/auth", authLimiter, authRoutes);
@@ -232,6 +233,7 @@ app.use("/api/projects", apiLimiter, cacheMiddleware(60), projectRoutes);
 app.use("/api/certificates", apiLimiter, cacheMiddleware(60), certificateRoutes);
 app.use("/api/skills", apiLimiter, cacheMiddleware(60), skillRoutes);
 app.use("/api/uploads", apiLimiter, uploadRoutes);
+app.use("/api/images", apiLimiter, imageRoutes);
 app.use("/api/contact", contactLimiter, contactRoutes);
 
 // Error Handling

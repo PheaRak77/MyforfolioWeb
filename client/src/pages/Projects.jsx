@@ -121,9 +121,11 @@ const Projects = () => {
       });
 
       const msg =
-        result.provider === "cloudinary"
-          ? "Project image uploaded to Cloudinary CDN!"
-          : "Image saved — click Update Project to publish!";
+        result.provider === "database"
+          ? editingId
+            ? "Image saved to database — click 'Update Project' below to publish!"
+            : "Image saved to database — click 'Publish Project' when ready!"
+          : "Image uploaded — click save to publish!";
       setToast({
         type: "success",
         message: msg,

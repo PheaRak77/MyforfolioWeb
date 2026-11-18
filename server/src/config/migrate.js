@@ -80,6 +80,16 @@ async function ensureDatabaseSchema() {
       created_at TIMESTAMP WITH TIME ZONE DEFAULT CURRENT_TIMESTAMP
     );
 
+    -- Uploaded images stored permanently in PostgreSQL
+    CREATE TABLE IF NOT EXISTS stored_images (
+      id SERIAL PRIMARY KEY,
+      folder VARCHAR(50) DEFAULT 'general',
+      mime_type VARCHAR(100) NOT NULL,
+      data BYTEA NOT NULL,
+      byte_size INTEGER NOT NULL,
+      created_at TIMESTAMP WITH TIME ZONE DEFAULT CURRENT_TIMESTAMP
+    );
+
     -- MIGRATIONS: Safely add missing columns to any existing tables
     ALTER TABLE skills ADD COLUMN IF NOT EXISTS display_order INTEGER DEFAULT 0;
     ALTER TABLE skills ADD COLUMN IF NOT EXISTS level VARCHAR(50) DEFAULT 'Advanced';

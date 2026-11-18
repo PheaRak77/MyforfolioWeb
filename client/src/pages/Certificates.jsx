@@ -90,8 +90,10 @@ const Certificates = () => {
       }));
 
       const msg =
-        result.provider === "cloudinary"
-          ? "Certificate uploaded to Cloudinary CDN!"
+        result.provider === "database"
+          ? editingId
+            ? "Certificate saved to database — click Update to publish!"
+            : "Certificate saved to database — fill details & save to publish!"
           : "Certificate image processed & added!";
       setToast({ type: "success", message: msg });
     } catch (err) {

@@ -2,56 +2,60 @@ import api from "../api/axios";
 import { compressImageFileToBlob } from "./imageCompressor";
 
 /**
- * Uploads an image file to Cloudinary via backend upload API.
- * Automatically pre-compresses large files for instant network transfer.
- * Keeps image files on Cloudinary so the database never stores slow Base64 blobs.
- * 
+ * Compresses an image client-side and uploads it directly into PostgreSQL via the backend API.
+ *
  * @param {File} file - Selected image file
- * @param {string} endpoint - Backend upload route (e.g. "/uploads/certificate-image")
- * @param {object} options - Optional compression fallback options
- * @returns {Promise<{ url: string, provider: "cloudinary" | "base64" }>}
+ * @param {string} endpoint - Backend upload route (e.g. "/uploads/project-image")
+ * @param {object} options - Optional compression settings
+ * @returns {Promise<{ url: string, provider: "database" | "cloudinary" | "base64" }>}
  */
 export const uploadMediaImage = async (
   file,
   endpoint = "/uploads/certificate-image",
-  options = { maxWidth: 1600, maxHeight: 1600, quality: 0.88 }
+  options = { maxWidth: 1280, maxHeight: 1280, quality: 0.82 }
 ) => {
   if (!file) {
     throw new Error("No file provided");
   }
 
-  // 1. Optimize Blob client-side before sending across network
   let uploadPayload = file;
   try {
     uploadPayload = await compressImageFileToBlob(
       file,
-      options.maxWidth || 1600,
-      options.maxHeight || 1600,
-      options.quality || 0.88
+      options.maxWidth || 1280,
+      options.maxHeight || 1280,
+      options.quality || 0.82
     );
   } catch (compErr) {
     console.warn("Client pre-compression skipped:", compErr?.message);
   }
 
-  // 2. Upload to Backend -> Cloudinary CDN
   try {
+    const ext = uploadPayload.type === "image/webp" ? "webp" : "jpg";
+    const filename =
+      uploadPayload === file && file.name ? file.name : `upload.${ext}`;
     const formData = new FormData();
-    formData.append("image", uploadPayload, file.name || "image.jpg");
+    formData.append("image", uploadPayload, filename);
 
     const { data } = await api.post(endpoint, formData, {
       headers: { "Content-Type": "multipart/form-data" },
-      timeout: 25000,
+      timeout: 30000,
     });
 
     if (data?.success && data?.url) {
       return {
         url: data.url,
-        provider: data.provider || (data.url.includes("cloudinary.com") ? "cloudinary" : "base64"),
+        provider: data.provider || "database",
       };
     }
-  } catch (err) {
-    console.warn("Backend Cloudinary upload failed, falling back to local base64:", err?.message);
-  }
 
-  throw new Error("Image upload failed. Please check your connection and try again.");
+    throw new Error(data?.message || "Unexpected upload response");
+  } catch (err) {
+    const serverMessage = err.response?.data?.message || err.message;
+    console.error("Database image upload failed:", serverMessage);
+    throw new Error(
+      serverMessage || "Image upload failed. Please check your connection and try again.",
+      { cause: err }
+    );
+  }
 };
