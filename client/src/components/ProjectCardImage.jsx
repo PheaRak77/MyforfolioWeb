@@ -11,10 +11,10 @@ export default function ProjectCardImage({ src, alt, fallback, priority = false 
       alt={alt}
       variant="project"
       priority={priority}
-      loading={priority ? "eager" : "lazy"}
+      loading="eager"
       decoding="async"
-      fetchPriority={priority ? "high" : "auto"}
-      sizes="(max-width: 767px) 100vw, (max-width: 1024px) 50vw, 33vw"
+      fetchPriority={priority ? "high" : "low"}
+      sizes="(max-width: 767px) 92vw, (max-width: 1024px) 46vw, 400px"
       className="absolute inset-0 w-full h-full object-cover transition-transform duration-500 group-hover:scale-105"
       fallback={
         fallback || (

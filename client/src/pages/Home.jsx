@@ -362,7 +362,9 @@ const Home = () => {
                 <PortfolioImage
                   src={displayUser.profile_image}
                   alt={displayUser.name || "Portfolio"}
-                  variant="profile"
+                  variant="avatar"
+                  priority={true}
+                  sizes="40px"
                   onError={() => setHeaderImgError(true)}
                   className="relative w-9 h-9 sm:w-10 sm:h-10 rounded-full object-cover ring-2 ring-white dark:ring-slate-900 shadow-md"
                   fallback={
@@ -808,6 +810,7 @@ const Home = () => {
                       alt={displayUser.name || "Profile"}
                       variant="profile"
                       priority={true}
+                      sizes="(max-width: 640px) 240px, 440px"
                       onError={() => setProfileImgError(true)}
                       className="w-full h-full object-cover"
                       fallback={

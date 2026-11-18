@@ -57,6 +57,9 @@ const CertificateCard = memo(function CertificateCard({
             src={cert.image}
             alt={cert.course}
             variant="certificate"
+            loading="eager"
+            fetchPriority="low"
+            sizes="(max-width: 767px) 92vw, (max-width: 1024px) 46vw, 400px"
             className="w-full h-full object-cover transition-transform duration-500 group-hover:scale-105"
             fallback={<CertificateFallback />}
           />

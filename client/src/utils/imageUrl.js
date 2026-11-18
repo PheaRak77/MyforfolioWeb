@@ -82,24 +82,27 @@ export const optimizeCloudinaryUrl = (url, options = {}) => {
   return url.replace("/image/upload/", `/image/upload/${transformString}/`);
 };
 
+// Align all public UI variants to a tiny shared set of Cloudinary widths
+// (360, 640, 900 with c_limit) so every new device hits the same warm CDN
+// cache files instead of triggering slow per-device face-crop misses.
 const RESPONSIVE_WIDTHS = {
-  avatar: [80, 160, 240],
-  profile: [320, 480, 640, 800, 1000],
-  hero: [400, 600, 800, 1000],
-  project: [360, 640, 900],
-  certificate: [360, 640, 900],
-  "certificate-modal": [800, 1200, 1600],
-  default: [480, 800, 1200],
+  avatar: [360],
+  profile: [360, 640],
+  hero: [360, 640],
+  project: [360, 640],
+  certificate: [360, 640],
+  "certificate-modal": [640, 1200],
+  default: [640, 900],
 };
 
 const VARIANT_SIZES = {
-  profile: { width: 800, height: 800, crop: "fill", gravity: "face" },
-  avatar: { width: 240, height: 240, crop: "fill", gravity: "face" },
-  project: { width: 900, crop: "limit" },
-  certificate: { width: 900, crop: "limit" },
-  "certificate-modal": { width: 1600, crop: "limit" },
-  hero: { width: 800, crop: "limit" },
-  default: { width: 1200, crop: "limit" },
+  profile: { width: 640, crop: "limit" },
+  avatar: { width: 360, crop: "limit" },
+  project: { width: 640, crop: "limit" },
+  certificate: { width: 640, crop: "limit" },
+  "certificate-modal": { width: 1200, crop: "limit" },
+  hero: { width: 640, crop: "limit" },
+  default: { width: 900, crop: "limit" },
 };
 
 export const getCloudinarySrcSet = (url, options = {}) => {
