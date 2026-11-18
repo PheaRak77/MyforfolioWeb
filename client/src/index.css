@@ -1264,6 +1264,28 @@ html {
   animation-play-state: paused;
 }
 
+/* =====================================================
+   3D INTERACTIVE HERO LANYARD CARD
+   ===================================================== */
+.lanyard-perspective {
+  perspective: 1150px;
+}
+
+.lanyard-pivot,
+.lanyard-card-3d {
+  transform-style: preserve-3d;
+  will-change: transform;
+}
+
+.lanyard-face {
+  backface-visibility: hidden;
+  -webkit-backface-visibility: hidden;
+}
+
+.lanyard-back {
+  transform: rotateY(180deg);
+}
+
 @media (prefers-reduced-motion: reduce) {
   .tech-marquee-track {
     animation: none;

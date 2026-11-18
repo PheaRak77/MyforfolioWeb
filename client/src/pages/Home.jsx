@@ -18,6 +18,7 @@ import ProjectCard from "../components/ProjectCard";
 import ProjectDetailsModal from "../components/ProjectDetailsModal";
 import CertificateCard from "../components/CertificateCard";
 import HeroName3D from "../components/HeroName3D";
+import HeroLanyardCard from "../components/HeroLanyardCard";
 import TechMarquee from "../components/TechMarquee";
 import {
   consumeFreshBypassFlag,
@@ -794,60 +795,14 @@ const Home = () => {
             </div>
           </div>
 
-          {/* Right — Circular Floral Wreath Frame */}
-          <div className="flex-shrink-0 z-10 animate-hero-avatar relative">
-            <div className="relative group flex items-center justify-center">
-
-              {/* Soft ambient floral glow */}
-              <div className="absolute -inset-10 rounded-full bg-gradient-to-tr from-amber-200/20 via-emerald-200/15 to-sky-200/20 dark:from-amber-400/10 dark:via-emerald-400/10 dark:to-sky-400/10 blur-3xl opacity-70 group-hover:opacity-100 transition duration-700 pointer-events-none" />
-
-              {/* Circular Floral Frame Avatar (Dynamic with backend photo & fallback) */}
-              <div className="relative w-80 h-80 sm:w-[22rem] sm:h-[22rem] md:w-[26rem] md:h-[26rem] lg:w-[32rem] lg:h-[32rem] xl:w-[38rem] xl:h-[38rem] 2xl:w-[44rem] 2xl:h-[44rem] flex items-center justify-center group-hover:scale-[1.02] transition-transform duration-500">
-                {/* Dynamic photo clipped inside circular window */}
-                <div className="absolute w-[68%] h-[68%] rounded-full overflow-hidden z-0 shadow-md">
-                  {displayUser?.profile_image && !profileImgError ? (
-                    <PortfolioImage
-                      src={displayUser.profile_image}
-                      alt={displayUser.name || "Profile"}
-                      variant="profile"
-                      priority={true}
-                      sizes="(max-width: 640px) 240px, 440px"
-                      onError={() => setProfileImgError(true)}
-                      className="w-full h-full object-cover"
-                      fallback={
-                        <img
-                          src="/profile-framed.png"
-                          alt={displayUser?.name || "Profile"}
-                          className="w-full h-full object-cover"
-                        />
-                      }
-                    />
-                  ) : loading && !profileImgError ? (
-                    <div
-                      aria-hidden="true"
-                      className="w-full h-full bg-gradient-to-br from-slate-200 via-slate-100 to-slate-200 dark:from-slate-800 dark:via-slate-900 dark:to-slate-800 animate-pulse"
-                    />
-                  ) : (
-                    <img
-                      src="/profile-framed.png"
-                      alt={displayUser?.name || "Profile"}
-                      className="w-full h-full object-cover"
-                    />
-                  )}
-                </div>
-
-                {/* Floral Wreath Overlay on top */}
-                <img
-                  src="/floral-frame.png"
-                  alt=""
-                  aria-hidden="true"
-                  className="absolute inset-0 w-full h-full object-contain pointer-events-none z-10 select-none filter drop-shadow-lg"
-                  loading="eager"
-                  fetchPriority="high"
-                  decoding="async"
-                />
-              </div>
-            </div>
+          {/* Right — Interactive 3D Swinging Lanyard ID Card */}
+          <div className="flex-shrink-0 z-10 lg:self-start lg:-mt-12 animate-hero-avatar relative">
+            <HeroLanyardCard
+              user={displayUser}
+              loading={loading}
+              profileImgError={profileImgError}
+              onImageError={() => setProfileImgError(true)}
+            />
           </div>
         </section>
 
