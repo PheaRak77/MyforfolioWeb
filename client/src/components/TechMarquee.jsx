@@ -60,23 +60,9 @@ const TechMarquee = memo(function TechMarquee({ onJumpToSkills }) {
   return (
     <section
       aria-label="Technologies & Frameworks"
-      className="logo-loop-section liquid-glass-band relative w-screen left-1/2 -translate-x-1/2 -mt-4 sm:-mt-6 py-6 sm:py-8 overflow-hidden"
+      className="logo-loop-section relative w-screen left-1/2 -translate-x-1/2 -mt-4 sm:-mt-6 py-4 sm:py-6 overflow-hidden"
     >
-      {/* Subtle liquid-glass specular sheen along top edge */}
-      <div
-        aria-hidden="true"
-        className="pointer-events-none absolute inset-x-0 top-0 h-px bg-gradient-to-r from-transparent via-sky-400/45 to-transparent"
-      />
-      <div
-        aria-hidden="true"
-        className="pointer-events-none absolute -top-10 left-1/4 w-96 h-24 rounded-full bg-sky-400/10 dark:bg-sky-400/10 blur-2xl"
-      />
-      <div
-        aria-hidden="true"
-        className="pointer-events-none absolute -bottom-10 right-1/4 w-96 h-24 rounded-full bg-amber-400/10 dark:bg-indigo-400/10 blur-2xl"
-      />
-
-      <div className="logo-loop-mask relative z-10 overflow-hidden">
+      <div className="logo-loop-mask relative overflow-hidden">
         <div className="logo-loop-track flex items-center w-max">
           {[0, 1].map((copyIndex) => (
             <div
