@@ -1127,14 +1127,6 @@ html {
     scroll-behavior: auto;
   }
 
-  *,
-  *::before,
-  *::after {
-    animation-duration: 0.01ms !important;
-    animation-iteration-count: 1 !important;
-    transition-duration: 0.01ms !important;
-  }
-
   .reveal {
     opacity: 1;
     transform: none !important;
@@ -1299,20 +1291,6 @@ html {
 @media (max-width: 640px) {
   .logo-loop-track {
     animation-duration: 20s;
-  }
-}
-
-@media (prefers-reduced-motion: reduce) {
-  .logo-loop-clone {
-    display: none !important;
-  }
-
-  .logo-loop-track {
-    animation: none;
-    justify-content: center;
-    flex-wrap: wrap;
-    row-gap: 0.75rem;
-    width: 100% !important;
   }
 }
 

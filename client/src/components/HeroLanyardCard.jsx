@@ -1,11 +1,11 @@
-import { memo, useEffect, useId, useRef, useState } from "react";
+import { memo, useEffect, useRef, useState } from "react";
 import PortfolioImage from "./PortfolioImage";
 import { startViewportRafLoop } from "../utils/viewportRaf";
 
 /**
  * Interactive 3D Swinging Lanyard Photo Badge (inspired by ReactBits Lanyard).
- * - Full-bleed large portrait card hanging from a stretchy woven SVG lanyard band
- *   and chrome swivel clasp anchored directly into the punched slot.
+ * - Uses a pure GPU-composited elastic woven HTML strap anchored to the chrome
+ *   clamp at the card's hinge point so the strap and clasp never detach at any angle.
  * - Spring-pendulum physics with drag, throw velocity, and click-to-flip 3D pass.
  */
 const HeroLanyardCard = memo(function HeroLanyardCard({
@@ -14,17 +14,13 @@ const HeroLanyardCard = memo(function HeroLanyardCard({
   profileImgError = false,
   onImageError,
 }) {
-  const uid = useId().replace(/:/g, "");
   const [isFlipped, setIsFlipped] = useState(false);
   const [isDragging, setIsDragging] = useState(false);
 
   const stageRef = useRef(null);
+  const strapRef = useRef(null);
   const cardPivotRef = useRef(null);
   const cardFlipRef = useRef(null);
-  const strapPathRef = useRef(null);
-  const strapWeaveRef = useRef(null);
-  const strapLogoRef = useRef(null);
-  const claspGroupRef = useRef(null);
   const glareRef = useRef(null);
 
   const physicsRef = useRef({
@@ -53,22 +49,20 @@ const HeroLanyardCard = memo(function HeroLanyardCard({
   }, [isFlipped]);
 
   useEffect(() => {
-    const prefersReducedMotion =
-      typeof window !== "undefined" &&
-      window.matchMedia?.("(prefers-reduced-motion: reduce)")?.matches;
-
-    const ANCHOR_X = 190;
-    const ANCHOR_Y = -16;
-    const BASE_STRAP_LENGTH = 100;
+    // Strap starts 20px above the stage top (tucked behind navbar) and meets
+    // the card's chrome clamp hinge at y = 104px inside the stage.
+    const STRAP_TOP_Y = -20;
+    const BASE_HINGE_Y = 104;
+    const BASE_STRAP_HEIGHT = BASE_HINGE_Y - STRAP_TOP_Y;
 
     return startViewportRafLoop(stageRef.current, (now, dt) => {
       const p = physicsRef.current;
 
       if (!p.dragging) {
-        const idleWindX = prefersReducedMotion
-          ? 0
-          : Math.sin(now * 0.0014) * 5.5 + Math.cos(now * 0.00085) * 2.5;
-        const idleBobY = prefersReducedMotion ? 0 : Math.sin(now * 0.0021) * 1.8;
+        // Gentle pendulum breeze sway + damped spring return
+        const idleWindX =
+          Math.sin(now * 0.00145) * 9 + Math.cos(now * 0.0009) * 3.5;
+        const idleBobY = Math.sin(now * 0.0021) * 2.5;
 
         const stiffness = 0.085;
         const damping = 0.885;
@@ -92,6 +86,17 @@ const HeroLanyardCard = memo(function HeroLanyardCard({
       p.rotX += (targetRotX - p.rotX) * Math.min(1, 0.2 * dt);
       p.flipAngle += (p.targetFlip - p.flipAngle) * Math.min(1, 0.16 * dt);
 
+      // Update woven strap transform so its bottom always stays seated in the clamp
+      if (strapRef.current) {
+        const dx = p.x;
+        const dy = Math.max(40, BASE_HINGE_Y + p.y - STRAP_TOP_Y);
+        const strapLen = Math.hypot(dx, dy);
+        // Positive CSS rotate moves bottom-center left (-x), so negate atan2(dx, dy)
+        const angleDeg = (-Math.atan2(dx, dy) * 180) / Math.PI;
+        const scaleY = strapLen / BASE_STRAP_HEIGHT;
+        strapRef.current.style.transform = `rotate(${angleDeg.toFixed(2)}deg) scaleY(${scaleY.toFixed(4)})`;
+      }
+
       if (cardPivotRef.current) {
         cardPivotRef.current.style.transform = `translate3d(${p.x.toFixed(2)}px, ${p.y.toFixed(2)}px, 0) rotateZ(${p.rotZ.toFixed(2)}deg) rotateX(${p.rotX.toFixed(2)}deg) rotateY(${p.rotY.toFixed(2)}deg)`;
       }
@@ -104,34 +109,6 @@ const HeroLanyardCard = memo(function HeroLanyardCard({
         const gx = Math.max(10, Math.min(90, 50 + p.x * 0.25 + p.rotY * 1.1));
         const gy = Math.max(10, Math.min(90, 35 - p.y * 0.25 - p.rotX * 1.1));
         glareRef.current.style.background = `radial-gradient(circle at ${gx.toFixed(1)}% ${gy.toFixed(1)}%, rgba(255,255,255,0.34) 0%, rgba(255,255,255,0.06) 38%, transparent 72%)`;
-      }
-
-      // 1:1 SVG coordinate space matching 380x120 wrapper so clasp hooks directly into slot
-      const endX = ANCHOR_X + p.x;
-      const endY = Math.max(32, BASE_STRAP_LENGTH + p.y);
-      const ctrlX = ANCHOR_X + p.x * 0.35 - p.vx * 0.6;
-      const ctrlY = endY * 0.52;
-
-      const d = `M ${ANCHOR_X} ${ANCHOR_Y} Q ${ctrlX.toFixed(2)} ${ctrlY.toFixed(2)} ${endX.toFixed(2)} ${endY.toFixed(2)}`;
-      if (strapPathRef.current) strapPathRef.current.setAttribute("d", d);
-      if (strapWeaveRef.current) strapWeaveRef.current.setAttribute("d", d);
-
-      // Keep woven emblem centered along midpoint of the Bézier curve
-      if (strapLogoRef.current) {
-        const midX = 0.25 * ANCHOR_X + 0.5 * ctrlX + 0.25 * endX;
-        const midY = 0.25 * ANCHOR_Y + 0.5 * ctrlY + 0.25 * endY;
-        strapLogoRef.current.setAttribute(
-          "transform",
-          `translate(${midX.toFixed(2)}, ${midY.toFixed(2)}) rotate(${(p.rotZ * 0.4).toFixed(2)})`,
-        );
-      }
-
-      if (claspGroupRef.current) {
-        const claspAngle = p.rotZ * 0.85;
-        claspGroupRef.current.setAttribute(
-          "transform",
-          `translate(${endX.toFixed(2)}, ${endY.toFixed(2)}) rotate(${claspAngle.toFixed(2)})`,
-        );
       }
     });
   }, []);
@@ -201,93 +178,37 @@ const HeroLanyardCard = memo(function HeroLanyardCard({
   return (
     <div
       ref={stageRef}
-      style={{ contain: "layout style" }}
-      className="relative flex flex-col items-center select-none w-[320px] sm:w-[380px] mx-auto"
+      className="relative flex flex-col items-center select-none w-[320px] sm:w-[380px] mx-auto pt-[110px]"
     >
       {/* Subtle ambient glow behind badge */}
       <div
         aria-hidden="true"
-        className="absolute top-24 inset-x-4 h-80 rounded-full bg-gradient-to-tr from-sky-400/20 via-indigo-500/15 to-amber-400/20 blur-3xl pointer-events-none"
+        className="absolute top-28 inset-x-4 h-80 rounded-full bg-gradient-to-tr from-sky-400/20 via-indigo-500/15 to-amber-400/20 blur-3xl pointer-events-none"
       />
 
-      {/* Elastic Woven Lanyard Band + Chrome Clasp (1:1 SVG coordinate mapping) */}
-      <svg
-        viewBox="0 0 380 120"
-        preserveAspectRatio="xMidYMin meet"
-        className="relative z-20 w-[380px] max-w-none h-[120px] overflow-visible pointer-events-none"
+      {/* Stretchy Woven Lanyard Band (pinned at y = -20px, seated straight into chrome clamp) */}
+      <div
+        ref={strapRef}
         aria-hidden="true"
+        style={{
+          top: "-20px",
+          height: "124px",
+          transformOrigin: "50% 0%",
+          willChange: "transform",
+          backgroundImage:
+            "repeating-linear-gradient(45deg, rgba(255,255,255,0.06) 0px, rgba(255,255,255,0.06) 2px, transparent 2px, transparent 6px), linear-gradient(90deg, #0b1120 0%, #1e293b 24%, #334155 50%, #1e293b 76%, #0b1120 100%)",
+        }}
+        className="pointer-events-none absolute left-1/2 -ml-[14px] w-[28px] z-20 rounded-b-sm shadow-[0_8px_18px_rgba(15,23,42,0.45)] border-x border-white/10"
       >
-        <defs>
-          <linearGradient
-            id={`metalGrad-${uid}`}
-            gradientUnits="userSpaceOnUse"
-            x1="-17"
-            y1="-11"
-            x2="17"
-            y2="25"
-          >
-            <stop offset="0%" stopColor="#f8fafc" />
-            <stop offset="45%" stopColor="#94a3b8" />
-            <stop offset="100%" stopColor="#475569" />
-          </linearGradient>
-        </defs>
+        <div className="w-full h-full flex items-center justify-center">
+          <span className="w-2.5 h-2.5 rounded-full border border-white/60 flex items-center justify-center">
+            <span className="w-1 h-1 rounded-full bg-sky-400" />
+          </span>
+        </div>
+      </div>
 
-        {/* Layered Solid SVG Strap Paths (immune to Chromium objectBoundingBox stroke clipping) */}
-        <path
-          ref={strapPathRef}
-          d="M 190 -16 Q 190 50 190 100"
-          fill="none"
-          stroke="#0f172a"
-          strokeWidth="28"
-          strokeLinecap="butt"
-        />
-        <path
-          ref={strapWeaveRef}
-          d="M 190 -16 Q 190 50 190 100"
-          fill="none"
-          stroke="#1e293b"
-          strokeWidth="20"
-          strokeLinecap="butt"
-        />
-
-        {/* Woven Emblem Centered on Strap */}
-        <g ref={strapLogoRef} transform="translate(190, 50)">
-          <circle
-            cx="0"
-            cy="0"
-            r="6.5"
-            fill="none"
-            stroke="rgba(255,255,255,0.75)"
-            strokeWidth="1.5"
-          />
-          <circle cx="0" cy="0" r="2" fill="#38bdf8" />
-        </g>
-
-        {/* Metallic Clamp & Swivel Ring directly hooking the card slot */}
-        <g ref={claspGroupRef} transform="translate(190, 100)">
-          <rect
-            x="-17"
-            y="-11"
-            width="34"
-            height="16"
-            rx="4.5"
-            fill={`url(#metalGrad-${uid})`}
-            stroke="#334155"
-            strokeWidth="1"
-          />
-          <rect x="-12" y="-6.5" width="24" height="3.2" rx="1.6" fill="rgba(255,255,255,0.5)" />
-          <path
-            d="M 0 5 C 8.5 5 10.5 22 0 25 C -10.5 22 -8.5 5 0 5 Z"
-            fill="none"
-            stroke={`url(#metalGrad-${uid})`}
-            strokeWidth="3.6"
-          />
-          <rect x="-4" y="2" width="8" height="5.5" rx="2" fill="#cbd5e1" />
-        </g>
-      </svg>
-
-      {/* Large 3D Interactive Photo Badge Card (zero text clutter on image) */}
-      <div className="lanyard-perspective relative z-10 -mt-[22px]">
+      {/* Large 3D Interactive Photo Badge Card + Physically Attached Chrome Clasp */}
+      <div className="lanyard-perspective relative z-10">
         <div
           ref={cardPivotRef}
           onPointerDown={handlePointerDown}
@@ -303,11 +224,23 @@ const HeroLanyardCard = memo(function HeroLanyardCard({
               setIsFlipped((prev) => !prev);
             }
           }}
-          style={{ transformOrigin: "50% -20px", touchAction: "none" }}
+          style={{ transformOrigin: "50% -6px", touchAction: "none" }}
           className={`lanyard-pivot relative w-[290px] sm:w-[335px] lg:w-[360px] h-[395px] sm:h-[455px] lg:h-[490px] ${
             isDragging ? "cursor-grabbing" : "cursor-grab"
           } focus:outline-none`}
         >
+          {/* Chrome Lanyard Clamp & Swivel Ring mounted right at Card's Top Slot */}
+          <div
+            aria-hidden="true"
+            className="pointer-events-none absolute -top-[18px] left-1/2 -translate-x-1/2 z-30 flex flex-col items-center"
+          >
+            <div className="w-9 h-4 rounded-md bg-gradient-to-b from-slate-100 via-slate-400 to-slate-600 border border-slate-700/80 shadow-md flex items-center justify-center">
+              <div className="w-6 h-1 rounded-full bg-white/60" />
+            </div>
+            <div className="w-2.5 h-2 rounded-sm bg-slate-300 border border-slate-600/60 -mt-0.5" />
+            <div className="w-4 h-4 rounded-full border-[3px] border-slate-300 shadow-sm -mt-1" />
+          </div>
+
           <div
             ref={cardFlipRef}
             className="lanyard-card-3d relative w-full h-full"

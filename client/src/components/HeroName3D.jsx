@@ -26,10 +26,6 @@ export default function HeroName3D({ name = "Yorn Pheareak" }) {
   const layerRefs = useRef([]);
 
   useEffect(() => {
-    const prefersReducedMotion =
-      typeof window !== "undefined" &&
-      window.matchMedia?.("(prefers-reduced-motion: reduce)")?.matches;
-
     const pointer = {
       active: false,
       x: 0,
@@ -69,15 +65,12 @@ export default function HeroName3D({ name = "Yorn Pheareak" }) {
     const stopRaf = startViewportRafLoop(stageRef.current, (now, dt) => {
       const isFreshPointer = pointer.active && now - pointer.lastMovedAt < 2600;
 
-      let targetDx = 0.25;
-      let targetDy = 0.35;
+      let targetDx = Math.sin(now * 0.0013) * 0.55;
+      let targetDy = 0.25 + Math.cos(now * 0.001) * 0.35;
 
       if (isFreshPointer) {
         targetDx = pointer.x;
         targetDy = pointer.y;
-      } else if (!prefersReducedMotion) {
-        targetDx = Math.sin(now * 0.0013) * 0.55;
-        targetDy = 0.25 + Math.cos(now * 0.001) * 0.35;
       }
 
       const blend = 1 - Math.pow(0.88, dt);
