@@ -18,9 +18,6 @@ const LOGO_LOOP_ITEMS = [
   { name: "Docker", lookup: "docker" },
 ];
 
-// Double inside each half so even 4K ultra-wide screens have zero empty gap
-const HALF_TRACK_ITEMS = [...LOGO_LOOP_ITEMS, ...LOGO_LOOP_ITEMS];
-
 const LogoLoopItem = memo(function LogoLoopItem({ tech, onJumpToSkills }) {
   const [failed, setFailed] = useState(false);
   const iconUrl = !failed ? getSkillIconUrl(tech.lookup) : null;
@@ -31,7 +28,7 @@ const LogoLoopItem = memo(function LogoLoopItem({ tech, onJumpToSkills }) {
       onClick={onJumpToSkills}
       title={tech.name}
       aria-label={tech.name}
-      className="group inline-flex items-center justify-center flex-shrink-0 p-1.5 sm:p-2 rounded-xl opacity-75 hover:opacity-100 transition-all duration-300 hover:scale-125 focus:outline-none focus-visible:ring-2 focus-visible:ring-amber-400/60"
+      className="group inline-flex items-center justify-center flex-shrink-0 p-1.5 sm:p-2 rounded-xl opacity-80 hover:opacity-100 transition-all duration-300 hover:scale-125 focus:outline-none focus-visible:ring-2 focus-visible:ring-amber-400/60"
     >
       {iconUrl ? (
         <img
@@ -54,7 +51,8 @@ const LogoLoopItem = memo(function LogoLoopItem({ tech, onJumpToSkills }) {
 
 /**
  * Full-screen-width seamless Logo Loop (inspired by ReactBits Logo Loop).
- * Runs purely on the GPU compositor with zero JS frame timers and pauses on hover.
+ * Renders 3 contiguous tracks for seamless -33.3333% loop across 4K screens,
+ * while hiding clone tracks under prefers-reduced-motion so icons never stack twice.
  */
 const TechMarquee = memo(function TechMarquee({ onJumpToSkills }) {
   return (
@@ -64,15 +62,17 @@ const TechMarquee = memo(function TechMarquee({ onJumpToSkills }) {
     >
       <div className="logo-loop-mask relative overflow-hidden">
         <div className="logo-loop-track flex items-center w-max">
-          {[0, 1].map((copyIndex) => (
+          {[0, 1, 2].map((copyIndex) => (
             <div
               key={copyIndex}
-              aria-hidden={copyIndex === 1 ? "true" : undefined}
-              className="flex items-center gap-12 sm:gap-16 lg:gap-24 pr-12 sm:pr-16 lg:pr-24 flex-shrink-0"
+              aria-hidden={copyIndex > 0 ? "true" : undefined}
+              className={`flex items-center gap-10 sm:gap-14 lg:gap-20 pr-10 sm:pr-14 lg:pr-20 flex-shrink-0 ${
+                copyIndex > 0 ? "logo-loop-clone" : ""
+              }`}
             >
-              {HALF_TRACK_ITEMS.map((tech, idx) => (
+              {LOGO_LOOP_ITEMS.map((tech) => (
                 <LogoLoopItem
-                  key={`${copyIndex}-${idx}-${tech.name}`}
+                  key={`${copyIndex}-${tech.name}`}
                   tech={tech}
                   onJumpToSkills={onJumpToSkills}
                 />

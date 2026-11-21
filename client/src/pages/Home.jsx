@@ -796,7 +796,7 @@ const Home = () => {
           </div>
 
           {/* Right — Interactive 3D Swinging Lanyard ID Card */}
-          <div className="flex-shrink-0 z-10 lg:self-start lg:-mt-12 animate-hero-avatar relative">
+          <div className="flex-shrink-0 z-10 lg:self-start mt-2 lg:-mt-[4.75rem] animate-hero-avatar relative">
             <HeroLanyardCard
               user={displayUser}
               loading={loading}

@@ -58,7 +58,7 @@ const HeroLanyardCard = memo(function HeroLanyardCard({
       window.matchMedia?.("(prefers-reduced-motion: reduce)")?.matches;
 
     const ANCHOR_X = 190;
-    const ANCHOR_Y = 0;
+    const ANCHOR_Y = -16;
     const BASE_STRAP_LENGTH = 100;
 
     return startViewportRafLoop(stageRef.current, (now, dt) => {
@@ -218,53 +218,35 @@ const HeroLanyardCard = memo(function HeroLanyardCard({
         aria-hidden="true"
       >
         <defs>
-          <linearGradient id={`strapGrad-${uid}`} x1="0" y1="0" x2="1" y2="0">
-            <stop offset="0%" stopColor="#0f172a" />
-            <stop offset="22%" stopColor="#1e293b" />
-            <stop offset="50%" stopColor="#334155" />
-            <stop offset="78%" stopColor="#1e293b" />
-            <stop offset="100%" stopColor="#0f172a" />
-          </linearGradient>
-
-          <pattern
-            id={`weave-${uid}`}
-            width="8"
-            height="8"
-            patternUnits="userSpaceOnUse"
-            patternTransform="rotate(45)"
+          <linearGradient
+            id={`metalGrad-${uid}`}
+            gradientUnits="userSpaceOnUse"
+            x1="-17"
+            y1="-11"
+            x2="17"
+            y2="25"
           >
-            <line
-              x1="0"
-              y1="0"
-              x2="0"
-              y2="8"
-              stroke="rgba(255,255,255,0.08)"
-              strokeWidth="2"
-            />
-          </pattern>
-
-          <linearGradient id={`metalGrad-${uid}`} x1="0" y1="0" x2="1" y2="1">
             <stop offset="0%" stopColor="#f8fafc" />
             <stop offset="45%" stopColor="#94a3b8" />
             <stop offset="100%" stopColor="#475569" />
           </linearGradient>
         </defs>
 
-        {/* Woven Ribbon Strap */}
+        {/* Layered Solid SVG Strap Paths (immune to Chromium objectBoundingBox stroke clipping) */}
         <path
           ref={strapPathRef}
-          d="M 190 0 Q 190 50 190 100"
+          d="M 190 -16 Q 190 50 190 100"
           fill="none"
-          stroke={`url(#strapGrad-${uid})`}
+          stroke="#0f172a"
           strokeWidth="28"
           strokeLinecap="butt"
         />
         <path
           ref={strapWeaveRef}
-          d="M 190 0 Q 190 50 190 100"
+          d="M 190 -16 Q 190 50 190 100"
           fill="none"
-          stroke={`url(#weave-${uid})`}
-          strokeWidth="28"
+          stroke="#1e293b"
+          strokeWidth="20"
           strokeLinecap="butt"
         />
 
@@ -275,7 +257,7 @@ const HeroLanyardCard = memo(function HeroLanyardCard({
             cy="0"
             r="6.5"
             fill="none"
-            stroke="rgba(255,255,255,0.7)"
+            stroke="rgba(255,255,255,0.75)"
             strokeWidth="1.5"
           />
           <circle cx="0" cy="0" r="2" fill="#38bdf8" />
